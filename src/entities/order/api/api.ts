@@ -1,26 +1,42 @@
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { api } from '@/shared/api';
 import type { Order, OrderInfo, CreateOrderRequest, BuyOrderRequest } from './api.dto';
 
-export const orderApi = {
-  // Create order (sell BP)
-  createOrder: async (data: CreateOrderRequest): Promise<Order> => {
-    const response = await api.post<Order>('/order/create', data);
-    return response.data;
-  },
+export const QUERY_KEYS = {
+  orderInfo: (orderId: number) => ['order', 'info', orderId] as const,
+};
 
-  // Buy order (buy BP with TON)
-  buyOrder: async (data: BuyOrderRequest): Promise<void> => {
-    await api.post('/order/buy', data);
-  },
+export const useOrderInfo = (orderId: number) => {
+  return useQuery({
+    queryKey: QUERY_KEYS.orderInfo(orderId),
+    queryFn: async (): Promise<OrderInfo> => {
+      const response = await api.get<OrderInfo>(`/order/info/${orderId}`);
+      return response.data;
+    },
+  });
+};
 
-  // Self buy (cancel order)
-  selfBuy: async (orderId: number): Promise<void> => {
-    await api.post(`/order/self_buy/${orderId}`);
-  },
+export const useCreateOrder = () => {
+  return useMutation({
+    mutationFn: async (data: CreateOrderRequest): Promise<Order> => {
+      const response = await api.post<Order>('/order/create', data);
+      return response.data;
+    },
+  });
+};
 
-  // Get order info
-  getOrderInfo: async (orderId: number): Promise<OrderInfo> => {
-    const response = await api.get<OrderInfo>(`/order/info/${orderId}`);
-    return response.data;
-  },
+export const useBuyOrder = () => {
+  return useMutation({
+    mutationFn: async (data: BuyOrderRequest): Promise<void> => {
+      await api.post('/order/buy', data);
+    },
+  });
+};
+
+export const useSelfBuy = () => {
+  return useMutation({
+    mutationFn: async (orderId: number): Promise<void> => {
+      await api.post(`/order/self_buy/${orderId}`);
+    },
+  });
 };

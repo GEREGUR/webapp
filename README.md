@@ -11,7 +11,7 @@ and libraries:
 - [Telegram UI](https://github.com/Telegram-Mini-Apps/TelegramUI)
 - [Vite](https://vitejs.dev/)
 
-> The template was created using [npm](https://www.npmjs.com/). Therefore, it is
+> The template was created using [pnpm](https://www.pnpmjs.com/). Therefore, it is
 > required to use it for this project as well. Using other package managers, you
 > will receive a corresponding error.
 
@@ -21,7 +21,7 @@ If you have just cloned this template, you should install the project
 dependencies using the command:
 
 ```Bash
-npm install
+pnpm install
 ```
 
 ## Scripts
@@ -35,11 +35,11 @@ This project contains the following scripts:
   the required standards.
 - `deploy`. Deploys the application to GitHub Pages.
 
-To run a script, use the `npm run` command:
+To run a script, use the `pnpm run` command:
 
 ```Bash
-npm run {script}
-# Example: npm run build
+pnpm run {script}
+# Example: pnpm run build
 ```
 
 ## Create Bot and Mini App
@@ -58,13 +58,13 @@ process.
 To run the application in the development mode, use the `dev` script:
 
 ```bash
-npm run dev:https
+pnpm run dev:https
 ```
 
 > [!NOTE]
-> As long as we use [vite-plugin-mkcert](https://www.npmjs.com/package/vite-plugin-mkcert),
+> As long as we use [vite-plugin-mkcert](https://www.pnpmjs.com/package/vite-plugin-mkcert),
 > launching the dev mode for the first time, you may see sudo password request.
-> The plugin requires it to properly configure SSL-certificates. To disable the plugin, use the `npm run dev` command.
+> The plugin requires it to properly configure SSL-certificates. To disable the plugin, use the `pnpm run dev` command.
 
 After this, you will see a similar message in your terminal:
 
@@ -91,8 +91,8 @@ It is important to note that some libraries in this template, such as
 `@tma.js/sdk`, are not intended for use outside of Telegram.
 
 Nevertheless, they appear to function properly. This is because the
-`src/mockEnv.ts` file, which is imported in the application's entry point (
-`src/index.ts`), employs the `mockTelegramEnv` function to simulate the Telegram
+`src/app/mock-env.ts` file, which is imported in the application's entry point (
+`src/app/index.tsx`), employs the `mockTelegramEnv` function to simulate the Telegram
 environment. This trick convinces the application that it is running in a
 Telegram-based environment. Therefore, be cautious not to use this function in
 production mode unless you fully understand its implications.
@@ -113,7 +113,7 @@ as [Heroku](https://www.heroku.com/) or [Vercel](https://vercel.com).
 
 ### Manual Deployment
 
-This boilerplate uses the [gh-pages](https://www.npmjs.com/package/gh-pages)
+This boilerplate uses the [gh-pages](https://www.pnpmjs.com/package/gh-pages)
 tool, which allows deploying your application right from your PC.
 
 #### Configuring
@@ -154,13 +154,13 @@ Before deploying the application, make sure that you've built it and going to
 deploy the fresh static files:
 
 ```bash
-npm run build
+pnpm run build
 ```
 
 Then, run the deployment process, using the `deploy` script:
 
 ```Bash
-npm run deploy
+pnpm run deploy
 ```
 
 After the deployment completed successfully, visit the page with data according

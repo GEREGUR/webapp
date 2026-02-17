@@ -5,7 +5,6 @@ import tsconfigPaths from "vite-tsconfig-paths";
 import { resolve } from "path";
 
 export default defineConfig({
-  base: "/reactjs-template/",
   resolve: {
     alias: {
       "@/app": resolve(__dirname, "./src/app"),
@@ -31,5 +30,6 @@ export default defineConfig({
   publicDir: "./public",
   server: {
     host: true,
+    allowedHosts: true,
   },
 });

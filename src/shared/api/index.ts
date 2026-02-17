@@ -14,7 +14,8 @@ api.interceptors.request.use((config) => {
     const initData = launchParams.tgWebAppData;
 
     if (initData) {
-      config.headers["X-Telegram-Data"] = initData;
+      config.headers["x_telegram_data"] = initData;
+      console.log(initData, config, "initData");
     }
   } catch (err) {
     console.error(err);

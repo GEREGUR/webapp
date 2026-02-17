@@ -1,16 +1,17 @@
 import { retrieveLaunchParams } from '@tma.js/sdk-react';
 import type { Order, Deal, MarketStats } from './api.dto';
 
-export type WsEventType =
-  | 'initial_state'
-  | 'new_order'
-  | 'order_update'
-  | 'new_deal'
-  | 'stats_update'
-  | 'orders_bump'
-  | 'success_payment'
-  | 'success_withdrawal'
-  | 'update_filter';
+export enum WsEventType {
+  INITIAL_STATE = 'initial_state',
+  NEW_ORDER = 'new_order',
+  ORDER_UPDATE = 'order_update',
+  NEW_DEAL = 'new_deal',
+  STATS_UPDATE = 'stats_update',
+  ORDERS_BUMP = 'orders_bump',
+  SUCCESS_PAYMENT = 'success_payment',
+  SUCCESS_WITHDRAWAL = 'success_withdrawal',
+  UPDATE_FILTER = 'update_filter',
+}
 
 export interface WsMessage<T = unknown> {
   type: WsEventType;
@@ -138,7 +139,7 @@ class WebSocketService {
   }
 
   updateFilter(minTon: number) {
-    this.send('update_filter', { min_ton: minTon });
+    this.send(WsEventType.UPDATE_FILTER, { min_ton: minTon });
   }
 
   on<T = unknown>(event: WsEventType, callback: EventCallback<T>) {

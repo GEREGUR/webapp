@@ -8,8 +8,9 @@ export interface RouteObject {
 
 export const routes: RouteObject[] = [
   { path: '/', Component: lazy(() => import('@/pages/index-page/index-page').then(m => ({ default: m.IndexPage }))), title: 'Home' },
-  { path: '/init-data', Component: lazy(() => import('@/pages/init-data-page').then(m => ({ default: m.InitDataPage }))), title: 'Init Data' },
-  { path: '/theme-params', Component: lazy(() => import('@/pages/theme-params-page').then(m => ({ default: m.ThemeParamsPage }))), title: 'Theme Params' },
-  { path: '/launch-params', Component: lazy(() => import('@/pages/launch-params-page').then(m => ({ default: m.LaunchParamsPage }))), title: 'Launch Params' },
-  { path: '/ton-connect', Component: lazy(() => import('@/pages/ton-connect-page/ton-connect-page').then(m => ({ default: m.TONConnectPage }))), title: 'TON Connect' },
+  { path: '/market', Component: lazy(() => import('@/pages/market-page/market-page').then(m => ({ default: m.MarketPage }))), title: 'Market' },
+  { path: '/battle-pass', Component: lazy(() => import('@/pages/battle-pass-page/battle-pass-page').then(m => ({ default: m.BattlePassPage }))), title: 'Battle Pass' },
+  { path: '/inventory', Component: lazy(() => import('@/pages/inventory-page/inventory-page').then(m => ({ default: m.InventoryPage }))), title: 'Inventory' },
+  { path: '/awards', Component: lazy(() => import('@/pages/awards-page/awards-page').then(m => ({ default: m.AwardsPage }))), title: 'Awards' },
+  { path: '/profile', Component: lazy(() => import('@/pages/profile-page/profile-page').then(m => ({ default: m.ProfilePage }))), title: 'Profile' },
 ];

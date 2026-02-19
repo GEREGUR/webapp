@@ -2,6 +2,7 @@ import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
 import tsconfigPaths from "vite-tsconfig-paths";
+import tailwindcss from "@tailwindcss/vite";
 import { resolve } from "path";
 
 export default defineConfig({
@@ -22,7 +23,7 @@ export default defineConfig({
       },
     },
   },
-  plugins: [react(), tsconfigPaths(), process.env.HTTPS && mkcert()],
+  plugins: [react(), tsconfigPaths(), tailwindcss(), process.env.HTTPS && mkcert()],
   build: {
     target: "esnext",
     minify: "terser",

@@ -19,12 +19,12 @@ export const MobileDock: FC<MobileDockProps> = ({ buttons }) => {
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-lg px-4 py-2 transition-transform duration-300 ${
+      className={`fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-lg px-4 py-2 transition-transform duration-300 z-[9999] ${
         visible ? 'translate-y-0' : 'translate-y-full'
       }`}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      tabIndex={-1}
+      onMouseEnter={() => setVisible(true)}
     >
       <div className="flex justify-around items-center">
         {buttons.map((button) => (

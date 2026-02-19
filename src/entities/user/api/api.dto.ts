@@ -1,4 +1,3 @@
-// User entity API types
 export interface UserProfile {
   id: number;
   name: string;

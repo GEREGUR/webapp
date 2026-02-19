@@ -1,4 +1,3 @@
-// Order entity API types
 export type OrderStatus = 'OPEN' | 'PARTIAL' | 'CLOSED';
 
 export interface OrderOwner {

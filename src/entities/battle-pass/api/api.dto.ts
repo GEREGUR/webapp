@@ -1,4 +1,3 @@
-// Battle Pass entity API types
 export interface BattlePassReward {
   id: number;
   level: number;

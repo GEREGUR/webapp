@@ -1,4 +1,3 @@
-// Tasks entity API types
 export type TaskStatus = 'ACTIVE' | 'COMPLETED' | 'REWARDED';
 export type TaskType = 'STORY' | 'BIO' | 'NICK' | 'DEFAULT';
 

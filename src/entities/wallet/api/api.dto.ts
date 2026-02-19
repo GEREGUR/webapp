@@ -1,4 +1,3 @@
-// Wallet entity API types
 export interface PaymentData {
   address: string;
   memo: string;

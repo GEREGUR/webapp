@@ -41,6 +41,8 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "gh-pages": "^6.3.0",
     "globals": "^15.15.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-tailwindcss": "^0.7.2",
     "terser": "^5.44.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.40.0",

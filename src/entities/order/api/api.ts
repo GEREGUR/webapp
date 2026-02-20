@@ -4,7 +4,18 @@ import type { Order, OrderInfo, CreateOrderRequest, BuyOrderRequest } from './ap
 
 export const QUERY_KEYS = {
   orders: ['orders'] as const,
+  marketOrders: ['market', 'orders'] as const,
   orderInfo: (orderId: number) => ['order', 'info', orderId] as const,
+};
+
+export const useMarketOrders = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.marketOrders,
+    queryFn: async (): Promise<Order[]> => {
+      const response = await api.get<Order[]>('/order/all');
+      return response.data;
+    },
+  });
 };
 
 export const useOrders = () => {

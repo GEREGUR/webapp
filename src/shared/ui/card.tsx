@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 
-export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {}
+export type CardProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const Card = ({ className, children, ...props }: CardProps) => {
   return (

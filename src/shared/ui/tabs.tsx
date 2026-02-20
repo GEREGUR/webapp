@@ -60,13 +60,20 @@ export type TabProps = {
 
 export const Tab = ({ value, children, className }: TabProps) => {
   const { activeTab, setActiveTab } = useTabsContext();
+  const isActive = activeTab === value;
 
   return (
     <button
       onClick={() => setActiveTab(value)}
-      data-active={activeTab === value}
       type="button"
-      className={cn(className)}
+      className={cn(
+        'relative cursor-pointer appearance-none border-none bg-transparent px-3 py-1.5 text-sm font-medium transition-all duration-300 ease-out outline-none select-none',
+        isActive ? 'text-white' : 'text-gray-400 blur-[0.5px] hover:text-gray-300',
+        className
+      )}
+      style={{
+        filter: isActive ? 'none' : 'blur(0.5px)',
+      }}
     >
       {children}
     </button>

@@ -1,0 +1,89 @@
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { backButton } from '@tma.js/sdk-react';
+import { cn } from '@/shared/lib/utils';
+
+type TabsContextValue = {
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+};
+
+const TabsContext = createContext<TabsContextValue | null>(null);
+
+const useTabsContext = () => {
+  const context = useContext(TabsContext);
+  if (!context) {
+    throw new Error('Tabs components must be used within a Tabs provider');
+  }
+  return context;
+};
+
+export type TabsProps = {
+  defaultTab: string;
+  children: ReactNode;
+  onBack?: () => void;
+};
+
+export const Tabs = ({ defaultTab, children, onBack }: TabsProps) => {
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  useEffect(() => {
+    if (!onBack) return;
+
+    backButton.show();
+    const offClick = backButton.onClick(onBack);
+
+    return () => {
+      offClick();
+      backButton.hide();
+    };
+  }, [onBack]);
+
+  return (
+    <TabsContext.Provider value={{ activeTab, setActiveTab }}>{children}</TabsContext.Provider>
+  );
+};
+
+export type TabListProps = {
+  children: ReactNode;
+  className?: string;
+};
+
+export const TabList = ({ children, className }: TabListProps) => {
+  return <div className={cn(className)}>{children}</div>;
+};
+
+export type TabProps = {
+  value: string;
+  children: ReactNode;
+  className?: string;
+};
+
+export const Tab = ({ value, children, className }: TabProps) => {
+  const { activeTab, setActiveTab } = useTabsContext();
+
+  return (
+    <button
+      onClick={() => setActiveTab(value)}
+      data-active={activeTab === value}
+      type="button"
+      className={cn(className)}
+    >
+      {children}
+    </button>
+  );
+};
+
+export type TabPanelProps = {
+  value: string;
+  children: ReactNode;
+};
+
+export const TabPanel = ({ value, children }: TabPanelProps) => {
+  const { activeTab } = useTabsContext();
+
+  if (activeTab !== value) {
+    return null;
+  }
+
+  return <>{children}</>;
+};

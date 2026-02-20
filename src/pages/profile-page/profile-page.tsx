@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { Page } from '@/shared/ui/page';
+import { Page } from '@/pages/page';
 
 export const ProfilePage: FC = () => {
   return (

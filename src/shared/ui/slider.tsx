@@ -34,16 +34,16 @@ const Slider = React.forwardRef<HTMLInputElement, SliderProps>(
             '[&::-webkit-slider-thumb]:w-5',
             '[&::-webkit-slider-thumb]:h-5',
             '[&::-webkit-slider-thumb]:rounded-full',
-            '[&::-webkit-slider-thumb]:bg-primary',
-            '[&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(255,6,225,0.5)]',
+            '[&::-webkit-slider-thumb]:bg-blue',
+            '[&::-webkit-slider-thumb]:shadow-[0_0_10px_rgba(0,166,255,0.5)]',
             '[&::-webkit-slider-thumb]:transition-transform',
             '[&::-webkit-slider-thumb]:hover:scale-110',
             '[&::-moz-range-thumb]:w-5',
             '[&::-moz-range-thumb]:h-5',
             '[&::-moz-range-thumb]:rounded-full',
-            '[&::-moz-range-thumb]:bg-primary',
+            '[&::-moz-range-thumb]:bg-blue',
             '[&::-moz-range-thumb]:border-0',
-            '[&::-moz-range-thumb]:shadow-[0_0_10px_rgba(255,6,225,0.5)]',
+            '[&::-moz-range-thumb]:shadow-[0_0_10px_rgba(0,166,255,0.5)]',
             className
           )}
           {...props}

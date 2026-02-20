@@ -3,7 +3,6 @@ import { defineConfig } from 'vite';
 import mkcert from 'vite-plugin-mkcert';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
-import svgr from '@svgr/core';
 import { resolve } from 'path';
 
 export default defineConfig({
@@ -24,33 +23,7 @@ export default defineConfig({
       },
     },
   },
-  plugins: [
-    react(),
-    tsconfigPaths(),
-    tailwindcss(),
-    process.env.HTTPS && mkcert(),
-    {
-      name: 'svgr',
-      transform(code, id) {
-        if (id.endsWith('.svg')) {
-          const svgrPlugin = require('@svgr/core').default;
-          const esmCode = svgrPlugin.sync(
-            code,
-            {
-              icon: true,
-              typescript: true,
-              prettier: true,
-            },
-            { componentName: 'SvgComponent' }
-          );
-          return {
-            code: esmCode,
-            map: null,
-          };
-        }
-      },
-    },
-  ],
+  plugins: [react(), tsconfigPaths(), tailwindcss(), process.env.HTTPS && mkcert()],
   build: {
     target: 'esnext',
     minify: 'terser',
@@ -60,4 +33,5 @@ export default defineConfig({
     host: true,
     allowedHosts: true,
   },
+  assetsInclude: ['**/*.svg'],
 });

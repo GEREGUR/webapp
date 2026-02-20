@@ -1,5 +1,7 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import { createContext, useContext, type ReactNode } from 'react';
+import { useQueryState } from 'nuqs';
 import { backButton } from '@tma.js/sdk-react';
+import { useEffect } from 'react';
 import { cn } from '@/shared/lib/utils';
 
 type TabsContextValue = {
@@ -18,13 +20,18 @@ const useTabsContext = () => {
 };
 
 export type TabsProps = {
-  defaultTab: string;
   children: ReactNode;
   onBack?: () => void;
+  queryParamName?: string;
+  defaultTab?: string;
 };
 
-export const Tabs = ({ defaultTab, children, onBack }: TabsProps) => {
-  const [activeTab, setActiveTab] = useState(defaultTab);
+export const Tabs = ({ children, onBack, queryParamName = 'tab', defaultTab = '0' }: TabsProps) => {
+  const [activeTab, setActiveTab] = useQueryState(queryParamName, {
+    defaultValue: defaultTab,
+    throttleMs: 100,
+    clearOnDefault: false,
+  });
 
   useEffect(() => {
     if (!onBack) return;
@@ -39,7 +46,14 @@ export const Tabs = ({ defaultTab, children, onBack }: TabsProps) => {
   }, [onBack]);
 
   return (
-    <TabsContext.Provider value={{ activeTab, setActiveTab }}>{children}</TabsContext.Provider>
+    <TabsContext.Provider
+      value={{
+        activeTab: activeTab ?? defaultTab,
+        setActiveTab: (tab) => void setActiveTab(tab),
+      }}
+    >
+      {children}
+    </TabsContext.Provider>
   );
 };
 

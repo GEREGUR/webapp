@@ -30,7 +30,7 @@ export const MobileDock: FC<MobileDockProps> = ({ buttons }) => {
 
   return (
     <div
-      className={`fixed right-0 bottom-0 left-0 z-[9999] bg-black/80 px-4 py-2 backdrop-blur-lg transition-transform duration-300 ${
+      className={`fixed right-0 bottom-0 left-0 z-[9999] border-t border-white/20 bg-black/80 px-4 py-2 backdrop-blur-lg transition-transform duration-300 ${
         visible ? 'translate-y-0' : 'translate-y-full'
       }`}
     >
@@ -38,23 +38,25 @@ export const MobileDock: FC<MobileDockProps> = ({ buttons }) => {
         {buttons.map((button) => {
           const isActive = location.pathname === button.to;
           return (
-            <Link key={button.to} to={button.to} className="flex flex-col items-center gap-1 p-2">
-              <img
-                src={button.icon}
-                alt={button.label}
-                className={cn(
-                  'h-6 w-6 transition-opacity',
-                  isActive ? 'opacity-100' : 'opacity-40'
-                )}
+            <Link
+              key={button.to}
+              to={button.to}
+              className={cn(
+                'flex flex-col items-center gap-1 p-2',
+                isActive ? 'text-white' : 'text-white/40'
+              )}
+            >
+              <div
+                className="h-6 w-6"
+                style={{
+                  backgroundColor: 'currentColor',
+                  maskImage: `url(${button.icon})`,
+                  maskSize: 'contain',
+                  maskRepeat: 'no-repeat',
+                  maskPosition: 'center',
+                }}
               />
-              <span
-                className={cn(
-                  'text-xs transition-opacity',
-                  isActive ? 'text-white' : 'text-white/40'
-                )}
-              >
-                {button.label}
-              </span>
+              <span className="text-xs">{button.label}</span>
             </Link>
           );
         })}

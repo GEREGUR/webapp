@@ -7,7 +7,6 @@ import { NuqsAdapter } from 'nuqs/adapters/react-router/v6';
 import { MobileDock } from '@/widgets/mobile-dock';
 import { ToastProvider } from '@/shared/ui/toast';
 import type { RouteObject } from '@/app/routes';
-import HomeIcon from '@/shared/assets/chat.svg?url';
 import MarketIcon from '@/shared/assets/market.svg?url';
 import BattlePassIcon from '@/shared/assets/bp.svg?url';
 import InventoryIcon from '@/shared/assets/invenotry.svg?url';
@@ -35,7 +34,7 @@ export const Root: FC<RootProps> = ({ routes }) => {
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
-        <div style={{ position: 'relative', minHeight: '100vh' }}>
+        <div className="min-h-screen w-screen overflow-x-hidden pb-16">
           <AppRoot
             appearance={isDark ? 'dark' : 'light'}
             platform={['macos', 'ios'].includes(platform as string) ? 'ios' : 'base'}
@@ -51,10 +50,9 @@ export const Root: FC<RootProps> = ({ routes }) => {
               </NuqsAdapter>
               <MobileDock
                 buttons={[
-                  { to: '/', icon: HomeIcon, label: 'Главная' },
-                  { to: '/market', icon: MarketIcon, label: 'Магазин' },
-                  { to: '/battle-pass', icon: BattlePassIcon, label: 'БП' },
+                  { to: '/market', icon: MarketIcon, label: 'Рынок' },
                   { to: '/inventory', icon: InventoryIcon, label: 'Инвентарь' },
+                  { to: '/battle-pass', icon: BattlePassIcon, label: 'БП' },
                   { to: '/awards', icon: RewardsIcon, label: 'Награды' },
                   { to: '/profile', icon: ProfileIcon, label: 'Профиль' },
                 ]}

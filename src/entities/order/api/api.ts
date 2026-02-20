@@ -3,7 +3,18 @@ import { api } from '@/shared/api';
 import type { Order, OrderInfo, CreateOrderRequest, BuyOrderRequest } from './api.dto';
 
 export const QUERY_KEYS = {
+  orders: ['orders'] as const,
   orderInfo: (orderId: number) => ['order', 'info', orderId] as const,
+};
+
+export const useOrders = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.orders,
+    queryFn: async (): Promise<Order[]> => {
+      const response = await api.get<Order[]>('/order/my');
+      return response.data;
+    },
+  });
 };
 
 export const useOrderInfo = (orderId: number) => {

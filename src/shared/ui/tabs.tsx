@@ -67,8 +67,8 @@ export const Tab = ({ value, children, className }: TabProps) => {
       onClick={() => setActiveTab(value)}
       type="button"
       className={cn(
-        'relative cursor-pointer appearance-none border-none bg-transparent px-3 py-1.5 text-sm font-medium transition-all duration-300 ease-out outline-none select-none',
-        isActive ? 'text-white' : 'text-gray-400 blur-[0.5px] hover:text-gray-300',
+        'relative w-fit cursor-pointer appearance-none border-none bg-transparent px-3 py-1.5 text-start text-3xl font-medium transition-all duration-300 ease-out outline-none select-none',
+        isActive ? 'text-white' : 'text-gray-700/60 blur-[0.5px] hover:text-gray-300',
         className
       )}
       style={{

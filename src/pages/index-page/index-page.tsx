@@ -29,13 +29,7 @@ export const IndexPage = () => {
           value="market"
           className="flex-1 rounded px-4 py-2 text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white/20"
         >
-          Купить
-        </Tab>
-        <Tab
-          value="create"
-          className="flex-1 rounded px-4 py-2 text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white/20"
-        >
-          Продать
+          Рынок
         </Tab>
         <Tab
           value="orders"

@@ -11,7 +11,7 @@ export const Layout: FC<LayoutProps> = ({ children, tonBalance, bpBalance }) => 
   return (
     <>
       <Header tonBalance={tonBalance} bpBalance={bpBalance} />
-      <main className="pt-14">{children}</main>
+      <main className="pt-10">{children}</main>
     </>
   );
 };

@@ -10,6 +10,7 @@
   --color-accent: #ffaa00;
   --color-purple: #7517f8;
   --color-blue: #00a6ff;
+  --color-blue-dark: #237bff;
   --color-black: #000000;
   --color-white: #ffffff;
 }
@@ -198,4 +199,3 @@ body::after {
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
-

@@ -5,13 +5,14 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { miniApp, useLaunchParams, useSignal } from '@tma.js/sdk-react';
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v6';
 import { MobileDock } from '@/widgets/mobile-dock';
+import { Layout } from '@/shared/ui/layout';
 import { ToastProvider } from '@/shared/ui/toast';
 import type { RouteObject } from '@/app/routes';
-import MarketIcon from '@/shared/assets/market.svg?url';
-import BattlePassIcon from '@/shared/assets/bp.svg?url';
-import InventoryIcon from '@/shared/assets/invenotry.svg?url';
-import RewardsIcon from '@/shared/assets/rewards.svg?url';
-import ProfileIcon from '@/shared/assets/profile.svg?url';
+import MarketIcon from '@/shared/assets/market.svg?react';
+import BattlePassIcon from '@/shared/assets/bp.svg?react';
+import InventoryIcon from '@/shared/assets/invenotry.svg?react';
+import RewardsIcon from '@/shared/assets/rewards.svg?react';
+import ProfileIcon from '@/shared/assets/profile.svg?react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -24,9 +25,11 @@ const queryClient = new QueryClient({
 
 interface RootProps {
   routes: RouteObject[];
+  tonBalance?: string;
+  bpBalance?: string;
 }
 
-export const Root: FC<RootProps> = ({ routes }) => {
+export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' }) => {
   const lp = useLaunchParams();
   const isDark = useSignal(miniApp.isDark);
   const platform = lp.platform || 'unknown';
@@ -41,12 +44,14 @@ export const Root: FC<RootProps> = ({ routes }) => {
           >
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
               <NuqsAdapter>
-                <Routes>
-                  {routes.map((route) => (
-                    <Route key={route.path} path={route.path} Component={route.Component} />
-                  ))}
-                  <Route path="*" element={<Navigate to="/" />} />
-                </Routes>
+                <Layout tonBalance={tonBalance} bpBalance={bpBalance}>
+                  <Routes>
+                    {routes.map((route) => (
+                      <Route key={route.path} path={route.path} Component={route.Component} />
+                    ))}
+                    <Route path="*" element={<Navigate to="/" />} />
+                  </Routes>
+                </Layout>
               </NuqsAdapter>
               <MobileDock
                 buttons={[

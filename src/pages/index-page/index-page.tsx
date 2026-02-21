@@ -1,33 +1,35 @@
-import { useState } from 'react';
 import { Tabs, TabList, Tab, TabPanel } from '@/shared/ui/tabs';
-import { Slider } from '@/shared/ui/slider';
 import { Card } from '@/shared/ui/card';
-import { Button } from '@/shared/ui/button';
-import { OrderCard } from '@/shared/ui/order-card';
-import { CreateOrderForm } from '@/shared/ui/create-order-form';
-import { useOrders, useBuyTon, useBuyOrder } from '@/entities/order';
+import { CreateOrderButton } from '@/shared/ui/create-order-modal';
+import {
+  useOrders,
+  useBuyOrder,
+  useMarketOrders,
+  useCreateOrder,
+  OrderList,
+} from '@/entities/order';
 import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
 
 export const IndexPage = () => {
-  const [sliderValue, setSliderValue] = useState([50]);
   const { data: orders, isLoading: ordersLoading, refetch } = useOrders();
-  const buyTonMutation = useBuyTon();
+  const { data: marketOrders, isLoading: marketLoading } = useMarketOrders();
   const buyOrderMutation = useBuyOrder();
+  const createOrderMutation = useCreateOrder();
 
-  const handleBuy = () => {
-    buyTonMutation.mutate(
-      { ton_amount: sliderValue[0] },
+  const handleOrderBuy = (orderId: number) => {
+    buyOrderMutation.mutate(
+      { order_id: orderId, ton_amount: 0 },
       {
         onSuccess: () => {
-          setSliderValue([50]);
+          void refetch();
         },
       }
     );
   };
 
-  const handleOrderBuy = (orderId: number) => {
-    buyOrderMutation.mutate(
-      { order_id: orderId, ton_amount: 0 },
+  const handleCreateOrder = (data: { bp_amount: number }) => {
+    createOrderMutation.mutate(
+      { bp_amount: data.bp_amount },
       {
         onSuccess: () => {
           void refetch();
@@ -56,35 +58,25 @@ export const IndexPage = () => {
       </MaxWidthWrapper>
 
       <TabPanel value="market">
-        <Card className="mb-4">
-          <h3 className="mb-2 font-semibold text-white">Купить TON</h3>
-          <p className="mb-4 text-sm text-white/60">Выберите количество TON для покупки</p>
-          <Slider value={sliderValue} onValueChange={setSliderValue} min={1} max={1000} step={1} />
-          <p className="mt-4 text-center text-lg text-white">{sliderValue[0]} TON</p>
-        </Card>
-
-        <Card className="mb-4">
-          <div className="flex items-center justify-between">
-            <span className="text-white/60">Курс</span>
-            <span className="text-white">5.25 BP за 1 TON</span>
-          </div>
-          <div className="mt-2 flex items-center justify-between">
-            <span className="text-white/60">Итого</span>
-            <span className="text-white">{(sliderValue[0] * 5.25).toFixed(2)} BP</span>
-          </div>
-        </Card>
-
-        <Button onClick={handleBuy} disabled={buyTonMutation.isPending} className="w-full">
-          {buyTonMutation.isPending ? 'Покупка...' : 'Купить'}
-        </Button>
+        {marketLoading ? (
+          <Card>
+            <p className="text-center text-white/60">Загрузка...</p>
+          </Card>
+        ) : marketOrders && marketOrders.length > 0 ? (
+          <OrderList
+            orders={marketOrders}
+            onBuy={handleOrderBuy}
+            isBuying={buyOrderMutation.isPending}
+          />
+        ) : (
+          <Card>
+            <p className="text-center text-white/60">Нет ордеров</p>
+          </Card>
+        )}
       </TabPanel>
 
       <TabPanel value="create">
-        <CreateOrderForm
-          onSuccess={() => {
-            void refetch();
-          }}
-        />
+        <CreateOrderButton onSubmit={handleCreateOrder} />
       </TabPanel>
 
       <TabPanel value="orders">
@@ -93,14 +85,7 @@ export const IndexPage = () => {
             <p className="text-center text-white/60">Загрузка...</p>
           </Card>
         ) : orders && orders.length > 0 ? (
-          orders.map((order) => (
-            <OrderCard
-              key={order.id}
-              order={order}
-              onBuy={handleOrderBuy}
-              isBuying={buyOrderMutation.isPending}
-            />
-          ))
+          <OrderList orders={orders} onBuy={handleOrderBuy} isBuying={buyOrderMutation.isPending} />
         ) : (
           <Card>
             <p className="text-center text-white/60">У вас пока нет ордеров</p>

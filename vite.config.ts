@@ -3,6 +3,7 @@ import { defineConfig } from 'vite';
 import mkcert from 'vite-plugin-mkcert';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
+import svgr from 'vite-plugin-svgr';
 import { resolve } from 'path';
 
 export default defineConfig({
@@ -23,7 +24,19 @@ export default defineConfig({
       },
     },
   },
-  plugins: [react(), tsconfigPaths(), tailwindcss(), process.env.HTTPS && mkcert()],
+  plugins: [
+    svgr({
+      svgrOptions: {
+        svgoConfig: {
+          plugins: [{ name: 'removeAttrs', params: { attrs: 'stroke' } }],
+        },
+      },
+    }),
+    react(),
+    tsconfigPaths(),
+    tailwindcss(),
+    process.env.HTTPS && mkcert(),
+  ].filter(Boolean),
   build: {
     target: 'esnext',
     minify: 'terser',
@@ -33,5 +46,4 @@ export default defineConfig({
     host: true,
     allowedHosts: true,
   },
-  assetsInclude: ['**/*.svg'],
 });

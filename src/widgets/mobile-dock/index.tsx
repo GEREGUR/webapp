@@ -4,7 +4,8 @@ import { cn } from '@/shared/lib/utils';
 
 export interface DockButton {
   to: string;
-  icon: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  icon: any;
   label: string;
 }
 
@@ -46,16 +47,7 @@ export const MobileDock: FC<MobileDockProps> = ({ buttons }) => {
                 isActive ? 'text-white' : 'text-white/40'
               )}
             >
-              <div
-                className="h-6 w-6"
-                style={{
-                  backgroundColor: 'currentColor',
-                  maskImage: `url(${button.icon})`,
-                  maskSize: 'contain',
-                  maskRepeat: 'no-repeat',
-                  maskPosition: 'center',
-                }}
-              />
+              <button.icon className="h-6 w-6" style={{ color: 'currentColor' }} />
               <span className="text-xs">{button.label}</span>
             </Link>
           );

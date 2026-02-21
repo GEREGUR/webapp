@@ -8,7 +8,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerDescription,
-} from '@/components/ui/drawer';
+} from '@/shared/ui/drawer';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import BpIcon from '@/shared/assets/bp.svg?react';
@@ -43,7 +43,7 @@ export const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalPr
     },
   });
 
-  const onFormSubmit = async (data: CreateOrderFormData) => {
+  const onFormSubmit = (data: CreateOrderFormData) => {
     setIsSubmitting(true);
     try {
       onSubmit(data);
@@ -70,7 +70,7 @@ export const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalPr
           </DrawerDescription>
         </DrawerHeader>
 
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 px-4 pb-4">
+        <form onSubmit={() => handleSubmit(onFormSubmit)} className="space-y-4 px-4 pb-4">
           <div className="grid grid-cols-1 gap-3">
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">

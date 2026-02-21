@@ -20,6 +20,8 @@ try {
   const { tgWebAppPlatform: platform } = launchParams;
   const debug = (launchParams.tgWebAppStartParam || '').includes('debug') || import.meta.env.DEV;
 
+  console.log(launchParams, 'LAUNCH PARAMS');
+
   await init({
     debug,
     eruda: debug && ['ios', 'android'].includes(platform),

@@ -1,6 +1,6 @@
 import { Tabs, TabList, Tab, TabPanel } from '@/shared/ui/tabs';
 import { Card } from '@/shared/ui/card';
-import { CreateOrderButton } from '@/shared/ui/create-order-modal';
+import { CreateOrderButton } from '@/features/create-order/ui';
 import {
   useOrders,
   useBuyOrder,

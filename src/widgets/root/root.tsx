@@ -2,10 +2,10 @@ import { type FC } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AppRoot } from '@telegram-apps/telegram-ui';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { miniApp, useLaunchParams, useSignal } from '@tma.js/sdk-react';
+import { useLaunchParams } from '@tma.js/sdk-react';
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v6';
 import { MobileDock } from '@/widgets/mobile-dock';
-import { Layout } from '@/shared/ui/layout';
+import { Layout } from '@/widgets/layout';
 import { ToastProvider } from '@/shared/ui/toast';
 import type { RouteObject } from '@/app/routes';
 import MarketIcon from '@/shared/assets/market.svg?react';
@@ -31,7 +31,6 @@ interface RootProps {
 
 export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' }) => {
   const lp = useLaunchParams();
-  const isDark = useSignal(miniApp.isDark);
   const platform = lp.platform || 'unknown';
 
   return (
@@ -39,7 +38,7 @@ export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' 
       <ToastProvider>
         <div className="min-h-screen w-screen overflow-x-hidden pb-16">
           <AppRoot
-            appearance={isDark ? 'dark' : 'light'}
+            appearance={'dark'}
             platform={['macos', 'ios'].includes(platform as string) ? 'ios' : 'base'}
           >
             <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>

@@ -10,16 +10,12 @@ interface LayoutProps {
 
 export const Layout: FC<LayoutProps> = ({ children, tonBalance, bpBalance }) => {
   const { pathname } = useLocation();
-  const hideHeaderLeftSide = pathname === '/profile';
+  const hideHeaderLeftSide = pathname === '/profile' || pathname === '/awards';
 
   return (
     <>
-      <Header
-        tonBalance={tonBalance}
-        bpBalance={bpBalance}
-        hideLeftSide={hideHeaderLeftSide}
-      />
-      <main className="pt-10">{children}</main>
+      <Header tonBalance={tonBalance} bpBalance={bpBalance} hideLeftSide={hideHeaderLeftSide} />
+      <main className="pt-10 lg:w-full">{children}</main>
     </>
   );
 };

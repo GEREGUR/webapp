@@ -11,31 +11,17 @@ import {
 import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
 
 export const IndexPage = () => {
-  const { data: orders, isLoading: ordersLoading, refetch } = useOrders();
+  const { data: orders, isLoading: ordersLoading } = useOrders();
   const { data: marketOrders, isLoading: marketLoading } = useMarketOrders();
   const buyOrderMutation = useBuyOrder();
   const createOrderMutation = useCreateOrder();
 
   const handleOrderBuy = (orderId: number) => {
-    buyOrderMutation.mutate(
-      { order_id: orderId, ton_amount: 0 },
-      {
-        onSuccess: () => {
-          void refetch();
-        },
-      }
-    );
+    buyOrderMutation.mutate({ order_id: orderId, ton_amount: 0 });
   };
 
   const handleCreateOrder = (data: { bp_amount: number }) => {
-    createOrderMutation.mutate(
-      { bp_amount: data.bp_amount },
-      {
-        onSuccess: () => {
-          void refetch();
-        },
-      }
-    );
+    createOrderMutation.mutate({ bp_amount: data.bp_amount });
   };
 
   return (

@@ -1,5 +1,5 @@
 import { type FC, type ReactNode } from 'react';
-import { Header } from '@/shared/ui/header';
+import { Header } from '@/widgets/header';
 
 interface LayoutProps {
   children: ReactNode;

@@ -63,20 +63,26 @@ export const IndexPage = () => {
             <p className="text-center text-white/60">Загрузка...</p>
           </Card>
         ) : marketOrders && marketOrders.length > 0 ? (
-          <OrderList
-            orders={marketOrders}
-            onBuy={handleOrderBuy}
-            isBuying={buyOrderMutation.isPending}
-          />
+          <>
+            <OrderList
+              orders={marketOrders}
+              onBuy={handleOrderBuy}
+              isBuying={buyOrderMutation.isPending}
+            />
+            <div className="mt-4">
+              <CreateOrderButton onSubmit={handleCreateOrder} />
+            </div>
+          </>
         ) : (
-          <Card>
-            <p className="text-center text-white/60">Нет ордеров</p>
-          </Card>
+          <>
+            <Card>
+              <p className="text-center text-white/60">Нет ордеров</p>
+            </Card>
+            <div className="mt-4">
+              <CreateOrderButton onSubmit={handleCreateOrder} />
+            </div>
+          </>
         )}
-      </TabPanel>
-
-      <TabPanel value="create">
-        <CreateOrderButton onSubmit={handleCreateOrder} />
       </TabPanel>
 
       <TabPanel value="orders">

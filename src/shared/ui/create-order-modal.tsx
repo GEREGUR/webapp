@@ -3,12 +3,12 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/shared/ui/dialog';
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+} from '@/components/ui/drawer';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import BpIcon from '@/shared/assets/bp.svg?react';
@@ -46,7 +46,7 @@ export const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalPr
   const onFormSubmit = async (data: CreateOrderFormData) => {
     setIsSubmitting(true);
     try {
-      await onSubmit(data);
+      onSubmit(data);
       reset();
       onClose();
     } finally {
@@ -60,17 +60,17 @@ export const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalPr
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogContent className="sm:max-w-[400px]">
-        <DialogHeader>
-          <DialogTitle>Создать ордер</DialogTitle>
-          <DialogDescription>
+    <Drawer open={open} onClose={handleClose}>
+      <DrawerContent className="mx-auto sm:max-w-[400px]">
+        <DrawerHeader>
+          <DrawerTitle>Создать ордер</DrawerTitle>
+          <DrawerDescription>
             После создания предложение станет доступно для покупки другими пользователями, вы
             сможете выкупить его досрочно в разделе "Мои ордеры"
-          </DialogDescription>
-        </DialogHeader>
+          </DrawerDescription>
+        </DrawerHeader>
 
-        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4">
+        <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-4 px-4 pb-4">
           <div className="grid grid-cols-1 gap-3">
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -136,8 +136,8 @@ export const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalPr
             </div>
           </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </DrawerContent>
+    </Drawer>
   );
 };
 

@@ -5,39 +5,55 @@ import { Card } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { OrderCard } from '@/shared/ui/order-card';
 import { CreateOrderForm } from '@/shared/ui/create-order-form';
-import { useOrders } from '@/entities/order';
+import { useOrders, useBuyTon, useBuyOrder } from '@/entities/order';
+import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
 
 export const IndexPage = () => {
   const [sliderValue, setSliderValue] = useState([50]);
-  const [isLoading, setIsLoading] = useState(false);
   const { data: orders, isLoading: ordersLoading, refetch } = useOrders();
+  const buyTonMutation = useBuyTon();
+  const buyOrderMutation = useBuyOrder();
 
   const handleBuy = () => {
-    setIsLoading(true);
-    console.log('Buy', sliderValue[0], 'TON');
-    setTimeout(() => setIsLoading(false), 1000);
+    buyTonMutation.mutate(
+      { ton_amount: sliderValue[0] },
+      {
+        onSuccess: () => {
+          setSliderValue([50]);
+        },
+      }
+    );
   };
 
   const handleOrderBuy = (orderId: number) => {
-    console.log('Buy from order', orderId);
+    buyOrderMutation.mutate(
+      { order_id: orderId, ton_amount: 0 },
+      {
+        onSuccess: () => {
+          void refetch();
+        },
+      }
+    );
   };
 
   return (
     <Tabs defaultTab="market">
-      <TabList className="mb-4 flex gap-1 p-1">
-        <Tab
-          value="market"
-          className="flex-1 rounded px-4 py-2 text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white/20"
-        >
-          Рынок
-        </Tab>
-        <Tab
-          value="orders"
-          className="flex-1 rounded px-4 py-2 text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white/20"
-        >
-          Мои ордера
-        </Tab>
-      </TabList>
+      <MaxWidthWrapper>
+        <TabList className="mb-4 flex gap-1">
+          <Tab
+            value="market"
+            className="flex-1 rounded text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white/20"
+          >
+            Рынок
+          </Tab>
+          <Tab
+            value="orders"
+            className="flex-1 rounded text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white/20"
+          >
+            Мои ордера
+          </Tab>
+        </TabList>
+      </MaxWidthWrapper>
 
       <TabPanel value="market">
         <Card className="mb-4">
@@ -58,8 +74,8 @@ export const IndexPage = () => {
           </div>
         </Card>
 
-        <Button onClick={handleBuy} disabled={isLoading} className="w-full">
-          {isLoading ? 'Покупка...' : 'Купить'}
+        <Button onClick={handleBuy} disabled={buyTonMutation.isPending} className="w-full">
+          {buyTonMutation.isPending ? 'Покупка...' : 'Купить'}
         </Button>
       </TabPanel>
 
@@ -77,7 +93,14 @@ export const IndexPage = () => {
             <p className="text-center text-white/60">Загрузка...</p>
           </Card>
         ) : orders && orders.length > 0 ? (
-          orders.map((order) => <OrderCard key={order.id} order={order} onBuy={handleOrderBuy} />)
+          orders.map((order) => (
+            <OrderCard
+              key={order.id}
+              order={order}
+              onBuy={handleOrderBuy}
+              isBuying={buyOrderMutation.isPending}
+            />
+          ))
         ) : (
           <Card>
             <p className="text-center text-white/60">У вас пока нет ордеров</p>

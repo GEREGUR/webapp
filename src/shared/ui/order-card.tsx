@@ -5,6 +5,7 @@ import type { Order } from '@/entities/order';
 interface OrderCardProps {
   order: Order;
   onBuy?: (orderId: number) => void;
+  isBuying?: boolean;
 }
 
 const statusColors: Record<string, string> = {
@@ -19,7 +20,7 @@ const statusLabels: Record<string, string> = {
   CLOSED: 'Закрыт',
 };
 
-export const OrderCard = ({ order, onBuy }: OrderCardProps) => {
+export const OrderCard = ({ order, onBuy, isBuying }: OrderCardProps) => {
   const progress =
     order.initial_ton_amount > 0
       ? ((order.initial_ton_amount - order.current_ton_amount) / order.initial_ton_amount) * 100
@@ -70,8 +71,13 @@ export const OrderCard = ({ order, onBuy }: OrderCardProps) => {
             </div>
 
             {order.current_ton_amount > 0 && onBuy && (
-              <Button size="sm" className="mt-2 w-full" onClick={() => onBuy(order.id)}>
-                Купить {order.current_ton_amount} TON
+              <Button
+                size="sm"
+                className="mt-2 w-full"
+                onClick={() => onBuy(order.id)}
+                disabled={isBuying}
+              >
+                {isBuying ? 'Покупка...' : `Купить ${order.current_ton_amount} TON`}
               </Button>
             )}
           </>

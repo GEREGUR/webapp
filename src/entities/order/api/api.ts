@@ -62,3 +62,15 @@ export const useSelfBuy = () => {
     },
   });
 };
+
+export interface BuyTonRequest {
+  ton_amount: number;
+}
+
+export const useBuyTon = () => {
+  return useMutation({
+    mutationFn: async (data: BuyTonRequest): Promise<void> => {
+      await api.post('/order/buy_ton', data);
+    },
+  });
+};

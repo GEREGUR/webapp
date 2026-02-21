@@ -6,9 +6,5 @@ interface PageProps {
 }
 
 export const Page: FC<PageProps> = ({ children }) => {
-  return (
-    <div style={{ padding: 16 }}>
-      {children}
-    </div>
-  );
+  return <div className="p-4">{children}</div>;
 };

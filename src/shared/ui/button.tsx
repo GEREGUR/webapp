@@ -22,7 +22,7 @@ export const Button = ({
             variant === 'primary',
           'bg-white/20 text-white hover:brightness-110 active:scale-[0.98] disabled:bg-[#2F3033] disabled:text-white':
             variant === 'secondary',
-          'bg-transparent text-white hover:bg-white/10': variant === 'ghost',
+          'bg-[#232027] text-white hover:brightness-125 active:scale-[0.98]': variant === 'ghost',
           'bg-[#9b4dca] text-white hover:brightness-110 active:scale-[0.98] disabled:bg-[#2F3033]':
             variant === 'purple',
         },

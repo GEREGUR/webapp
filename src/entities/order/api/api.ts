@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { api } from '@/shared/api';
+import { api, getRequiredUserId } from '@/shared/api';
 import type { Order, CreateOrderRequest, BuyOrderRequest } from './api.dto';
 import { MOCK_ORDERS } from './mock';
 
@@ -17,8 +17,17 @@ export const useMarketOrders = () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         return MOCK_ORDERS;
       }
-      const response = await api.get<Order[]>('/order/all');
-      return response.data;
+      try {
+        const response = await api.get<Order[]>('/order/self_orders', {
+          params: {
+            user_id: getRequiredUserId(),
+          },
+        });
+        return response.data;
+      } catch (error) {
+        console.error('API Error useMarketOrders:', error);
+        throw error;
+      }
     },
   });
 };
@@ -31,17 +40,29 @@ export const useOrders = () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         return MOCK_ORDERS.slice(0, 3);
       }
-      const response = await api.get<Order[]>('/order/my');
-      return response.data;
+      try {
+        const response = await api.get<Order[]>('/order/self_orders', {
+          params: {
+            user_id: getRequiredUserId(),
+          },
+        });
+        return response.data;
+      } catch (error) {
+        console.error('API Error useOrders:', error);
+        throw error;
+      }
     },
   });
 };
 
 export const useCreateOrder = () => {
   return useMutation({
-    mutationFn: async (data: CreateOrderRequest): Promise<Order> => {
-      const response = await api.post<Order>('/order/create', data);
-      return response.data;
+    mutationFn: async (data: CreateOrderRequest): Promise<void> => {
+      await api.post('/order/create', data, {
+        params: {
+          user_id: getRequiredUserId(),
+        },
+      });
     },
     onSuccess: (_data, _variables, _onMutateResult, context) => {
       void context.client.invalidateQueries({ queryKey: QUERY_KEYS.orders });
@@ -53,7 +74,11 @@ export const useCreateOrder = () => {
 export const useBuyOrder = () => {
   return useMutation({
     mutationFn: async (data: BuyOrderRequest): Promise<void> => {
-      await api.post('/order/buy', data);
+      await api.post('/order/buy', data, {
+        params: {
+          user_id: getRequiredUserId(),
+        },
+      });
     },
     onSuccess: (_data, _variables, _onMutateResult, context) => {
       void context.client.invalidateQueries({ queryKey: QUERY_KEYS.orders });

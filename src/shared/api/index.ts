@@ -1,5 +1,12 @@
 import axios from 'axios';
-import { retrieveRawInitData } from '@tma.js/sdk-react';
+import { retrieveLaunchParams, retrieveRawInitData } from '@tma.js/sdk-react';
+
+interface TelegramUserData {
+  id: number;
+  first_name?: string;
+  username?: string;
+  photo_url?: string;
+}
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_PROXY_TARGET + import.meta.env.VITE_API_URL as string,
@@ -9,16 +16,45 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  try {
-    const initDataRaw = retrieveRawInitData();
+  const initData = retrieveRawInitData();
 
-    if (initDataRaw) {
-      config.headers['x-telegram-data'] = initDataRaw;
-      config.headers['ngrok-skip-browser-warning'] = 'true';
-    }
-  } catch (err) {
-    console.error(err);
+  if (initData) {
+    config.headers['x-telegram-data'] = initData;
   }
+
+  config.headers['ngrok-skip-browser-warning'] = 'true';
 
   return config;
 });
+
+export const getTelegramUserData = (): TelegramUserData | null => {
+  try {
+    const launchParams = retrieveLaunchParams();
+    const user = launchParams.tgWebAppData?.user;
+    if (!user || typeof user.id !== 'number') {
+      return null;
+    }
+    return {
+      id: user.id,
+      first_name: user.first_name,
+      username: user.username,
+      photo_url: user.photo_url,
+    };
+  } catch {
+    return null;
+  }
+};
+
+export const getRequiredUserId = (): number => {
+  const telegramUser = getTelegramUserData();
+  if (telegramUser?.id) {
+    return telegramUser.id;
+  }
+
+  if (import.meta.env.DEV) {
+    return 1;
+  }
+
+  console.warn('No Telegram user data available, using default user ID');
+  return 1;
+};

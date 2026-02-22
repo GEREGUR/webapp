@@ -73,7 +73,12 @@ type TonAmountCardProps = {
 
 export const TonAmountCard = ({ value, onChange, tonAmount, className }: TonAmountCardProps) => {
   return (
-    <div className={cn('flex h-[50px] items-center rounded-[10px] bg-[#232027] p-4', className)}>
+    <div
+      className={cn(
+        'relative z-10 flex h-[50px] items-center rounded-[10px] bg-[#232027] p-4',
+        className
+      )}
+    >
       <div className="flex flex-1 items-center">
         <AmountSlider value={value} onChange={onChange} />
       </div>

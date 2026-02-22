@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { X } from 'lucide-react';
 import {
   Drawer,
   DrawerContent,
@@ -88,9 +89,20 @@ export const BuyOrderDrawer = ({
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : handleClose())}>
       <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
         <DrawerHeader>
-          <DrawerTitle className="font-sans text-2xl leading-[22.32px] font-medium text-white">
-            Мгновенный выкуп #{lotId}
-          </DrawerTitle>
+          <div className="flex items-center justify-between">
+            <DrawerTitle className="font-sans text-2xl leading-[22.32px] font-medium text-white">
+              Мгновенный выкуп #{lotId}
+            </DrawerTitle>
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
+              onClick={handleClose}
+              aria-label="Закрыть"
+            >
+              <X className="h-6 w-6 stroke-2" />
+            </Button>
+          </div>
           <DrawerDescription className="font-sans text-[15px] leading-[18.4px] font-light text-white/60">
             После выкупа собственного предложения на ваш баланс будет зачислен TON с удержанием
             комиссии (15%) за мгновенную ликвидность.
@@ -124,7 +136,7 @@ export const BuyOrderDrawer = ({
                 <Input
                   {...register('regularTonAmount')}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pl-10 text-white placeholder:text-white/40"
+                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-white placeholder:text-white/40"
                 />
               </div>
             </div>
@@ -142,7 +154,7 @@ export const BuyOrderDrawer = ({
                 <Input
                   {...register('instantBpAmount')}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pl-10 text-white placeholder:text-white/40"
+                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-[#A6FF8B] placeholder:text-white/40"
                 />
               </div>
             </div>
@@ -155,7 +167,7 @@ export const BuyOrderDrawer = ({
           )}
 
           <div className="pt-2">
-            <p className="mb-3 text-center text-sm font-medium text-[#FFE88B]">
+            <p className="mb-3 text-center text-sm font-medium text-balance text-[#FFE88B]">
               Подтвердите выкуп предложения, данное действие невозможно отменить.
             </p>
 

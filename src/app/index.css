@@ -27,6 +27,7 @@
   --color-button-bp-dark: #3456ac;
   --font-family-sans:
     'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family-bebas: 'Bebas Neue', sans-serif;
 }
 
 @layer base {
@@ -67,6 +68,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-family-sans);
   }
 }
 
@@ -154,4 +156,55 @@ body::before {
 
 :root {
   --radius: 0.625rem;
+}
+
+.font-bebas-cyrillic {
+  font-family: var(--font-family-bebas);
+}
+
+@keyframes bp-overlay-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bp-mascot-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes bp-claimed-pop {
+  0% {
+    transform: scale(0.78);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.bp-overlay-panel {
+  animation: bp-overlay-in 280ms ease-out;
+}
+
+.bp-overlay-mascot {
+  animation: bp-mascot-float 2.2s ease-in-out infinite;
+}
+
+.bp-claimed-slot {
+  animation: bp-claimed-pop 420ms ease-out;
 }

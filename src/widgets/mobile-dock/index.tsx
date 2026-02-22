@@ -7,6 +7,7 @@ interface DockButton {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any;
   label: string;
+  disabled?: boolean;
 }
 
 interface MobileDockProps {
@@ -42,7 +43,16 @@ export const MobileDock: FC<MobileDockProps> = ({ buttons }) => {
       <div className="flex items-center justify-around">
         {buttons.map((button) => {
           const isActive = location.pathname === button.to;
-          return (
+          const isDisabled = button.disabled;
+          return isDisabled ? (
+            <div
+              key={button.to}
+              className={cn('flex flex-col items-center gap-1 p-2', 'text-white/20')}
+            >
+              <button.icon className="h-6 w-6" style={{ color: 'currentColor' }} />
+              <span className="text-xs">{button.label}</span>
+            </div>
+          ) : (
             <Link
               key={button.to}
               to={button.to}

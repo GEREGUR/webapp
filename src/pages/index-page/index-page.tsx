@@ -81,16 +81,7 @@ export const IndexPage = () => {
 
       <TabPanel value="market">
         <MaxWidthWrapper disableRightPadding>
-          <LiveCarousel
-            initialItems={[
-              { id: 1, status: 'bought' },
-              { id: 2, status: 'active' },
-              { id: 3, status: 'bought' },
-              { id: 4, status: 'active' },
-              { id: 5, status: 'bought' },
-            ]}
-            renderItem={(item) => <LiveWinCard {...item} />}
-          />
+          <LiveCarousel renderItem={(item) => <LiveWinCard {...item} />} />
         </MaxWidthWrapper>
         <div className="px-4 md:px-12">
           <div className="my-2">
@@ -99,7 +90,7 @@ export const IndexPage = () => {
               orderCount={marketOrders?.length ?? 0}
             />
           </div>
-          <div className="mb-3 flex items-center justify-between gap-4">
+          <div className="mb-3 flex items-center justify-between gap-2.5">
             <TonAmountCard
               value={sliderValue}
               onChange={setSliderValue}

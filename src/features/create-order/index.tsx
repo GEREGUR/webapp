@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { X } from 'lucide-react';
 import {
   Drawer,
   DrawerContent,
@@ -69,9 +70,20 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : handleClose())}>
       <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
         <DrawerHeader>
-          <DrawerTitle className="font-sans text-2xl leading-[22.32px] font-medium text-white">
-            Создать ордер
-          </DrawerTitle>
+          <div className="flex items-center justify-between">
+            <DrawerTitle className="font-sans text-2xl leading-[22.32px] font-medium text-white">
+              Создать ордер
+            </DrawerTitle>
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
+              onClick={handleClose}
+              aria-label="Закрыть"
+            >
+              <X className="h-6 w-6 stroke-2" />
+            </Button>
+          </div>
           <DrawerDescription className="font-sans text-[15px] leading-[18.4px] font-light text-white/60">
             После создания предложение станет доступно для покупки другими пользователями, вы
             сможете выкупить его досрочно в разделе "Мои ордеры"

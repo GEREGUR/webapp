@@ -11,10 +11,16 @@ export interface UserProfile {
 
 export interface Transaction {
   id: number;
-  type: 'CREATE_ORDER' | 'BUY_ORDER' | 'REFERRAL' | 'PAYMENT' | 'WITHDRAWAL' | 'BATTLE_PASS';
+  type:
+    | 'CREATE_ORDER'
+    | 'BUY_ORDER'
+    | 'BUY_ORDER_OTHER_USER'
+    | 'REFERRAL'
+    | 'PAYMENT'
+    | 'WITHDRAWAL'
+    | 'BATTLE_PASS';
   currency: 'BP' | 'TON';
   value: number;
   obj_id: number | null;
-  date: string;
+  create_date: number;
 }
-

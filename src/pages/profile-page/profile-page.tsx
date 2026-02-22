@@ -2,6 +2,7 @@ import { type FC, useState } from 'react';
 import { Page } from '@/pages/page';
 import { Avatar } from '@/shared/ui/avatar';
 import { Button } from '@/shared/ui/button';
+import { Card } from '@/shared/ui/card';
 import {
   Drawer,
   DrawerContent,
@@ -16,6 +17,7 @@ import { useProfile } from '@/entities/user';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points.svg?react';
 import { ArrowDown, ArrowUp, Copy, History, UserPlus, Users, WalletMinimal, X } from 'lucide-react';
+import { BattlePassPromoCard } from '@/features/battle-pass-promo';
 
 interface DepositBalanceDrawerProps {
   open: boolean;
@@ -35,15 +37,14 @@ const DepositBalanceDrawer = ({
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
       <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
-        <DrawerHeader className="gap-2.5 pb-2">
+        <DrawerHeader className="gap-4 pb-2">
           <div className="flex items-center justify-between">
             <DrawerTitle className="font-sans text-[22px] leading-[1.1] font-medium text-white">
               Пополнение баланса
             </DrawerTitle>
             <Button
               type="button"
-              variant="ghost"
-              className="h-8 w-8 rounded-[10px] p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent p-0 text-white hover:bg-white/10"
               onClick={onClose}
               aria-label="Закрыть"
             >
@@ -73,8 +74,8 @@ const DepositBalanceDrawer = ({
             </Button>
           </div>
 
-          <div>
-            <p className="mb-2 text-[12px] font-semibold text-white">MEMO</p>
+          <div className="pt-1">
+            <p className="mb-2 text-[15px] font-semibold text-white">MEMO</p>
             <div className="mb-2 flex h-[52px] items-center justify-center rounded-[12px] bg-[#232027] px-4 text-[16px] font-semibold text-white">
               {memo}
             </div>
@@ -89,7 +90,7 @@ const DepositBalanceDrawer = ({
             </Button>
           </div>
 
-          <div className="space-y-2 pt-1 text-center text-[14px] leading-[1.1] font-semibold text-[#FFD700]">
+          <div className="space-y-2 pt-1 text-center text-[15px] leading-[1.1] font-semibold text-[#FFD700]">
             <p>Минимальная сумма пополнения: 1 TON</p>
             <p>
               Отправка другой монеты в другой сети без корректного MEMO приведёт к безвозвратной
@@ -136,7 +137,7 @@ const WithdrawBalanceDrawer = ({
             <Button
               type="button"
               variant="ghost"
-              className="h-8 w-8 rounded-[10px] p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
               onClick={onClose}
               aria-label="Закрыть"
             >
@@ -163,7 +164,7 @@ const WithdrawBalanceDrawer = ({
                 value={amount}
                 onChange={(event) => onAmountChange(event.target.value)}
                 placeholder={`Не более ${maxTon}`}
-                className="h-[50px] rounded-[12px] border-none bg-[#232027] pr-14 pl-10 text-[20px] font-medium text-white placeholder:text-white/40"
+                className="h-[50px] rounded-[12px] border-none bg-[#232027] pr-14 pl-10 text-center text-[20px] font-medium text-white placeholder:text-white/40"
               />
               <button
                 type="button"
@@ -183,11 +184,11 @@ const WithdrawBalanceDrawer = ({
               value={address}
               onChange={(event) => onAddressChange(event.target.value)}
               placeholder="Введите сюда адрес"
-              className="h-[50px] rounded-[12px] border-none bg-[#232027] text-[18px] font-medium text-white placeholder:text-white/40"
+              className="h-[50px] rounded-[12px] border-none bg-[#232027] text-center text-[18px] font-medium text-white placeholder:text-white/40"
             />
           </div>
 
-          <p className="pt-1 text-center text-[14px] leading-[1.1] font-semibold text-[#FFE88B]">
+          <p className="pt-6 text-center text-[14px] leading-[1.1] font-semibold text-[#FFE88B]">
             Подтвердите вывод средств, данное действие невозможно отменить.
           </p>
 
@@ -240,7 +241,7 @@ const WalletHistoryDrawer = ({ open, onClose, items }: WalletHistoryDrawerProps)
             <Button
               type="button"
               variant="ghost"
-              className="h-8 w-8 rounded-[10px] p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
               onClick={onClose}
               aria-label="Закрыть"
             >
@@ -344,9 +345,9 @@ export const ProfilePage: FC = () => {
   if (!profile) {
     return (
       <Page back>
-        <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+        <Card className="relative z-10 !border-[#272525] !bg-[#131214] opacity-100">
           <p className="text-center text-white/60">Не удалось загрузить профиль</p>
-        </div>
+        </Card>
       </Page>
     );
   }
@@ -365,8 +366,8 @@ export const ProfilePage: FC = () => {
         <p className="text-white/60">@{profile.username}</p>
       </div>
 
-      <div className="mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] bg-[#131214] p-3">
-        <div className="rounded-[16px] border border-[#272525] bg-[#131214] p-2">
+      <div className="relative z-10 mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-3 opacity-100">
+        <div className="rounded-[16px] border border-[#272525] !bg-[#131214] p-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] border border-[#3A373E] bg-[#232027] px-2.5 py-1.5">
               <TonIcon className="h-4 w-4" />
@@ -405,7 +406,7 @@ export const ProfilePage: FC = () => {
           </Button>
         </div>
 
-        <div className="flex">
+        <div className="flex items-center gap-2">
           <Button
             type="button"
             className="inline-flex h-[41px] flex-1 items-center justify-center rounded-[12px] bg-white text-[13px] font-semibold text-black hover:bg-white/90"
@@ -426,7 +427,11 @@ export const ProfilePage: FC = () => {
         </div>
       </div>
 
-      <div className="mx-auto mt-3 flex h-[194px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] bg-[#131214] p-3">
+      <div className="pt-6 pb-3">
+        <BattlePassPromoCard />
+      </div>
+
+      <div className="relative z-10 mx-auto mt-3 flex h-[194px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-3 opacity-100">
         <h2 className="max-w-[300px] text-[15px] leading-[1.25] font-semibold text-balance text-white">
           Приглашайте друзей и зарабатывайте 10% от их сделок
         </h2>
@@ -471,17 +476,6 @@ export const ProfilePage: FC = () => {
           </Button>
         </div>
       </div>
-
-      {profile.wallet_address && (
-        <div className="mx-auto mt-3 w-full max-w-[370px] rounded-[10px] border border-[#272525] bg-[#131214] p-4">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-sm text-white/60">Кошелек</span>
-            <span className="text-sm font-medium text-white">
-              {profile.wallet_address.slice(0, 6)}...{profile.wallet_address.slice(-4)}
-            </span>
-          </div>
-        </div>
-      )}
 
       <DepositBalanceDrawer
         open={isDepositOpen}

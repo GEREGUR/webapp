@@ -15,7 +15,6 @@ api.interceptors.request.use((config) => {
 
     if (initData) {
       config.headers["x_telegram_data"] = initData;
-      console.log(initData, config, "initData");
     }
   } catch (err) {
     console.error(err);

@@ -32,11 +32,11 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
       />
 
       <div className="ml-3 min-w-0">
-        <p className="truncate text-sm font-semibold text-white">@{order.owner.username}</p>
+        <p className="truncate text-sm font-semibold text-white">{order.owner.username}</p>
         <p className="mt-0.5 text-xs text-white/60">{formatOrderTimestamp(order.create_date)}</p>
       </div>
 
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex flex-1 items-center justify-center">
         <div className="flex items-center gap-1.5">
           <TonIcon className="size-4 text-white" />
           <span className="text-sm font-medium text-white">{order.current_ton_amount}</span>

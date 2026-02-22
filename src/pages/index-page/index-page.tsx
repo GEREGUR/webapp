@@ -57,18 +57,18 @@ export const IndexPage = () => {
 
   return (
     <Tabs defaultTab="market">
-      <div className="pt-4">
+      <div className="pt-6">
         <MaxWidthWrapper>
-          <TabList className="mb-3 flex gap-1">
+          <TabList className="mb-5 flex gap-2">
             <Tab
               value="market"
-              className="text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white"
+              className="transition-colors"
             >
               Рынок
             </Tab>
             <Tab
               value="orders"
-              className="text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white"
+              className="transition-colors"
             >
               Мои ордера
             </Tab>

@@ -59,17 +59,11 @@ export const IndexPage = () => {
     <Tabs defaultTab="market">
       <div className="pt-6">
         <MaxWidthWrapper>
-          <TabList className="mb-5 flex gap-2">
-            <Tab
-              value="market"
-              className="transition-colors"
-            >
+          <TabList className="mb-2 flex gap-2">
+            <Tab value="market" className="transition-colors">
               Рынок
             </Tab>
-            <Tab
-              value="orders"
-              className="transition-colors"
-            >
+            <Tab value="orders" className="transition-colors">
               Мои ордера
             </Tab>
           </TabList>
@@ -88,18 +82,14 @@ export const IndexPage = () => {
               onBuy={handleOrderBuy}
               isBuying={buyOrderMutation.isPending}
             />
-            <div className="mt-4">
-              <CreateOrderButton onSubmit={handleCreateOrder} />
-            </div>
+            <CreateOrderButton onSubmit={handleCreateOrder} />
           </>
         ) : (
           <>
             <Card>
               <p className="text-center text-white/60">Нет ордеров</p>
             </Card>
-            <div className="mt-4">
-              <CreateOrderButton onSubmit={handleCreateOrder} />
-            </div>
+            <CreateOrderButton onSubmit={handleCreateOrder} />
           </>
         )}
       </TabPanel>

@@ -186,9 +186,11 @@ export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="w-full">
-        Создать предложение
-      </Button>
+      <div className="flex justify-center pt-2">
+        <Button onClick={() => setOpen(true)} className="bg-blue-dark w-fit">
+          Создать предложение
+        </Button>
+      </div>
       <CreateOrderModal open={open} onClose={() => setOpen(false)} onSubmit={handleSubmit} />
     </>
   );

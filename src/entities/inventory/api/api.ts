@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { api } from '@/shared/api';
 import type { InventoryResponse } from './api.dto';
 
-export const QUERY_KEYS = {
+const QUERY_KEYS = {
   inventory: ['inventory'] as const,
 };
 

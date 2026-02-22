@@ -1,4 +1,4 @@
-export type TaskStatus = 'ACTIVE' | 'COMPLETED' | 'REWARDED';
+type TaskStatus = 'ACTIVE' | 'COMPLETED' | 'REWARDED';
 export type TaskType = 'STORY' | 'BIO' | 'NICK' | 'DEFAULT';
 
 export interface TaskProgress {

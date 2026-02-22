@@ -1,7 +1,7 @@
 import { useActivateTask, useClaimTaskReward } from '../api';
 import { useToast } from '@/shared/ui/toast';
 
-export interface UseTaskActionsResult {
+interface UseTaskActionsResult {
   activateTask: (taskId: number) => void;
   claimReward: (taskId: number) => void;
   isPending: boolean;
@@ -15,14 +15,14 @@ export const useTaskActions = (): UseTaskActionsResult => {
   const activateTask = (taskId: number) => {
     activateTaskMutation.mutate(taskId, {
       onSuccess: () => showToast('Задание активировано', 'success'),
-      onError: () => showToast('Ошибка', 'error'),
+      onError: () => showToast('Не удалось активировать задание', 'error'),
     });
   };
 
   const claimReward = (taskId: number) => {
     claimRewardMutation.mutate(taskId, {
       onSuccess: () => showToast('Награда получена!', 'success'),
-      onError: () => showToast('Ошибка', 'error'),
+      onError: () => showToast('Не удалось получить награду', 'error'),
     });
   };
 

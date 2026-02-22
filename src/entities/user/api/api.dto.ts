@@ -18,13 +18,3 @@ export interface Transaction {
   date: string;
 }
 
-export interface WalletHistoryResponse {
-  items: Transaction[];
-  offset: number;
-  limit: number;
-  total: number;
-}
-
-export interface BindWalletRequest {
-  address: string;
-}

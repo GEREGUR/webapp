@@ -60,13 +60,13 @@ const DepositBalanceDrawer = ({
         <div className="space-y-3.5 px-4 pb-5">
           <div>
             <p className="mb-2 text-[15px] font-semibold text-white">Адрес кошелька</p>
-            <div className="mb-2 flex h-[52px] items-center rounded-[12px] bg-[#232027] px-4 text-[13px] font-medium text-white">
+            <div className="mb-2 flex h-[40px] items-center rounded-[12px] bg-[#232027] px-4 text-[12px] font-medium text-white">
               <span className="w-full truncate">{walletAddress}</span>
             </div>
             <Button
               type="button"
               variant="secondary"
-              className="inline-flex h-[50px] w-full items-center justify-center rounded-[12px] bg-[#45414F] text-[15px] font-semibold text-white hover:brightness-110"
+              className="inline-flex h-[40px] w-full items-center justify-center rounded-[12px] bg-[#45414F] text-[15px] font-semibold text-white hover:brightness-110"
               onClick={() => onCopy(walletAddress, 'Адрес')}
             >
               <Copy className="mr-2 h-4 w-4 stroke-2" />
@@ -75,14 +75,14 @@ const DepositBalanceDrawer = ({
           </div>
 
           <div className="pt-1">
-            <p className="mb-2 text-[15px] font-semibold text-white">MEMO</p>
-            <div className="mb-2 flex h-[52px] items-center justify-center rounded-[12px] bg-[#232027] px-4 text-[16px] font-semibold text-white">
+            <p className="mb-2 text-[12px] font-semibold text-white">MEMO</p>
+            <div className="mb-2 flex h-[40px] items-center justify-center rounded-[12px] bg-[#232027] px-4 text-[16px] font-semibold text-white">
               {memo}
             </div>
             <Button
               type="button"
               variant="secondary"
-              className="inline-flex h-[50px] w-full items-center justify-center rounded-[12px] bg-[#45414F] text-[15px] font-semibold text-white hover:brightness-110"
+              className="inline-flex h-[40px] w-full items-center justify-center rounded-[12px] bg-[#45414F] text-[15px] font-semibold text-white hover:brightness-110"
               onClick={() => onCopy(memo, 'MEMO')}
             >
               <Copy className="mr-2 h-4 w-4 stroke-2" />

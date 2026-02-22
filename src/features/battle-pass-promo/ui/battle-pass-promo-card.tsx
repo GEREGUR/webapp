@@ -39,8 +39,8 @@ export const BattlePassPromoCard: FC = () => {
         alt="Background ornament "
       />
 
-      <div className="absolute top-4 right-[14px] z-10 flex max-w-[135px] flex-col items-center">
-        <p className="font-bebas-cyrillic text-[26px] leading-7 font-normal text-white uppercase">
+      <div className="absolute top-4 right-[14px] z-10 flex max-w-[148px] flex-col items-center">
+        <p className="font-bebas-cyrillic text-[27px] leading-7 font-normal text-white uppercase">
           баттлпас
         </p>
         <Button

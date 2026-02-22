@@ -1,11 +1,9 @@
 import { type FC } from 'react';
 import { cn } from '@/shared/lib/utils';
 
-const LEVEL_STYLES =
-  'font-[SF_Pro_Display] font-medium text-[14px] leading-[20.94px] tracking-[0] align-middle';
+const LEVEL_STYLES = 'font-medium text-[14px] leading-[20.94px] tracking-[0] align-middle';
 
-const EXP_STYLES =
-  'font-[SF_Pro_Display] font-medium text-[17px] leading-[20.94px] tracking-[0] align-middle text-black';
+const EXP_STYLES = 'font-medium text-[17px] leading-[20.94px] tracking-[0] align-middle text-black';
 
 export interface BattlePassProgressProps {
   currentLevel: number;

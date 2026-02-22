@@ -151,8 +151,14 @@ export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, renderItem }: Props) 
 
   useEffect(() => {
     const wsUrl = getWsUrl();
+
+    // Fallback to mock data after timeout if WebSocket fails
+    const fallbackTimeout = setTimeout(() => {
+      setItems((current) => (current.length === 0 ? MOCK_LIVE_ITEMS : current));
+    }, 3000);
+
     if (!wsUrl) {
-      return;
+      return () => clearTimeout(fallbackTimeout);
     }
 
     let socket: WebSocket | null = null;
@@ -196,6 +202,7 @@ export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, renderItem }: Props) 
 
     return () => {
       isUnmounted = true;
+      clearTimeout(fallbackTimeout);
       if (reconnectTimeoutId) {
         window.clearTimeout(reconnectTimeoutId);
       }

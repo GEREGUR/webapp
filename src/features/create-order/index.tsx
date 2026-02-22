@@ -91,9 +91,11 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
                   Введите количество BP
                 </span>
                 <div className="flex items-center gap-1">
+                  <TonIcon className="size-3 text-white" />
+                  <span className="font-sans text-xs font-normal text-white">1</span>
+                  <span className="font-sans text-xs font-normal text-white">=</span>
                   <BpIcon className="size-4 text-[#C37CE2]" />
-                  <TonIcon className="size-4 text-white" />
-                  <span className="font-sans text-xs font-normal text-white">= 1 TON</span>
+                  <span className="font-sans text-xs font-normal text-white">1</span>
                 </div>
               </div>
               <div className="relative">

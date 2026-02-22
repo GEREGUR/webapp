@@ -23,8 +23,8 @@ export const BattlePassProgress: FC<BattlePassProgressProps> = ({
   className,
 }) => {
   return (
-    <div className={cn('flex flex-col gap-3', className)}>
-      <div className="flex justify-between pb-2">
+    <div className={cn('flex flex-col gap-px', className)}>
+      <div className="flex justify-between">
         <span className={cn(LEVEL_STYLES, 'text-[#5F81D8]')}>LVL {currentLevel}</span>
         <span className={cn(LEVEL_STYLES, 'text-[#5F81D8]')}>LVL {nextLevel}</span>
       </div>

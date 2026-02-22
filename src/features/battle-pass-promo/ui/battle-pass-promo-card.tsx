@@ -19,7 +19,7 @@ export const BattlePassPromoCard: FC = () => {
           баттлпас
         </p>
         <Button
-          className="h-[26px] w-full rounded-[6px] bg-[#3456AC] px-0 py-0 text-[14px] font-bold text-white"
+          className="bg-button-bp-dark h-[26px] w-full rounded-[6px] px-0 py-0 text-[14px] font-bold text-white"
           variant="primary"
         >
           ПОЛУЧИТЬ

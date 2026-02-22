@@ -6,5 +6,5 @@ interface PageProps {
 }
 
 export const Page: FC<PageProps> = ({ children }) => {
-  return <div className="p-4">{children}</div>;
+  return <div className="min-h-screen bg-black p-4">{children}</div>;
 };

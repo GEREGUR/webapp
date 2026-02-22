@@ -37,17 +37,17 @@ const RewardCard: FC<RewardCardProps> = ({ reward }) => {
   return (
     <div
       className={cn(
-        'relative flex h-[219px] w-[172px] flex-col rounded-[12px] border-[1px] bg-[#131214] p-[10px]',
-        reward.isCompleted ? 'border-[#A6FF8B]' : 'border-[#5F81D8]'
+        'bg-card-dark relative flex h-[219px] w-[172px] flex-col rounded-[12px] border-[1px] p-[10px]',
+        reward.isCompleted ? 'border-green-bp' : 'border-blue-bp'
       )}
     >
-      <div className="absolute top-0 left-0 flex h-[38px] w-[38px] items-center justify-center rounded-[12px] bg-[#5F81D8] p-[8px]">
+      <div className="bg-blue-bp absolute top-0 left-0 flex h-[38px] w-[38px] items-center justify-center rounded-[12px] p-[8px]">
         <span className="font-[SF_Pro_Display] text-[14px] leading-[16.71px] font-medium text-white">
           {reward.level}
         </span>
       </div>
 
-      <div className="mt-[10px] flex h-[116px] w-[119px] items-center justify-center self-center rounded-[10px] bg-[#232027]">
+      <div className="bg-ghost mt-[10px] flex h-[116px] w-[119px] items-center justify-center self-center rounded-[10px]">
         {reward.rewardType === 'brick' ? (
           <img src={TomCatIcon} alt="Brick" className="h-[100px] w-[100px]" />
         ) : (
@@ -71,7 +71,7 @@ const RewardCard: FC<RewardCardProps> = ({ reward }) => {
           </div>
         ) : (
           <Button
-            className="h-[30px] w-full rounded-[7.4px] bg-[#6E91E7] px-[10px] py-0 text-[12px] font-medium text-white"
+            className="bg-button-bp h-[30px] w-full rounded-[7.4px] px-[10px] py-0 text-[12px] font-medium text-white"
             variant="secondary"
           >
             Забрать награду

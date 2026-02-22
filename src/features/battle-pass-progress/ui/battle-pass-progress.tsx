@@ -25,14 +25,14 @@ export const BattlePassProgress: FC<BattlePassProgressProps> = ({
   return (
     <div className={cn('flex flex-col gap-px', className)}>
       <div className="flex justify-between">
-        <span className={cn(LEVEL_STYLES, 'text-[#5F81D8]')}>LVL {currentLevel}</span>
-        <span className={cn(LEVEL_STYLES, 'text-[#5F81D8]')}>LVL {nextLevel}</span>
+        <span className={cn(LEVEL_STYLES, 'text-blue-bp')}>LVL {currentLevel}</span>
+        <span className={cn(LEVEL_STYLES, 'text-blue-bp')}>LVL {nextLevel}</span>
       </div>
 
       <div className="relative">
-        <div className="h-[24px] w-full overflow-hidden rounded-full border-[1px] border-[#272525] bg-[#131214]">
+        <div className="border-border-dark bg-card-dark h-[24px] w-full overflow-hidden rounded-full border-[1px]">
           <div
-            className="h-full rounded-full bg-[#A6FF8B] transition-all duration-300"
+            className="bg-green-bp h-full rounded-full transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>

@@ -30,7 +30,7 @@ interface CreateOrderModalProps {
   onSubmit: (data: { bpAmount: number; tonAmount: number }) => void;
 }
 
-export const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) => {
+const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {

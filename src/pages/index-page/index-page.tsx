@@ -1,27 +1,58 @@
+import { useState } from 'react';
 import { Tabs, TabList, Tab, TabPanel } from '@/shared/ui/tabs';
 import { Card } from '@/shared/ui/card';
 import { CreateOrderButton } from '@/features/create-order';
+import { BuyOrderDrawer } from '@/features/buy-order';
 import {
   useOrders,
   useBuyOrder,
   useMarketOrders,
   useCreateOrder,
   OrderList,
+  type Order,
 } from '@/entities/order';
 import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
+import { useToast } from '@/shared/ui/toast';
 
 export const IndexPage = () => {
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const { data: orders, isLoading: ordersLoading } = useOrders();
   const { data: marketOrders, isLoading: marketLoading } = useMarketOrders();
   const buyOrderMutation = useBuyOrder();
   const createOrderMutation = useCreateOrder();
+  const { showToast } = useToast();
 
-  const handleOrderBuy = (orderId: number) => {
-    buyOrderMutation.mutate({ order_id: orderId, ton_amount: 0 });
+  const handleOrderBuy = (order: Order) => {
+    setSelectedOrder(order);
+  };
+
+  const handleBuyOrderSubmit = (data: { regularTonAmount: number; instantBpAmount: number }) => {
+    if (!selectedOrder) {
+      return;
+    }
+    buyOrderMutation.mutate(
+      {
+        order_id: selectedOrder.id,
+        ton_amount: data.regularTonAmount,
+      },
+      {
+        onSuccess: () => {
+          setSelectedOrder(null);
+          showToast('Ордер успешно куплен', 'success');
+        },
+        onError: () => showToast('Не удалось купить ордер', 'error'),
+      }
+    );
   };
 
   const handleCreateOrder = (data: { bp_amount: number }) => {
-    createOrderMutation.mutate({ bp_amount: data.bp_amount });
+    createOrderMutation.mutate(
+      { bp_amount: data.bp_amount },
+      {
+        onSuccess: () => showToast('Ордер успешно создан', 'success'),
+        onError: () => showToast('Не удалось создать ордер', 'error'),
+      }
+    );
   };
 
   return (
@@ -86,6 +117,18 @@ export const IndexPage = () => {
           </Card>
         )}
       </TabPanel>
+
+      {selectedOrder && (
+        <BuyOrderDrawer
+          open={Boolean(selectedOrder)}
+          lotId={selectedOrder.id}
+          defaultRegularTonAmount={selectedOrder.current_ton_amount}
+          defaultInstantBpAmount={Math.floor(selectedOrder.current_ton_amount * 0.85)}
+          isSubmitting={buyOrderMutation.isPending}
+          onClose={() => setSelectedOrder(null)}
+          onSubmit={handleBuyOrderSubmit}
+        />
+      )}
     </Tabs>
   );
 };

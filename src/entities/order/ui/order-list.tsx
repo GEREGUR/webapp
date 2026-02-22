@@ -5,18 +5,21 @@ import TonIcon from '@/shared/assets/ton.svg?react';
 
 interface OrderItemProps {
   order: Order;
-  onBuy?: (orderId: number) => void;
+  onBuy?: (order: Order) => void;
   isBuying?: boolean;
 }
 
 const formatOrderTimestamp = (timestamp: number) => {
   const normalizedTimestamp = timestamp < 1_000_000_000_000 ? timestamp * 1000 : timestamp;
-  return new Date(normalizedTimestamp).toLocaleString('ru-RU', {
-    day: '2-digit',
-    month: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const diff = Date.now() - normalizedTimestamp;
+  const minutes = Math.floor(diff / 60_000);
+  const hours = Math.floor(diff / 3_600_000);
+  const days = Math.floor(diff / 86_400_000);
+
+  if (minutes < 1) return 'Только что';
+  if (minutes < 60) return `${minutes} мин`;
+  if (hours < 24) return `${hours} ч`;
+  return `${days} дн`;
 };
 
 const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
@@ -28,20 +31,22 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
         className="size-[42px] rounded-full object-cover"
       />
 
-      <div className="ml-3 min-w-0 flex-1">
-        <p className="truncate text-sm font-semibold text-white">@{order.owner.username}</p>
-        <p className="mt-0.5 text-xs text-white/60">{formatOrderTimestamp(order.create_date)}</p>
-      </div>
+      <div className="ml-3 flex min-w-0 flex-1 items-center justify-between">
+        <div className="min-w-0">
+          <p className="truncate text-sm font-semibold text-white">@{order.owner.username}</p>
+          <p className="mt-0.5 text-xs text-white/60">{formatOrderTimestamp(order.create_date)}</p>
+        </div>
 
-      <div className="mr-3 flex items-center gap-1.5">
-        <TonIcon className="size-4 text-white" />
-        <span className="text-sm font-medium text-white">{order.current_ton_amount}</span>
+        <div className="mr-3 flex items-center gap-1.5">
+          <TonIcon className="size-4 text-white" />
+          <span className="text-sm font-medium text_ton_amount}</span>
+        -white">{order.current</div>
       </div>
 
       <button
         type="button"
         className="rounded-[6px] bg-[#237BFF] px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
-        onClick={() => onBuy?.(order.id)}
+        onClick={() => onBuy?.(order)}
         disabled={isBuying}
       >
         {isBuying ? '...' : 'Купить'}
@@ -52,7 +57,7 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
 
 interface OrderListProps {
   orders: Order[];
-  onBuy?: (orderId: number) => void;
+  onBuy?: (order: Order) => void;
   isBuying?: boolean;
 }
 

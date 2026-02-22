@@ -42,6 +42,8 @@ export default defineConfig({
     minify: 'terser',
   },
   publicDir: './public',
+
+  //TODO: remove in production
   server: {
     host: true,
     allowedHosts: true,

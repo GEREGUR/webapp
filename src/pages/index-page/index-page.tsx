@@ -90,7 +90,7 @@ export const IndexPage = () => {
               orderCount={marketOrders?.length ?? 0}
             />
           </div>
-          <div className="mb-3 flex items-center justify-between gap-4">
+          <div className="mb-3 flex items-center justify-between gap-2.5">
             <TonAmountCard
               value={sliderValue}
               onChange={setSliderValue}

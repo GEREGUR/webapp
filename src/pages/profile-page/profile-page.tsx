@@ -36,7 +36,7 @@ const DepositBalanceDrawer = ({
 }: DepositBalanceDrawerProps) => {
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
-      <DrawerContent className="relative z-10 mx-auto rounded-t-[20px] !bg-[#131214] opacity-100 sm:max-w-[400px]">
+      <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
         <DrawerHeader className="gap-2.5 pb-2">
           <div className="flex items-center justify-between">
             <DrawerTitle className="font-sans text-[22px] leading-[1.1] font-medium text-white">
@@ -45,7 +45,7 @@ const DepositBalanceDrawer = ({
             <Button
               type="button"
               variant="ghost"
-              className="h-8 w-8 rounded-[10px] p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-[10px] p-0 text-white hover:bg-white/10"
               onClick={onClose}
               aria-label="Закрыть"
             >
@@ -129,7 +129,7 @@ const WithdrawBalanceDrawer = ({
 }: WithdrawBalanceDrawerProps) => {
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
-      <DrawerContent className="relative z-10 mx-auto rounded-t-[20px] !bg-[#131214] opacity-100 sm:max-w-[400px]">
+      <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
         <DrawerHeader className="gap-2.5 pb-2">
           <div className="flex items-center justify-between">
             <DrawerTitle className="font-sans text-[22px] leading-[1.1] font-medium text-white">
@@ -138,7 +138,7 @@ const WithdrawBalanceDrawer = ({
             <Button
               type="button"
               variant="ghost"
-              className="h-8 w-8 rounded-[10px] p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-[10px] p-0 text-white hover:bg-white/10"
               onClick={onClose}
               aria-label="Закрыть"
             >
@@ -233,7 +233,7 @@ interface WalletHistoryDrawerProps {
 const WalletHistoryDrawer = ({ open, onClose, items }: WalletHistoryDrawerProps) => {
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
-      <DrawerContent className="relative z-10 mx-auto rounded-t-[20px] !bg-[#131214] opacity-100 sm:max-w-[400px]">
+      <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
         <DrawerHeader className="gap-2.5 pb-2">
           <div className="flex items-center justify-between">
             <DrawerTitle className="font-sans text-[22px] leading-[1.1] font-medium text-white">
@@ -242,7 +242,7 @@ const WalletHistoryDrawer = ({ open, onClose, items }: WalletHistoryDrawerProps)
             <Button
               type="button"
               variant="ghost"
-              className="h-8 w-8 rounded-[10px] p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-[10px] p-0 text-white hover:bg-white/10"
               onClick={onClose}
               aria-label="Закрыть"
             >

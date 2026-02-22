@@ -140,7 +140,7 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
             <h2 className="text-[40px] leading-none font-medium text-white/95">Батлпасс</h2>
             <button
               type="button"
-              className="absolute top-0 right-0 rounded-md p-1 text-white/90 transition hover:bg-white/10 hover:text-white"
+              className="absolute top-0 -right-8 rounded-md p-1 text-white/90 transition hover:bg-white/10 hover:text-white"
               onClick={onClose}
               aria-label="Закрыть оверлей награды"
             >

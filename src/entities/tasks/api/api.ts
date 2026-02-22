@@ -10,7 +10,7 @@ export const useTasks = () => {
   return useQuery({
     queryKey: QUERY_KEYS.tasks,
     queryFn: async (): Promise<TasksListResponse> => {
-      const response = await api.get<TasksListResponse>('/user/tasks/list');
+      const response = await api.get<TasksListResponse>('/tasks/list');
       return response.data;
     },
   });

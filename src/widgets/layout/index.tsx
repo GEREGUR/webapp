@@ -1,6 +1,7 @@
-import { type FC, type ReactNode } from 'react';
+import { useLayoutEffect, type FC, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from '@/widgets/header';
+import { miniApp } from '@tma.js/sdk-react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -11,6 +12,13 @@ interface LayoutProps {
 export const Layout: FC<LayoutProps> = ({ children, tonBalance, bpBalance }) => {
   const { pathname } = useLocation();
   const hideHeaderLeftSide = pathname === '/profile' || pathname === '/awards';
+
+  useLayoutEffect(() => {
+    if (miniApp.setHeaderColor.supports('rgb')) {
+      miniApp.setHeaderColor('#000000');
+      miniApp.headerColor();
+    }
+  }, []);
 
   return (
     <>

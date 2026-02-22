@@ -201,7 +201,7 @@ export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
   return (
     <>
       <div className="flex justify-center pt-2">
-        <Button onClick={() => setOpen(true)} className="bg-blue-dark w-fit">
+        <Button onClick={() => setOpen(true)} className="bg-blue-dark w-[214px] text-[16px]">
           Создать предложение
         </Button>
       </div>

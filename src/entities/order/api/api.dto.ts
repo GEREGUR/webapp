@@ -28,9 +28,14 @@ export interface BuyOrderRequest {
 
 export interface OrderInfo {
   id: number;
-  min_buy: number;
-  max_buy: number;
-  bonus_bp: number;
+  min_buy_amount: number;
+  max_buy_amount: number;
+  initial_ton_amount: number;
+  current_ton_amount: number;
+  self_buy_ton_amount: number;
+  initial_bp_amount: number;
+  reward_bp_amount: number;
+  created_time: number;
 }
 
 export interface MarketStats {

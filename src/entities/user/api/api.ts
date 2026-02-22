@@ -1,7 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
-import { api } from '@/shared/api';
+import { api, getRequiredUserId, getTelegramUserData } from '@/shared/api';
 import type { UserProfile } from './api.dto';
 import { MOCK_PROFILE } from './mock';
+
+interface GetMeResponse {
+  id: number;
+  internal_balance: number;
+  ton_balance: number;
+  wallet_address: string | null;
+  referral_earn: number;
+}
 
 const QUERY_KEYS = {
   profile: ['user', 'profile'] as const,
@@ -15,8 +23,19 @@ export const useProfile = () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         return MOCK_PROFILE;
       }
-      const response = await api.get<UserProfile>('/user/me');
-      return response.data;
+      const response = await api.get<GetMeResponse>('/user/me', {
+        params: {
+          user_id: getRequiredUserId(),
+        },
+      });
+      const telegramUser = getTelegramUserData();
+
+      return {
+        ...response.data,
+        name: telegramUser?.first_name || `User #${response.data.id}`,
+        username: telegramUser?.username || `user${response.data.id}`,
+        avatar: telegramUser?.photo_url || '',
+      };
     },
   });
 };

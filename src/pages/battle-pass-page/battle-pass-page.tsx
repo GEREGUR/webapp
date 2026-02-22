@@ -67,14 +67,14 @@ const RewardCard: FC<RewardCardProps> = ({ reward, onClaim }) => {
         </span>
       </div>
 
-      <div className="mt-auto">
+      <div className="mt-auto flex items-center justify-center">
         {reward.isCompleted ? (
           <div className="flex justify-center">
             <CheckmarkIcon />
           </div>
         ) : (
           <Button
-            className="bg-button-bp h-[30px] w-full rounded-[7.4px] px-[10px] py-0 text-[12px] font-medium text-white"
+            className="bg-button-bp h-[30px] w-full max-w-[119px] rounded-[7.4px] px-[6px] py-0 text-[12px] font-medium text-white"
             variant="secondary"
             onClick={() => onClaim(reward)}
           >

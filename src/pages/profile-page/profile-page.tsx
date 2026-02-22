@@ -473,17 +473,6 @@ export const ProfilePage: FC = () => {
         </div>
       </div>
 
-      {profile.wallet_address && (
-        <div className="relative z-10 mx-auto mt-3 w-full max-w-[370px] rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-sm text-white/60">Кошелек</span>
-            <span className="text-sm font-medium text-white">
-              {profile.wallet_address.slice(0, 6)}...{profile.wallet_address.slice(-4)}
-            </span>
-          </div>
-        </div>
-      )}
-
       <DepositBalanceDrawer
         open={isDepositOpen}
         walletAddress={walletAddressForDeposit}

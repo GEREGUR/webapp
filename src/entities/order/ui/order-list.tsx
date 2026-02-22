@@ -24,7 +24,7 @@ const formatOrderTimestamp = (timestamp: number) => {
 
 const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
   return (
-    <div className="grid h-[66px] grid-cols-[42px_1fr_auto_1fr] items-center gap-3 rounded-lg border border-[#5F81D8]/25 bg-[#131214] px-4">
+    <div className="grid h-[66px] grid-cols-[42px_1fr_1fr_auto] items-center gap-3 rounded-lg border border-[#5F81D8]/25 bg-[#131214] px-4">
       <img
         src={order.owner.avatar}
         alt={order.owner.name}
@@ -36,14 +36,14 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
         <p className="text-xs text-white/60">{formatOrderTimestamp(order.create_date)}</p>
       </div>
 
-      <div className="flex items-center gap-1.5">
+      <div className="flex items-center justify-center gap-1.5">
         <TonIcon className="size-4 text-white" />
         <span className="text-sm font-medium text-white">{order.current_ton_amount}</span>
       </div>
 
       <button
         type="button"
-        className="justify-self-end rounded-[6px] bg-[#237BFF] px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="w-[83px] justify-self-end rounded-[6px] bg-[#237BFF] px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         onClick={() => onBuy?.(order)}
         disabled={isBuying}
       >

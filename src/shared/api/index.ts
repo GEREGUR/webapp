@@ -16,23 +16,16 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const initData = getTelegramInitData();
+  const initData = retrieveRawInitData();
+
   if (initData) {
-    config.headers.x_telegram_data = initData;
+    config.headers['x-telegram-data'] = initData;
   }
 
   config.headers['ngrok-skip-browser-warning'] = 'true';
 
   return config;
 });
-
-const getTelegramInitData = (): string | null => {
-  try {
-    return retrieveRawInitData() || null;
-  } catch {
-    return null;
-  }
-};
 
 export const getTelegramUserData = (): TelegramUserData | null => {
   try {

@@ -23,19 +23,24 @@ export const useProfile = () => {
         await new Promise((resolve) => setTimeout(resolve, 500));
         return MOCK_PROFILE;
       }
-      const response = await api.get<GetMeResponse>('/user/me', {
-        params: {
-          user_id: getRequiredUserId(),
-        },
-      });
-      const telegramUser = getTelegramUserData();
+      try {
+        const response = await api.get<GetMeResponse>('/user/me', {
+          params: {
+            user_id: getRequiredUserId(),
+          },
+        });
+        const telegramUser = getTelegramUserData();
 
-      return {
-        ...response.data,
-        name: telegramUser?.first_name || `User #${response.data.id}`,
-        username: telegramUser?.username || `user${response.data.id}`,
-        avatar: telegramUser?.photo_url || '',
-      };
+        return {
+          ...response.data,
+          name: telegramUser?.first_name || `User #${response.data.id}`,
+          username: telegramUser?.username || `user${response.data.id}`,
+          avatar: telegramUser?.photo_url || '',
+        };
+      } catch (error) {
+        console.error('API Error useProfile:', error);
+        throw error;
+      }
     },
   });
 };

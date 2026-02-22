@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { type FC, useEffect, useMemo, useState } from 'react';
 import { Page } from '@/pages/page';
 import { BattlePassProgress, useBattlePassProgress } from '@/features/battle-pass-progress';
 import { BattlePassPromoCard } from '@/features/battle-pass-promo';
@@ -7,6 +7,8 @@ import CheckmarkIcon from '@/shared/assets/checkmark.svg?react';
 import TomCatIcon from '@/shared/assets/tom-cat.png';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
+import PepeGiftIcon from '@/shared/assets/pepe-gift.png';
+import { X } from 'lucide-react';
 
 export interface BattlePassReward {
   id: number;
@@ -31,9 +33,10 @@ const REWARDS: BattlePassReward[] = [
 
 interface RewardCardProps {
   reward: BattlePassReward;
+  onClaim: (reward: BattlePassReward) => void;
 }
 
-const RewardCard: FC<RewardCardProps> = ({ reward }) => {
+const RewardCard: FC<RewardCardProps> = ({ reward, onClaim }) => {
   return (
     <div
       className={cn(
@@ -73,10 +76,114 @@ const RewardCard: FC<RewardCardProps> = ({ reward }) => {
           <Button
             className="bg-button-bp h-[30px] w-full rounded-[7.4px] px-[10px] py-0 text-[12px] font-medium text-white"
             variant="secondary"
+            onClick={() => onClaim(reward)}
           >
             Забрать награду
           </Button>
         )}
+      </div>
+    </div>
+  );
+};
+
+interface ClaimOverlayProps {
+  open: boolean;
+  reward: BattlePassReward | null;
+  onClose: () => void;
+}
+
+const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
+  const slots = useMemo(
+    () => [
+      'slot-1',
+      'slot-2',
+      'slot-3',
+      'slot-4',
+      'slot-5',
+      'slot-6',
+      'slot-7',
+      'slot-8',
+      'slot-9',
+    ],
+    []
+  );
+  const claimedSlotId = 'slot-2';
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [open]);
+
+  if (!open || !reward) {
+    return null;
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center bg-[#5F81D8] px-3 pt-3 pb-6">
+      <div>
+        <div
+          className={cn(
+            'pointer-events-none absolute inset-x-0 top-0 h-[70%]',
+            'bg-[conic-gradient(from_100deg_at_50%_12%,rgba(255,255,255,0.25),rgba(255,255,255,0.06),rgba(255,255,255,0.2),rgba(255,255,255,0.08),rgba(255,255,255,0.22),rgba(255,255,255,0.04),rgba(255,255,255,0.25))]'
+          )}
+        />
+        <div className="relative z-10">
+          <div className="mb-2 flex items-center justify-center">
+            <h2 className="text-[40px] leading-none font-medium text-white/95">Батлпасс</h2>
+            <button
+              type="button"
+              className="absolute top-0 right-0 rounded-md p-1 text-white/90 transition hover:bg-white/10 hover:text-white"
+              onClick={onClose}
+              aria-label="Закрыть оверлей награды"
+            >
+              <X className="h-8 w-8" />
+            </button>
+          </div>
+
+          <img
+            src={PepeGiftIcon}
+            alt="Награда получена"
+            className="bp-overlay-mascot mx-auto mt-4 h-[140px] w-[140px] object-contain"
+          />
+
+          <p className="mt-5 mb-3 text-center text-[26px] font-medium text-white/95">Награды</p>
+          <div className="grid grid-cols-3 gap-2.5">
+            {slots.map((slotId) => {
+              const isClaimedSlot = slotId === claimedSlotId;
+
+              return (
+                <div
+                  key={slotId}
+                  className={cn(
+                    'h-[112px] rounded-[16px] border border-[#4E75D2] bg-[#0C0F18] p-2',
+                    isClaimedSlot && 'bp-claimed-slot border-[#82A7FF] bg-[#0D1322]'
+                  )}
+                >
+                  {isClaimedSlot ? (
+                    <div className="flex h-full flex-col items-center justify-center">
+                      {reward.rewardType === 'brick' ? (
+                        <img src={TomCatIcon} alt="Brick reward" className="h-[64px] w-[64px]" />
+                      ) : (
+                        <BpPointsIcon className="h-[62px] w-[62px]" />
+                      )}
+                      <span className="text-[32px] leading-none font-bold text-white">
+                        x{reward.multiplier}
+                      </span>
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -95,6 +202,9 @@ export const BattlePassPage: FC<BattlePassPageProps> = ({
   progress = 65,
   rewards = REWARDS,
 }) => {
+  const [claimedRewardIds, setClaimedRewardIds] = useState<Set<number>>(new Set());
+  const [claimedReward, setClaimedReward] = useState<BattlePassReward | null>(null);
+
   const {
     currentLevel: level,
     nextLevel: next,
@@ -106,24 +216,48 @@ export const BattlePassPage: FC<BattlePassPageProps> = ({
     progress,
   });
 
+  const rewardsState = useMemo(
+    () =>
+      rewards.map((reward) =>
+        claimedRewardIds.has(reward.id) ? { ...reward, isCompleted: true } : reward
+      ),
+    [rewards, claimedRewardIds]
+  );
+
+  const handleClaimReward = (rewardToClaim: BattlePassReward) => {
+    setClaimedRewardIds((previous) => new Set(previous).add(rewardToClaim.id));
+    setClaimedReward({ ...rewardToClaim, isCompleted: true });
+  };
+
+  const handleCloseOverlay = () => {
+    setClaimedReward(null);
+  };
+
   return (
-    <Page back>
-      <div className="flex flex-col gap-[20px]">
-        <BattlePassPromoCard />
+    <>
+      <Page back>
+        <div className="flex flex-col gap-[20px]">
+          <BattlePassPromoCard />
 
-        <BattlePassProgress
-          currentLevel={level}
-          nextLevel={next}
-          progress={percent}
-          currentExp={currentExp}
-        />
+          <BattlePassProgress
+            currentLevel={level}
+            nextLevel={next}
+            progress={percent}
+            currentExp={currentExp}
+          />
 
-        <div className="grid grid-cols-2 gap-[10px]">
-          {rewards.map((reward) => (
-            <RewardCard key={reward.id} reward={reward} />
-          ))}
+          <div className="grid grid-cols-2 gap-[10px]">
+            {rewardsState.map((reward) => (
+              <RewardCard key={reward.id} reward={reward} onClaim={handleClaimReward} />
+            ))}
+          </div>
         </div>
-      </div>
-    </Page>
+      </Page>
+      <ClaimOverlay
+        open={Boolean(claimedReward)}
+        reward={claimedReward}
+        onClose={handleCloseOverlay}
+      />
+    </>
   );
 };

@@ -11,7 +11,7 @@ export const MarketStatsBar: FC<MarketStatsBarProps> = ({ tonAmount, orderCount,
   return (
     <div
       className={cn(
-        'flex h-[26px] w-full items-center rounded-[10px] border-[1px] border-[#272525] bg-[#131214] px-3.5',
+        'relative z-10 flex h-[26px] w-full items-center rounded-[10px] border border-white/10 bg-[#131214] px-3.5 opacity-100',
         className
       )}
     >

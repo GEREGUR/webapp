@@ -155,3 +155,50 @@ body::before {
 :root {
   --radius: 0.625rem;
 }
+
+@keyframes bp-overlay-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes bp-mascot-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes bp-claimed-pop {
+  0% {
+    transform: scale(0.78);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.bp-overlay-panel {
+  animation: bp-overlay-in 280ms ease-out;
+}
+
+.bp-overlay-mascot {
+  animation: bp-mascot-float 2.2s ease-in-out infinite;
+}
+
+.bp-claimed-slot {
+  animation: bp-claimed-pop 420ms ease-out;
+}

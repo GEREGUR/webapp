@@ -24,28 +24,26 @@ const formatOrderTimestamp = (timestamp: number) => {
 
 const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
   return (
-    <div className="flex h-[76px] items-center justify-between rounded-lg bg-[#1a1a1d] px-4">
+    <div className="grid h-[66px] grid-cols-[42px_1fr_auto_1fr] items-center gap-3 rounded-lg bg-[#1a1a1d] px-4">
       <img
         src={order.owner.avatar}
         alt={order.owner.name}
         className="size-[42px] rounded-full object-cover"
       />
 
-      <div className="ml-3 min-w-0">
+      <div className="min-w-0">
         <p className="truncate text-sm font-semibold text-white">{order.owner.username}</p>
-        <p className="mt-0.5 text-xs text-white/60">{formatOrderTimestamp(order.create_date)}</p>
+        <p className="text-xs text-white/60">{formatOrderTimestamp(order.create_date)}</p>
       </div>
 
-      <div className="flex flex-1 items-center justify-center">
-        <div className="flex items-center gap-1.5">
-          <TonIcon className="size-4 text-white" />
-          <span className="text-sm font-medium text-white">{order.current_ton_amount}</span>
-        </div>
+      <div className="flex items-center gap-1.5">
+        <TonIcon className="size-4 text-white" />
+        <span className="text-sm font-medium text-white">{order.current_ton_amount}</span>
       </div>
 
       <button
         type="button"
-        className="rounded-[6px] bg-[#237BFF] px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="justify-self-end rounded-[6px] bg-[#237BFF] px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         onClick={() => onBuy?.(order)}
         disabled={isBuying}
       >
@@ -63,8 +61,8 @@ interface OrderListProps {
 
 export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
   const parentRef = useRef<HTMLDivElement>(null);
-  const rowHeight = 76;
-  const rowGap = 8;
+  const rowHeight = 66;
+  const rowGap = 10;
 
   const virtualizer = useVirtualizer({
     count: orders.length,

@@ -17,6 +17,7 @@ import { useProfile } from '@/entities/user';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points.svg?react';
 import { ArrowDown, ArrowUp, Copy, History, UserPlus, Users, WalletMinimal, X } from 'lucide-react';
+import { BattlePassPromoCard } from '@/features/battle-pass-promo';
 
 interface DepositBalanceDrawerProps {
   open: boolean;
@@ -425,6 +426,10 @@ export const ProfilePage: FC = () => {
             <History className="h-5 w-5 stroke-2" />
           </Button>
         </div>
+      </div>
+
+      <div className="pt-6 pb-3">
+        <BattlePassPromoCard />
       </div>
 
       <div className="relative z-10 mx-auto mt-3 flex h-[194px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-3 opacity-100">

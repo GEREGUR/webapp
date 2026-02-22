@@ -345,7 +345,7 @@ export const ProfilePage: FC = () => {
   if (!profile) {
     return (
       <Page back>
-        <Card className="relative z-10 opacity-100 !border-[#272525] !bg-[#131214]">
+        <Card className="relative z-10 !border-[#272525] !bg-[#131214] opacity-100">
           <p className="text-center text-white/60">Не удалось загрузить профиль</p>
         </Card>
       </Page>
@@ -406,7 +406,7 @@ export const ProfilePage: FC = () => {
           </Button>
         </div>
 
-        <div className="flex">
+        <div className="flex items-center gap-2">
           <Button
             type="button"
             className="inline-flex h-[41px] flex-1 items-center justify-center rounded-[12px] bg-white text-[13px] font-semibold text-black hover:bg-white/90"

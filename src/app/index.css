@@ -13,6 +13,8 @@
   --color-blue-dark: #237bff;
   --color-black: #000000;
   --color-white: #ffffff;
+  --font-family-sans:
+    'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 @layer base {

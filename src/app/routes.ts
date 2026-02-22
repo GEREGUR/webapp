@@ -15,13 +15,6 @@ export const routes: RouteObject[] = [
     title: 'Home',
   },
   {
-    path: '/market',
-    Component: lazy(() =>
-      import('@/pages/market-page/market-page').then((m) => ({ default: m.MarketPage }))
-    ),
-    title: 'Market',
-  },
-  {
     path: '/battle-pass',
     Component: lazy(() =>
       import('@/pages/battle-pass-page/battle-pass-page').then((m) => ({

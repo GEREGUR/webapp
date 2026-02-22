@@ -60,7 +60,7 @@ export const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalPr
   };
 
   return (
-    <Drawer open={open} onClose={handleClose}>
+    <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : handleClose())}>
       <DrawerContent className="mx-auto sm:max-w-[400px]">
         <DrawerHeader>
           <DrawerTitle>Создать ордер</DrawerTitle>
@@ -70,7 +70,12 @@ export const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalPr
           </DrawerDescription>
         </DrawerHeader>
 
-        <form onSubmit={() => handleSubmit(onFormSubmit)} className="space-y-4 px-4 pb-4">
+        <form
+          onSubmit={(event) => {
+            void handleSubmit(onFormSubmit)(event);
+          }}
+          className="space-y-4 px-4 pb-4"
+        >
           <div className="grid grid-cols-1 gap-3">
             <div className="relative">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">

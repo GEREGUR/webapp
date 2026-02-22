@@ -9,16 +9,31 @@ interface OrderItemProps {
   isBuying?: boolean;
 }
 
+const formatOrderTimestamp = (timestamp: number) => {
+  const normalizedTimestamp = timestamp < 1_000_000_000_000 ? timestamp * 1000 : timestamp;
+  return new Date(normalizedTimestamp).toLocaleString('ru-RU', {
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
 const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
   return (
-    <div className="flex h-[66px] items-center justify-between rounded-lg bg-[#1a1a1d] px-3">
+    <div className="flex h-[76px] items-center justify-between rounded-lg bg-[#1a1a1d] px-3">
       <img
         src={order.owner.avatar}
         alt={order.owner.name}
         className="size-[42px] rounded-full object-cover"
       />
 
-      <div className="flex flex-1 items-center justify-center gap-1.5">
+      <div className="ml-3 min-w-0 flex-1">
+        <p className="truncate text-sm font-semibold text-white">@{order.owner.username}</p>
+        <p className="mt-0.5 text-xs text-white/60">{formatOrderTimestamp(order.create_date)}</p>
+      </div>
+
+      <div className="mr-3 flex items-center gap-1.5">
         <TonIcon className="size-4 text-white" />
         <span className="text-sm font-medium text-white">{order.current_ton_amount}</span>
       </div>
@@ -43,11 +58,13 @@ interface OrderListProps {
 
 export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
   const parentRef = useRef<HTMLDivElement>(null);
+  const rowHeight = 76;
+  const rowGap = 8;
 
   const virtualizer = useVirtualizer({
     count: orders.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 66,
+    estimateSize: () => rowHeight + rowGap,
     overscan: 5,
   });
 
@@ -72,7 +89,7 @@ export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
                 width: '100%',
                 transform: `translateY(${virtualItem.start}px)`,
               }}
-              className="px-3 py-1.5"
+              className="px-3 pb-2"
             >
               <OrderItem order={order} onBuy={onBuy} isBuying={isBuying} />
             </div>

@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import { Scale } from 'lucide-react';
+import BpIcon from '@/shared/assets/bp.svg?react';
 import { Card } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import type { Task } from '@/entities/tasks';
@@ -19,21 +19,23 @@ export const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, on
   const rewards = formatReward(task);
 
   return (
-    <div className={`flex h-[60px] items-center gap-3 px-4 ${!isLast ? 'border-b border-[#272525]' : ''}`}>
+    <div
+      className={`flex h-[60px] items-center gap-3 px-4 ${!isLast ? 'border-b border-[#272525]' : ''}`}
+    >
       <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white/90">
-        <Scale className="h-6 w-6" strokeWidth={1.8} />
+        <BpIcon className="size-8" strokeWidth={1.8} />
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate font-['SF_Pro_Display'] text-[20px] leading-[20.03px] font-semibold text-white">
+        <p className="truncate text-sm leading-tight font-semibold text-white">
           {task.title} ({currentCount}/{task.goal_count})
         </p>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-sm leading-none">
+        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-sm leading-none text-accent">
           <span className="text-accent">Награда:</span>
           {rewards.map((reward, rewardIndex) => (
-            <span key={`${task.id}-${reward.value}`} className={reward.className}>
+            <span key={`${task.id}-${reward.value}`} className="text-accent">
               {reward.value}
-              {rewardIndex !== rewards.length - 1 && <span className="text-white/60"> и </span>}
+              {rewardIndex !== rewards.length - 1 && <span className="text-accent"> и </span>}
             </span>
           ))}
         </div>

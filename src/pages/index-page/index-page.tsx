@@ -26,22 +26,24 @@ export const IndexPage = () => {
 
   return (
     <Tabs defaultTab="market">
-      <MaxWidthWrapper>
-        <TabList className="mb-4 flex gap-1">
-          <Tab
-            value="market"
-            className="flex-1 rounded text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white/20"
-          >
-            Рынок
-          </Tab>
-          <Tab
-            value="orders"
-            className="flex-1 rounded text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white/20"
-          >
-            Мои ордера
-          </Tab>
-        </TabList>
-      </MaxWidthWrapper>
+      <div className="pt-4">
+        <MaxWidthWrapper>
+          <TabList className="mb-4 flex gap-1">
+            <Tab
+              value="market"
+              className="flex-1 rounded text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white/20"
+            >
+              Рынок
+            </Tab>
+            <Tab
+              value="orders"
+              className="flex-1 rounded text-white transition-colors data-[active=false]:bg-[rgba(121,121,121,1)] data-[active=true]:bg-white/20"
+            >
+              Мои ордера
+            </Tab>
+          </TabList>
+        </MaxWidthWrapper>
+      </div>
 
       <TabPanel value="market">
         {marketLoading ? (

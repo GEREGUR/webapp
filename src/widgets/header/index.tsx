@@ -32,7 +32,7 @@ export const Header: FC<HeaderProps> = ({
       <div className="flex h-10 items-center gap-2 rounded-[12px] border border-[#272525] bg-[#131214] px-2">
         <button
           type="button"
-          className="flex size-7 items-center justify-center rounded-full bg-white"
+          className="flex size-6 items-center justify-center rounded-full bg-white"
         >
           <PlusIcon className="size-5 text-[#232027]" />
         </button>

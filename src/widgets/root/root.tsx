@@ -54,7 +54,7 @@ export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' 
               </NuqsAdapter>
               <MobileDock
                 buttons={[
-                  { to: '/market', icon: MarketIcon, label: 'Рынок' },
+                  { to: '/', icon: MarketIcon, label: 'Рынок' },
                   { to: '/inventory', icon: InventoryIcon, label: 'Инвентарь' },
                   { to: '/battle-pass', icon: BattlePassIcon, label: 'БП' },
                   { to: '/awards', icon: RewardsIcon, label: 'Награды' },

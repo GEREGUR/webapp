@@ -4,13 +4,14 @@ interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string;
   alt?: string;
   fallback?: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
 const sizes = {
   sm: 'w-8 h-8 text-xs',
   md: 'w-10 h-10 text-sm',
   lg: 'w-14 h-14 text-lg',
+  xl: 'w-[104px] h-[104px] text-2xl',
 };
 
 export const Avatar = ({ className, src, alt, fallback, size = 'md', ...props }: AvatarProps) => {

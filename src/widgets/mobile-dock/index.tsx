@@ -18,6 +18,10 @@ export const MobileDock: FC<MobileDockProps> = ({ buttons }) => {
   const location = useLocation();
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  useEffect(() => {
     const handleFocus = () => setVisible(false);
     const handleBlur = () => setVisible(true);
 

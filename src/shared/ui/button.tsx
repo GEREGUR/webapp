@@ -20,7 +20,7 @@ export const Button = ({
         {
           'bg-[#1a3a6e] text-white hover:brightness-110 active:scale-[0.98] disabled:bg-[#6E91E7]':
             variant === 'primary',
-          'bg-white text-black hover:brightness-110 active:scale-[0.98] disabled:bg-[#2F3033] disabled:text-white':
+          'bg-white/20 text-white hover:brightness-110 active:scale-[0.98] disabled:bg-[#2F3033] disabled:text-white':
             variant === 'secondary',
           'bg-transparent text-white hover:bg-white/10': variant === 'ghost',
           'bg-[#9b4dca] text-white hover:brightness-110 active:scale-[0.98] disabled:bg-[#2F3033]':

@@ -146,7 +146,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
           )}
 
           <div className="pt-2">
-            <p className="mb-3 text-center text-sm font-medium text-white">
+            <p className="mb-3 text-center text-sm font-medium text-[#FFE88B]">
               Подтвердите создание предложения
             </p>
 

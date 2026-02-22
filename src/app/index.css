@@ -34,35 +34,36 @@
     --background: 0 0% 0%;
     --foreground: 0 0% 100%;
 
-    --card: 0 0% 3%;
-    --card-foreground: 0 0% 100%;
+    --app-card: 0 0% 3%;
+    --app-card-foreground: 0 0% 100%;
 
-    --popover: 0 0% 3%;
-    --popover-foreground: 0 0% 100%;
+    --app-popover: 0 0% 3%;
+    --app-popover-foreground: 0 0% 100%;
 
-    --primary: 320 100% 50%;
-    --primary-foreground: 0 0% 100%;
+    --app-primary: 320 100% 50%;
+    --app-primary-foreground: 0 0% 100%;
 
-    --secondary: 283 82% 46%;
-    --secondary-foreground: 0 0% 100%;
+    --app-secondary: 283 82% 46%;
+    --app-secondary-foreground: 0 0% 100%;
 
-    --muted: 0 0% 15%;
-    --muted-foreground: 0 0% 64%;
+    --app-muted: 0 0% 15%;
+    --app-muted-foreground: 0 0% 64%;
 
-    --accent: 44 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    --app-accent: 44 100% 50%;
+    --app-accent-foreground: 0 0% 0%;
 
-    --destructive: 0 100% 50%;
-    --destructive-foreground: 0 0% 100%;
+    --app-destructive: 0 100% 50%;
+    --app-destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 15%;
-    --input: 0 0% 15%;
-    --ring: 320 100% 50%;
+    --app-border: 0 0% 15%;
+    --app-input: 0 0% 15%;
+    --app-ring: 320 100% 50%;
 
     --radius: 0.5rem;
   }
   * {
-    @apply border-border outline-ring/50;
+    border-color: hsl(var(--app-border));
+    outline-color: hsl(var(--app-ring) / 0.5);
   }
   body {
     @apply bg-background text-foreground;
@@ -133,22 +134,22 @@ body::before {
   --radius-4xl: calc(var(--radius) + 16px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
+  --color-card: var(--app-card);
+  --color-card-foreground: var(--app-card-foreground);
+  --color-popover: var(--app-popover);
+  --color-popover-foreground: var(--app-popover-foreground);
+  --color-primary: var(--app-primary);
+  --color-primary-foreground: var(--app-primary-foreground);
+  --color-secondary: var(--app-secondary);
+  --color-secondary-foreground: var(--app-secondary-foreground);
+  --color-muted: var(--app-muted);
+  --color-muted-foreground: var(--app-muted-foreground);
+  --color-accent: var(--app-accent);
+  --color-accent-foreground: var(--app-accent-foreground);
+  --color-destructive: var(--app-destructive);
+  --color-border: var(--app-border);
+  --color-input: var(--app-input);
+  --color-ring: var(--app-ring);
 }
 
 :root {

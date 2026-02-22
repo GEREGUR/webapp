@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Tabs, TabList, Tab, TabPanel } from '@/shared/ui/tabs';
 import { Card } from '@/shared/ui/card';
+import { TonAmountCard } from '@/shared/ui/ton-amount-card';
 import { CreateOrderButton } from '@/features/create-order';
 import { BuyOrderDrawer } from '@/features/buy-order';
-import { LiveCarousel, LiveWinCard, type DropItem } from '@/widgets/live-carousel';
+import { LiveCarousel, LiveWinCard } from '@/widgets/live-carousel';
 import { MarketStatsBar } from '@/widgets/market-stats-bar';
 import {
   useOrders,
@@ -15,9 +16,14 @@ import {
 } from '@/entities/order';
 import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
 import { useToast } from '@/shared/ui/toast';
+import { Button } from '@/shared/ui/button';
+import HistoryIcon from '@/shared/assets/history.svg?react';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 
 export const IndexPage = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [sliderValue, setSliderValue] = useState(1);
+  const [sortAscending, setSortAscending] = useState(true);
   const { data: orders, isLoading: ordersLoading } = useOrders();
   const { data: marketOrders, isLoading: marketLoading } = useMarketOrders();
   const buyOrderMutation = useBuyOrder();
@@ -75,7 +81,13 @@ export const IndexPage = () => {
       <TabPanel value="market">
         <MaxWidthWrapper disableRightPadding>
           <LiveCarousel
-            initialItems={[] as DropItem[]}
+            initialItems={[
+              { id: 1, status: 'bought' },
+              { id: 2, status: 'active' },
+              { id: 3, status: 'bought' },
+              { id: 4, status: 'active' },
+              { id: 5, status: 'bought' },
+            ]}
             renderItem={(item) => <LiveWinCard {...item} />}
           />
         </MaxWidthWrapper>
@@ -85,6 +97,18 @@ export const IndexPage = () => {
               tonAmount={marketOrders?.reduce((sum, o) => sum + o.current_ton_amount, 0) ?? 0}
               orderCount={marketOrders?.length ?? 0}
             />
+          </div>
+          <div className="mb-3 flex items-center justify-between gap-4">
+            <TonAmountCard
+              value={sliderValue}
+              onChange={setSliderValue}
+              tonAmount={String(sliderValue * 10)}
+              className="flex-1"
+            />
+
+            <Button className="bg-ghost h-[50px]">
+              <HistoryIcon />
+            </Button>
           </div>
         </div>
         {marketLoading ? (
@@ -111,6 +135,20 @@ export const IndexPage = () => {
       </TabPanel>
 
       <TabPanel value="orders">
+        <div className="px-4 md:px-12">
+          <div className="mt-2 mb-3 flex items-center justify-between gap-4">
+            <TonAmountCard
+              value={sliderValue}
+              onChange={setSliderValue}
+              tonAmount={String(sliderValue * 10)}
+              className="flex-1"
+            />
+
+            <Button className="bg-ghost h-[50px]" onClick={() => setSortAscending(!sortAscending)}>
+              {sortAscending ? <ArrowUp /> : <ArrowDown />}
+            </Button>
+          </div>
+        </div>
         {ordersLoading ? (
           <Card>
             <p className="text-center text-white/60">Загрузка...</p>

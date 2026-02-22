@@ -24,14 +24,26 @@ type TabsProps = {
   onBack?: () => void;
   queryParamName?: string;
   defaultTab?: string;
+  onTabChange?: (tab: string) => void;
 };
 
-export const Tabs = ({ children, onBack, queryParamName = 'tab', defaultTab = '0' }: TabsProps) => {
+export const Tabs = ({
+  children,
+  onBack,
+  queryParamName = 'tab',
+  defaultTab = '0',
+  onTabChange,
+}: TabsProps) => {
   const [activeTab, setActiveTab] = useQueryState(queryParamName, {
     defaultValue: defaultTab,
     throttleMs: 100,
     clearOnDefault: false,
   });
+
+  const handleTabChange = (tab: string) => {
+    void setActiveTab(tab);
+    onTabChange?.(tab);
+  };
 
   useEffect(() => {
     if (!onBack) return;
@@ -49,7 +61,7 @@ export const Tabs = ({ children, onBack, queryParamName = 'tab', defaultTab = '0
     <TabsContext.Provider
       value={{
         activeTab: activeTab ?? defaultTab,
-        setActiveTab: (tab) => void setActiveTab(tab),
+        setActiveTab: handleTabChange,
       }}
     >
       {children}

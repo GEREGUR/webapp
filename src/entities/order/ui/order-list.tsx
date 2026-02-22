@@ -24,7 +24,7 @@ const formatOrderTimestamp = (timestamp: number) => {
 
 const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
   return (
-    <div className="flex h-[76px] items-center justify-between rounded-lg bg-[#1a1a1d] px-3">
+    <div className="flex h-[76px] items-center justify-between rounded-lg bg-[#1a1a1d] px-4">
       <img
         src={order.owner.avatar}
         alt={order.owner.name}
@@ -95,7 +95,7 @@ export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
                 width: '100%',
                 transform: `translateY(${virtualItem.start}px)`,
               }}
-              className="px-3 pb-2"
+              className="px-4 pb-2"
             >
               <OrderItem order={order} onBuy={onBuy} isBuying={isBuying} />
             </div>

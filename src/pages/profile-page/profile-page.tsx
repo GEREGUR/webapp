@@ -37,15 +37,14 @@ const DepositBalanceDrawer = ({
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
       <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
-        <DrawerHeader className="gap-2.5 pb-2">
+        <DrawerHeader className="gap-4 pb-2">
           <div className="flex items-center justify-between">
             <DrawerTitle className="font-sans text-[22px] leading-[1.1] font-medium text-white">
               Пополнение баланса
             </DrawerTitle>
             <Button
               type="button"
-              variant="ghost"
-              className="flex h-8 w-8 items-center justify-center rounded-[10px] p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent p-0 text-white hover:bg-white/10"
               onClick={onClose}
               aria-label="Закрыть"
             >
@@ -75,8 +74,8 @@ const DepositBalanceDrawer = ({
             </Button>
           </div>
 
-          <div>
-            <p className="mb-2 text-[12px] font-semibold text-white">MEMO</p>
+          <div className="pt-1">
+            <p className="mb-2 text-[15px] font-semibold text-white">MEMO</p>
             <div className="mb-2 flex h-[52px] items-center justify-center rounded-[12px] bg-[#232027] px-4 text-[16px] font-semibold text-white">
               {memo}
             </div>
@@ -91,7 +90,7 @@ const DepositBalanceDrawer = ({
             </Button>
           </div>
 
-          <div className="space-y-2 pt-1 text-center text-[14px] leading-[1.1] font-semibold text-[#FFD700]">
+          <div className="space-y-2 pt-1 text-center text-[15px] leading-[1.1] font-semibold text-[#FFD700]">
             <p>Минимальная сумма пополнения: 1 TON</p>
             <p>
               Отправка другой монеты в другой сети без корректного MEMO приведёт к безвозвратной
@@ -138,7 +137,7 @@ const WithdrawBalanceDrawer = ({
             <Button
               type="button"
               variant="ghost"
-              className="flex h-8 w-8 items-center justify-center rounded-[10px] p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
               onClick={onClose}
               aria-label="Закрыть"
             >
@@ -242,7 +241,7 @@ const WalletHistoryDrawer = ({ open, onClose, items }: WalletHistoryDrawerProps)
             <Button
               type="button"
               variant="ghost"
-              className="flex h-8 w-8 items-center justify-center rounded-[10px] p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
               onClick={onClose}
               aria-label="Закрыть"
             >

@@ -96,7 +96,7 @@ export const BuyOrderDrawer = ({
             <Button
               type="button"
               variant="ghost"
-              className="flex h-8 w-8 items-center justify-center rounded-[10px] p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
               onClick={handleClose}
               aria-label="Закрыть"
             >

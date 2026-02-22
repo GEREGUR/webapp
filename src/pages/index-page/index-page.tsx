@@ -3,6 +3,8 @@ import { Tabs, TabList, Tab, TabPanel } from '@/shared/ui/tabs';
 import { Card } from '@/shared/ui/card';
 import { CreateOrderButton } from '@/features/create-order';
 import { BuyOrderDrawer } from '@/features/buy-order';
+import { LiveCarousel, LiveWinCard, type DropItem } from '@/widgets/live-carousel';
+import { MarketStatsBar } from '@/widgets/market-stats-bar';
 import {
   useOrders,
   useBuyOrder,
@@ -71,6 +73,20 @@ export const IndexPage = () => {
       </div>
 
       <TabPanel value="market">
+        <MaxWidthWrapper disableRightPadding>
+          <LiveCarousel
+            initialItems={[] as DropItem[]}
+            renderItem={(item) => <LiveWinCard {...item} />}
+          />
+        </MaxWidthWrapper>
+        <div className="px-4 md:px-12">
+          <div className="my-2">
+            <MarketStatsBar
+              tonAmount={marketOrders?.reduce((sum, o) => sum + o.current_ton_amount, 0) ?? 0}
+              orderCount={marketOrders?.length ?? 0}
+            />
+          </div>
+        </div>
         {marketLoading ? (
           <Card>
             <p className="text-center text-white/60">Загрузка...</p>

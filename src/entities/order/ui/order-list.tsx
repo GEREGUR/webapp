@@ -84,6 +84,7 @@ export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
       >
         {virtualizer.getVirtualItems().map((virtualItem) => {
           const order = orders[virtualItem.index];
+
           return (
             <div
               key={order.id}

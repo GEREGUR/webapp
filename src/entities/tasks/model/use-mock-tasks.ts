@@ -127,7 +127,7 @@ function mockTasksReducer(state: MockTasksState, action: MockTasksAction): MockT
   }
 }
 
-export interface UseMockTasksResult {
+interface UseMockTasksResult {
   tasks: Task[];
   activateTask: (taskId: number) => void;
   claimReward: (taskId: number) => void;

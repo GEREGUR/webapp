@@ -2,14 +2,14 @@ import { type FC, useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/shared/lib/utils';
 
-export interface DockButton {
+interface DockButton {
   to: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   icon: any;
   label: string;
 }
 
-export interface MobileDockProps {
+interface MobileDockProps {
   buttons: DockButton[];
 }
 

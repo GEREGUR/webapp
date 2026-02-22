@@ -39,8 +39,8 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
 
         <div className="mr-3 flex items-center gap-1.5">
           <TonIcon className="size-4 text-white" />
-          <span className="text-sm font-medium text_ton_amount}</span>
-        -white">{order.current</div>
+          <span className="text-sm font-medium text-white">{order.current_ton_amount}</span>
+        </div>
       </div>
 
       <button

@@ -5,7 +5,7 @@ import { useMockTasks } from './use-mock-tasks';
 import { useTaskActions } from './use-task-actions';
 import { useToast } from '@/shared/ui/toast';
 
-export interface UseTasksPageResult {
+interface UseTasksPageResult {
   tasks: Task[];
   baseTasks: Task[];
   bonusTasks: Task[];

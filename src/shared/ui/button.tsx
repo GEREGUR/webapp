@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'ghost' | 'blue';
   size?: 'sm' | 'md' | 'lg';
 }

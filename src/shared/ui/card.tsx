@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 
-export type CardProps = React.HTMLAttributes<HTMLDivElement>;
+type CardProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const Card = ({ className, children, ...props }: CardProps) => {
   return (

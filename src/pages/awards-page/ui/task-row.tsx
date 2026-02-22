@@ -13,7 +13,7 @@ interface TaskRowProps {
   onClaim: (taskId: number) => void;
 }
 
-export const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }) => {
+const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }) => {
   const action = getTaskAction(task);
   const currentCount = task.progress?.current_count ?? 0;
   const rewards = formatReward(task);

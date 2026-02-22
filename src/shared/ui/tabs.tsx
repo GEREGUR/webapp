@@ -19,7 +19,7 @@ const useTabsContext = () => {
   return context;
 };
 
-export type TabsProps = {
+type TabsProps = {
   children: ReactNode;
   onBack?: () => void;
   queryParamName?: string;
@@ -57,7 +57,7 @@ export const Tabs = ({ children, onBack, queryParamName = 'tab', defaultTab = '0
   );
 };
 
-export type TabListProps = {
+type TabListProps = {
   children: ReactNode;
   className?: string;
 };
@@ -66,7 +66,7 @@ export const TabList = ({ children, className }: TabListProps) => {
   return <div className={cn(className)}>{children}</div>;
 };
 
-export type TabProps = {
+type TabProps = {
   value: string;
   children: ReactNode;
   className?: string;
@@ -81,7 +81,7 @@ export const Tab = ({ value, children, className }: TabProps) => {
       onClick={() => setActiveTab(value)}
       type="button"
       className={cn(
-        'relative w-fit cursor-pointer appearance-none border-none bg-transparent px-3 py-1.5 text-start text-2xl font-medium transition-all duration-300 ease-out outline-none select-none',
+        'relative w-fit cursor-pointer appearance-none border-none bg-transparent text-start text-2xl font-medium transition-all duration-300 ease-out outline-none select-none',
         isActive ? 'text-white' : 'text-gray-700/60 blur-[0.5px] hover:text-gray-300',
         className
       )}
@@ -94,7 +94,7 @@ export const Tab = ({ value, children, className }: TabProps) => {
   );
 };
 
-export type TabPanelProps = {
+type TabPanelProps = {
   value: string;
   children: ReactNode;
 };

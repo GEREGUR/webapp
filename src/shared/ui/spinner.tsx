@@ -6,9 +6,9 @@ interface SpinnerProps {
 }
 
 const sizes = {
-  sm: 'w-6 h-6',
-  md: 'w-10 h-10',
-  lg: 'w-16 h-16',
+  sm: 'w-5 h-5',
+  md: 'w-8 h-8',
+  lg: 'w-10 h-10',
 };
 
 export const Spinner = ({ size = 'md', className }: SpinnerProps) => {

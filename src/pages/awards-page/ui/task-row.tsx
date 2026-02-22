@@ -20,7 +20,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
 
   return (
     <div
-      className={`flex h-[60px] items-center gap-3 px-4 ${!isLast ? 'border-b border-[#272525]' : ''}`}
+      className={`flex h-[60px] items-center gap-3 px-4 ${!isLast ? 'border-b border-[#272525]' : ''} [&>button]:min-w-[70px]`}
     >
       <div className="flex h-10 w-10 shrink-0 items-center justify-center text-white/90">
         <BpIcon className="size-8" strokeWidth={1.8} />
@@ -30,12 +30,17 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
         <p className="truncate text-sm leading-tight font-semibold text-white">
           {task.title} ({currentCount}/{task.goal_count})
         </p>
-        <div className="mt-1 flex flex-wrap items-center gap-1.5 text-sm leading-none text-accent">
-          <span className="text-accent">Награда:</span>
+        <div className="text-accent mt-1 flex flex-wrap items-center gap-1.5 text-sm leading-none">
+          <span className="text-[#FFAA00]">Награда:</span>
           {rewards.map((reward, rewardIndex) => (
-            <span key={`${task.id}-${reward.value}`} className="text-accent">
+            <span key={`${task.id}-${reward.value}`} className="text-[#C37CE2]">
               {reward.value}
-              {rewardIndex !== rewards.length - 1 && <span className="text-accent"> и </span>}
+              {rewardIndex !== rewards.length - 1 && (
+                <span className="text-accent">
+                  {' '}
+                  <span className="text-[#FFAA00]">и</span>{' '}
+                </span>
+              )}
             </span>
           ))}
         </div>
@@ -46,7 +51,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
           size="sm"
           disabled={isPending}
           onClick={() => onStart(task.id)}
-          className="h-[26px] min-w-[70px] rounded-[7.4px] bg-white px-[10px] text-xs font-semibold text-black hover:bg-white/90"
+          className="rounded-lg bg-white px-[10px] text-xs font-semibold text-black hover:bg-white/90"
         >
           Начать
         </Button>
@@ -56,7 +61,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
           size="sm"
           disabled={isPending}
           onClick={() => onClaim(task.id)}
-          className="h-[26px] min-w-[70px] rounded-[7.4px] bg-[#AA55D0] px-[10px] text-xs font-semibold text-white hover:brightness-110"
+          className="roundend-lg bg-[#AA55D0] px-[10px] text-xs font-semibold text-white hover:brightness-110"
         >
           Забрать
         </Button>
@@ -65,7 +70,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
         <Button
           size="sm"
           disabled
-          className="h-[26px] min-w-[70px] rounded-[7.4px] bg-white/12 px-[10px] text-xs font-semibold text-white/45"
+          className="rounded-lg bg-white/12 px-[10px] text-xs font-semibold text-white/45"
         >
           Забрать
         </Button>
@@ -74,7 +79,8 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
         <Button
           size="sm"
           disabled
-          className="h-[26px] min-w-[70px] rounded-[7.4px] bg-white/12 px-[10px] text-xs font-semibold text-white/45"
+          variant="purple"
+          className="rounded-lg px-[10px] text-xs font-semibold text-white/45"
         >
           Забрано
         </Button>

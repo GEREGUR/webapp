@@ -18,6 +18,7 @@ import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
 import { useToast } from '@/shared/ui/toast';
 import { Button } from '@/shared/ui/button';
 import HistoryIcon from '@/shared/assets/history.svg?react';
+import { Loader } from '@/shared/ui/spinner';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 
 export const IndexPage = () => {
@@ -113,7 +114,7 @@ export const IndexPage = () => {
         </div>
         {marketLoading ? (
           <Card>
-            <p className="text-center text-white/60">Загрузка...</p>
+            <Loader size="sm" />
           </Card>
         ) : marketOrders && marketOrders.length > 0 ? (
           <>
@@ -151,7 +152,7 @@ export const IndexPage = () => {
         </div>
         {ordersLoading ? (
           <Card>
-            <p className="text-center text-white/60">Загрузка...</p>
+            <Loader size="sm" />
           </Card>
         ) : orders && orders.length > 0 ? (
           <OrderList orders={orders} onBuy={handleOrderBuy} isBuying={buyOrderMutation.isPending} />

@@ -3,7 +3,7 @@ import { Page } from '@/pages/page';
 import { Card } from '@/shared/ui/card';
 import { Avatar } from '@/shared/ui/avatar';
 import { Button } from '@/shared/ui/button';
-import { Spinner } from '@/shared/ui/spinner';
+import { Loader } from '@/shared/ui/spinner';
 import { useProfile } from '@/entities/user';
 
 export const ProfilePage: FC = () => {
@@ -12,9 +12,7 @@ export const ProfilePage: FC = () => {
   if (isLoading) {
     return (
       <Page back>
-        <div className="flex justify-center py-8">
-          <Spinner size="lg" />
-        </div>
+        <Loader />
       </Page>
     );
   }

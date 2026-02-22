@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { Page } from '@/pages/page';
-import { Spinner } from '@/shared/ui/spinner';
+import { Loader } from '@/shared/ui/spinner';
 import { useTasksPage } from '@/entities/tasks/model/use-tasks-page';
 import { TaskList } from './ui/task-row';
 
@@ -13,9 +13,7 @@ export const AwardsPage: FC = () => {
   if (isLoading) {
     return (
       <Page back>
-        <div className="flex justify-center py-8">
-          <Spinner size="lg" />
-        </div>
+        <Loader />
       </Page>
     );
   }

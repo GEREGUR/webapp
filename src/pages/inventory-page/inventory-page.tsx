@@ -1,7 +1,7 @@
 import { type FC } from 'react';
 import { Page } from '@/pages/page';
 import { Card } from '@/shared/ui/card';
-import { Spinner } from '@/shared/ui/spinner';
+import { Loader } from '@/shared/ui/spinner';
 import { useInventory } from '@/entities/inventory';
 
 const rarityColors = {
@@ -18,9 +18,7 @@ export const InventoryPage: FC = () => {
   if (isLoading) {
     return (
       <Page back>
-        <div className="flex justify-center py-8">
-          <Spinner size="lg" />
-        </div>
+        <Loader />
       </Page>
     );
   }

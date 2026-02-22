@@ -24,7 +24,7 @@ const formatOrderTimestamp = (timestamp: number) => {
 
 const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
   return (
-    <div className="grid h-[66px] grid-cols-[42px_1fr_auto_1fr] items-center gap-3 rounded-lg bg-[#1a1a1d] px-4">
+    <div className="grid h-[66px] grid-cols-[42px_1fr_auto_1fr] items-center gap-3 rounded-lg border border-[#5F81D8]/25 bg-[#131214] px-4">
       <img
         src={order.owner.avatar}
         alt={order.owner.name}

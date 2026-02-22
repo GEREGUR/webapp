@@ -2,6 +2,7 @@ import { type FC, useState } from 'react';
 import { Page } from '@/pages/page';
 import { Avatar } from '@/shared/ui/avatar';
 import { Button } from '@/shared/ui/button';
+import { Card } from '@/shared/ui/card';
 import {
   Drawer,
   DrawerContent,
@@ -34,7 +35,7 @@ const DepositBalanceDrawer = ({
 }: DepositBalanceDrawerProps) => {
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
-      <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
+      <DrawerContent className="relative z-10 mx-auto rounded-t-[20px] !bg-[#131214] opacity-100 sm:max-w-[400px]">
         <DrawerHeader className="gap-2.5 pb-2">
           <div className="flex items-center justify-between">
             <DrawerTitle className="font-sans text-[22px] leading-[1.1] font-medium text-white">
@@ -127,7 +128,7 @@ const WithdrawBalanceDrawer = ({
 }: WithdrawBalanceDrawerProps) => {
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
-      <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
+      <DrawerContent className="relative z-10 mx-auto rounded-t-[20px] !bg-[#131214] opacity-100 sm:max-w-[400px]">
         <DrawerHeader className="gap-2.5 pb-2">
           <div className="flex items-center justify-between">
             <DrawerTitle className="font-sans text-[22px] leading-[1.1] font-medium text-white">
@@ -231,7 +232,7 @@ interface WalletHistoryDrawerProps {
 const WalletHistoryDrawer = ({ open, onClose, items }: WalletHistoryDrawerProps) => {
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
-      <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
+      <DrawerContent className="relative z-10 mx-auto rounded-t-[20px] !bg-[#131214] opacity-100 sm:max-w-[400px]">
         <DrawerHeader className="gap-2.5 pb-2">
           <div className="flex items-center justify-between">
             <DrawerTitle className="font-sans text-[22px] leading-[1.1] font-medium text-white">
@@ -344,9 +345,9 @@ export const ProfilePage: FC = () => {
   if (!profile) {
     return (
       <Page back>
-        <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+        <Card className="relative z-10 opacity-100 !border-[#272525] !bg-[#131214]">
           <p className="text-center text-white/60">Не удалось загрузить профиль</p>
-        </div>
+        </Card>
       </Page>
     );
   }
@@ -365,8 +366,8 @@ export const ProfilePage: FC = () => {
         <p className="text-white/60">@{profile.username}</p>
       </div>
 
-      <div className="mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] bg-[#131214] p-3">
-        <div className="rounded-[16px] border border-[#272525] bg-[#131214] p-2">
+      <div className="relative z-10 mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-3 opacity-100">
+        <div className="rounded-[16px] border border-[#272525] !bg-[#131214] p-2">
           <div className="flex items-center justify-between gap-2">
             <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] border border-[#3A373E] bg-[#232027] px-2.5 py-1.5">
               <TonIcon className="h-4 w-4" />
@@ -426,7 +427,7 @@ export const ProfilePage: FC = () => {
         </div>
       </div>
 
-      <div className="mx-auto mt-3 flex h-[194px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] bg-[#131214] p-3">
+      <div className="relative z-10 mx-auto mt-3 flex h-[194px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-3 opacity-100">
         <h2 className="max-w-[300px] text-[15px] leading-[1.25] font-semibold text-balance text-white">
           Приглашайте друзей и зарабатывайте 10% от их сделок
         </h2>
@@ -473,7 +474,7 @@ export const ProfilePage: FC = () => {
       </div>
 
       {profile.wallet_address && (
-        <div className="mx-auto mt-3 w-full max-w-[370px] rounded-[10px] border border-[#272525] bg-[#131214] p-4">
+        <div className="relative z-10 mx-auto mt-3 w-full max-w-[370px] rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
           <div className="flex items-center justify-between gap-2">
             <span className="text-sm text-white/60">Кошелек</span>
             <span className="text-sm font-medium text-white">

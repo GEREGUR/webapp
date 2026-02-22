@@ -4,11 +4,19 @@ import { cn } from '@/shared/lib/utils';
 
 export type LiveWinCardProps = {
   id: number;
+  tonAmount?: number;
   status?: 'bought' | 'active' | 'unavailable';
   className?: string;
 };
 
-export const LiveWinCard: FC<LiveWinCardProps> = ({ className, id }) => {
+const formatTonAmount = (value: number): string => {
+  return value.toLocaleString('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+};
+
+export const LiveWinCard: FC<LiveWinCardProps> = ({ className, id, tonAmount = 0 }) => {
   return (
     <div
       className={cn(
@@ -21,7 +29,7 @@ export const LiveWinCard: FC<LiveWinCardProps> = ({ className, id }) => {
       </div>
       <div className="flex items-center justify-center gap-1 pt-1">
         <TonIcon className="size-3.5 text-white" />
-        <span className="text-xs font-medium text-white">0.5</span>
+        <span className="text-xs font-medium text-white">{formatTonAmount(tonAmount)}</span>
       </div>
     </div>
   );

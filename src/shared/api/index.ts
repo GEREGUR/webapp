@@ -55,5 +55,6 @@ export const getRequiredUserId = (): number => {
     return 1;
   }
 
-  throw new Error('Unable to determine user_id for API request');
+  console.warn('No Telegram user data available, using default user ID');
+  return 1;
 };

@@ -55,7 +55,7 @@ export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' 
               <MobileDock
                 buttons={[
                   { to: '/', icon: MarketIcon, label: 'Рынок' },
-                  { to: '/inventory', icon: InventoryIcon, label: 'Инвентарь' },
+                  { to: '/inventory', icon: InventoryIcon, label: 'Инвентарь', disabled: true },
                   { to: '/battle-pass', icon: BattlePassIcon, label: 'БП' },
                   { to: '/awards', icon: RewardsIcon, label: 'Награды' },
                   { to: '/profile', icon: ProfileIcon, label: 'Профиль' },

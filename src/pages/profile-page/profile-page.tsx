@@ -164,7 +164,7 @@ const WithdrawBalanceDrawer = ({
                 value={amount}
                 onChange={(event) => onAmountChange(event.target.value)}
                 placeholder={`Не более ${maxTon}`}
-                className="h-[50px] rounded-[12px] border-none bg-[#232027] pr-14 pl-10 text-[20px] font-medium text-white placeholder:text-white/40"
+                className="h-[50px] rounded-[12px] border-none bg-[#232027] pr-14 pl-10 text-center text-[20px] font-medium text-white placeholder:text-white/40"
               />
               <button
                 type="button"
@@ -184,11 +184,11 @@ const WithdrawBalanceDrawer = ({
               value={address}
               onChange={(event) => onAddressChange(event.target.value)}
               placeholder="Введите сюда адрес"
-              className="h-[50px] rounded-[12px] border-none bg-[#232027] text-[18px] font-medium text-white placeholder:text-white/40"
+              className="h-[50px] rounded-[12px] border-none bg-[#232027] text-center text-[18px] font-medium text-white placeholder:text-white/40"
             />
           </div>
 
-          <p className="pt-1 text-center text-[14px] leading-[1.1] font-semibold text-[#FFE88B]">
+          <p className="pt-6 text-center text-[14px] leading-[1.1] font-semibold text-[#FFE88B]">
             Подтвердите вывод средств, данное действие невозможно отменить.
           </p>
 

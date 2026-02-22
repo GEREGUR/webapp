@@ -10,26 +10,31 @@ export const useTasks = () => {
   return useQuery({
     queryKey: QUERY_KEYS.tasks,
     queryFn: async (): Promise<TasksListResponse> => {
-      const response = await api.get<ApiTask[]>('/tasks/list', {
-        params: {
-          user_id: getRequiredUserId(),
-        },
-      });
+      try {
+        const response = await api.get<ApiTask[]>('/tasks/list', {
+          params: {
+            user_id: getRequiredUserId(),
+          },
+        });
 
-      const tasks = response.data.map((task) => {
-        const taskType = mapTaskType(task.type);
-        return {
-          ...task,
-          type: taskType,
-          reward_ton: task.reward_ton ?? 0,
-          reward_bp: task.reward_bp ?? 0,
-          reward_exp: task.reward_exp ?? 0,
-          title: mapTaskTitle(task.type),
-          description: mapTaskDescription(task.type),
-        };
-      });
+        const tasks = response.data.map((task) => {
+          const taskType = mapTaskType(task.type);
+          return {
+            ...task,
+            type: taskType,
+            reward_ton: task.reward_ton ?? 0,
+            reward_bp: task.reward_bp ?? 0,
+            reward_exp: task.reward_exp ?? 0,
+            title: mapTaskTitle(task.type),
+            description: mapTaskDescription(task.type),
+          };
+        });
 
-      return { tasks };
+        return { tasks };
+      } catch (error) {
+        console.error('API Error useTasks:', error);
+        throw error;
+      }
     },
   });
 };

@@ -136,7 +136,7 @@ export const BuyOrderDrawer = ({
                 <Input
                   {...register('regularTonAmount')}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pl-10 text-white placeholder:text-white/40"
+                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-white placeholder:text-white/40"
                 />
               </div>
             </div>
@@ -154,7 +154,7 @@ export const BuyOrderDrawer = ({
                 <Input
                   {...register('instantBpAmount')}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pl-10 text-white placeholder:text-white/40"
+                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-[#A6FF8B] placeholder:text-white/40"
                 />
               </div>
             </div>
@@ -167,7 +167,7 @@ export const BuyOrderDrawer = ({
           )}
 
           <div className="pt-2">
-            <p className="mb-3 text-center text-sm font-medium text-[#FFE88B]">
+            <p className="mb-3 text-center text-sm font-medium text-balance text-[#FFE88B]">
               Подтвердите выкуп предложения, данное действие невозможно отменить.
             </p>
 

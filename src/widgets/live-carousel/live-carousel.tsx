@@ -80,7 +80,7 @@ const getWsUrl = (): string | null => {
 
   const initData = retrieveRawInitData();
   if (initData) {
-    wsUrl.searchParams.set('x_telegram_data', initData);
+    wsUrl.searchParams.set('x-telegram-data', initData);
   }
 
   return wsUrl.toString();
@@ -153,7 +153,6 @@ export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, renderItem }: Props) 
   useEffect(() => {
     const wsUrl = getWsUrl();
 
-    // Fallback to mock data after timeout if WebSocket fails
     const fallbackTimeout = setTimeout(() => {
       setItems((current) => (current.length === 0 ? MOCK_LIVE_ITEMS : current));
     }, 3000);

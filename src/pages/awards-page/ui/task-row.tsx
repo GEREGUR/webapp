@@ -27,7 +27,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm leading-tight font-semibold text-white">
+        <p className="truncate text-sm leading-tight font-normal text-white">
           {task.title} ({currentCount}/{task.goal_count})
         </p>
         <div className="text-accent mt-1 flex flex-wrap items-center gap-1.5 text-xs leading-none">
@@ -51,7 +51,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
           size="sm"
           disabled={isPending}
           onClick={() => onStart(task.id)}
-          className="rounded-lg bg-white px-[10px] text-[10px] font-semibold text-black hover:bg-white/90"
+          className="rounded-lg bg-white px-[10px] text-[10px] font-normal text-black hover:bg-white/90"
         >
           Начать
         </Button>
@@ -61,7 +61,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
           size="sm"
           disabled={isPending}
           onClick={() => onClaim(task.id)}
-          className="roundend-lg bg-[#AA55D0] px-[10px] text-[10px] font-semibold text-white hover:brightness-110"
+          className="roundend-lg bg-[#AA55D0] px-[10px] text-[10px] font-normal text-white hover:brightness-110"
         >
           Забрать
         </Button>
@@ -70,7 +70,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
         <Button
           size="sm"
           disabled
-          className="rounded-lg bg-white/12 px-[10px] text-[10px] font-semibold text-white/45"
+          className="rounded-lg bg-white/12 px-[10px] text-[10px] font-normal text-white/45"
         >
           Забрать
         </Button>
@@ -80,7 +80,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
           size="sm"
           disabled
           variant="purple"
-          className="rounded-lg px-[10px] text-[10px] font-semibold text-white/45"
+          className="rounded-lg px-[10px] text-[10px] font-normal text-white/45"
         >
           Забрано
         </Button>

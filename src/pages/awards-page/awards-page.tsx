@@ -22,7 +22,7 @@ export const AwardsPage: FC = () => {
     <Page back>
       <div className="space-y-10">
         <section>
-          <h1 className="mb-5 text-[20px] leading-[20.03px] font-semibold text-white">Задания</h1>
+          <h1 className="mb-4 text-[20px] leading-[20.03px] font-semibold text-white">Задания</h1>
           <TaskList
             tasks={taskSection}
             isPending={isActionPending}
@@ -33,7 +33,7 @@ export const AwardsPage: FC = () => {
 
         {baseTasks.length > 0 && bonusTasks.length > 0 && (
           <section>
-            <h2 className="mb-5 text-[20px] leading-[20.03px] font-semibold text-white">Бонусы</h2>
+            <h2 className="mb-4 text-[20px] leading-[20.03px] font-semibold text-white">Бонусы</h2>
             <TaskList
               tasks={bonusTasks}
               isPending={isActionPending}

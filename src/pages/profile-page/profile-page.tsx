@@ -371,14 +371,14 @@ export const ProfilePage: FC = () => {
       <div className="relative z-10 mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
         <div className="rounded-[16px] border-[1.5px] border-[#272525] !bg-[#131214] p-2">
           <div className="flex items-center justify-between gap-1">
-            <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">
+            <div className="flex min-w-[64px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">
               <TonIcon className="h-4 w-4" />
               <span className="text-[14px] leading-none font-normal text-white">
                 {profile.ton_balance.toLocaleString()}
               </span>
             </div>
             <p className="text-center text-[14px] leading-none font-medium text-white">Баланс</p>
-            <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">
+            <div className="flex min-w-[64px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">
               <BpPointsIcon className="h-4 w-4" />
               <span className="text-[14px] leading-none font-normal text-white">
                 {profile.internal_balance.toLocaleString()}

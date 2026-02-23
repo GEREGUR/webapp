@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
-import { retrieveRawInitData } from '@tma.js/sdk-react';
+import { retrieveLaunchParams } from '@tma.js/sdk-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export type DropItem = {
@@ -68,19 +68,20 @@ const getWsUrl = (): string | null => {
   const wsProtocol = parsedApiUrl.protocol === 'https:' ? 'wss:' : 'ws:';
   const basePath = parsedApiUrl.pathname.replace(/\/+$/, '');
 
-  let wsPath = '/api/order/ws';
+  let wsPath = '/api/v1/socket/ws';
   if (basePath.endsWith('/api/v1')) {
-    wsPath = `${basePath.replace(/\/v1$/, '')}/order/ws`;
+    wsPath = `${basePath.replace(/\/v1$/, '')}/socket/ws`;
   } else if (basePath.endsWith('/api')) {
-    wsPath = `${basePath}/order/ws`;
+    wsPath = `${basePath}/socket/ws`;
   }
 
   const wsUrl = new URL(`${wsProtocol}//${parsedApiUrl.host}`);
   wsUrl.pathname = wsPath;
 
-  const initData = retrieveRawInitData();
+  const initData = retrieveLaunchParams();
+  console.log(initData);
   if (initData) {
-    wsUrl.searchParams.set('x_telegram_data', initData);
+    wsUrl.searchParams.set('auth', initData.tgWebAppData?.user?.id.toString() ?? '');
   }
 
   return wsUrl.toString();

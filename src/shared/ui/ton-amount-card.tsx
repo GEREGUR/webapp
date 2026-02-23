@@ -21,7 +21,7 @@ export const AmountSlider = ({
   const progress = ((value - min) / (max - min)) * 100;
 
   return (
-    <div className={cn('relative h-full w-full', className)}>
+    <div className={cn('relative flex h-full w-full min-w-44 flex-1', className)}>
       <div className="relative z-0 h-1.5 w-full rounded-full bg-[#4E4E4E]">
         <div
           className="bg-blue absolute z-10 h-full rounded-full transition-all"
@@ -75,7 +75,7 @@ export const TonAmountCard = ({ value, onChange, tonAmount, className }: TonAmou
   return (
     <div
       className={cn(
-        'relative z-10 flex h-[50px] items-center rounded-[10px] bg-[#232027] px-7',
+        'relative z-10 flex h-[50px] w-full items-center rounded-[10px] bg-[#232027] pl-7',
         className
       )}
     >
@@ -85,8 +85,8 @@ export const TonAmountCard = ({ value, onChange, tonAmount, className }: TonAmou
 
       <div className="mx-4 h-10 w-px bg-white/10" />
 
-      <div className="flex items-center gap-2 px-6">
-        <TonIcon className="h-6 w-6" />
+      <div className="flex items-center justify-center gap-2 pr-2">
+        <TonIcon className="size-4 pt-px" />
         <span className="text-base font-semibold text-white">{tonAmount}</span>
       </div>
     </div>

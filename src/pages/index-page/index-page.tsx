@@ -68,7 +68,7 @@ export const IndexPage = () => {
     <Tabs defaultTab="market">
       <div className="pt-6">
         <MaxWidthWrapper>
-          <TabList className="mb-2 flex gap-2">
+          <TabList className="mb-2 flex gap-4">
             <Tab value="market" className="transition-colors">
               Рынок
             </Tab>

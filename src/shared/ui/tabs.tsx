@@ -94,7 +94,7 @@ export const Tab = ({ value, children, className }: TabProps) => {
       type="button"
       data-active={isActive}
       className={cn(
-        'relative w-fit cursor-pointer appearance-none border-none bg-transparent py-2 text-start text-3xl font-medium transition-all duration-300 ease-out outline-none select-none',
+        'relative w-fit cursor-pointer appearance-none border-none bg-transparent py-2 text-start text-[32px] font-medium transition-all duration-300 ease-out outline-none select-none',
         isActive ? 'text-white' : 'text-zinc-600 blur-[0.5px] hover:text-zinc-400',
         className
       )}

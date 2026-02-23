@@ -79,7 +79,6 @@ const getWsUrl = (): string | null => {
   wsUrl.pathname = wsPath;
 
   const initData = retrieveLaunchParams();
-  console.log(initData);
   if (initData) {
     wsUrl.searchParams.set('auth', initData.tgWebAppData?.user?.id.toString() ?? '');
   }
@@ -154,7 +153,6 @@ export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, renderItem }: Props) 
   useEffect(() => {
     const wsUrl = getWsUrl();
 
-    // Fallback to mock data after timeout if WebSocket fails
     const fallbackTimeout = setTimeout(() => {
       setItems((current) => (current.length === 0 ? MOCK_LIVE_ITEMS : current));
     }, 3000);

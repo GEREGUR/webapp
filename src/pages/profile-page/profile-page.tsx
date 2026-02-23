@@ -369,18 +369,18 @@ export const ProfilePage: FC = () => {
       </div>
 
       <div className="relative z-10 mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
-        <div className="rounded-[16px] border border-[#272525] !bg-[#131214] p-3">
-          <div className="flex items-center justify-between gap-2">
+        <div className="rounded-[16px] border border-[#272525] !bg-[#131214] p-2">
+          <div className="flex items-center justify-between gap-1">
             <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">
               <TonIcon className="h-4 w-4" />
-              <span className="text-[16px] leading-none font-semibold text-white">
+              <span className="text-[14px] leading-none font-normal text-white">
                 {profile.ton_balance.toLocaleString()}
               </span>
             </div>
             <p className="text-center text-[14px] leading-none font-medium text-white">Баланс</p>
             <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">
               <BpPointsIcon className="h-4 w-4" />
-              <span className="text-[16px] leading-none font-semibold text-white">
+              <span className="text-[14px] leading-none font-normal text-white">
                 {profile.internal_balance.toLocaleString()}
               </span>
             </div>
@@ -403,7 +403,7 @@ export const ProfilePage: FC = () => {
             className="inline-flex h-[41px] items-center justify-center rounded-[12px] bg-[#2F3033] text-[13px] font-semibold text-white hover:brightness-110"
             onClick={() => setIsWithdrawOpen(true)}
           >
-            <Arrow className="mr-1 h-4 w-4 rotate-180" />
+            <Arrow className="mr-1 size-3.5 rotate-180" />
             Вывести
           </Button>
         </div>
@@ -411,7 +411,7 @@ export const ProfilePage: FC = () => {
         <div className="flex items-center gap-2">
           <Button
             type="button"
-            className="inline-flex h-[41px] flex-1 items-center justify-center rounded-[12px] bg-white text-[13px] font-semibold text-black hover:bg-white/90"
+            className="inline-flex h-[40px] flex-1 items-center justify-center rounded-[12px] bg-white text-[13px] font-semibold text-black hover:bg-white/90"
             onClick={() => showToast('Подключение кошелька в разработке', 'info')}
           >
             Подключить кошелек
@@ -419,7 +419,7 @@ export const ProfilePage: FC = () => {
           <Button
             type="button"
             variant="secondary"
-            className="inline-flex h-[41px] w-[41px] items-center justify-center rounded-[12px] bg-[#2F3033] p-0 text-white hover:brightness-110"
+            className="inline-flex h-[40px] w-[60px] items-center justify-center rounded-[12px] bg-[#2F3033] p-0 text-white hover:brightness-110"
             aria-label="История"
             onClick={() => setIsHistoryOpen(true)}
           >

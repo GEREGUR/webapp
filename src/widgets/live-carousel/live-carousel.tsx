@@ -11,6 +11,7 @@ export type DropItem = {
 
 const MAX_ITEMS = 15;
 const RECONNECT_DELAY_MS = 3000;
+const MAX_RETRY_COUNT = 2;
 const EMPTY_ITEMS: DropItem[] = [];
 
 const MOCK_LIVE_ITEMS: DropItem[] = [
@@ -164,6 +165,7 @@ export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, renderItem }: Props) 
     let socket: WebSocket | null = null;
     let reconnectTimeoutId: number | undefined;
     let isUnmounted = false;
+    let retryCount = 0;
 
     const connect = () => {
       socket = new WebSocket(wsUrl);
@@ -194,7 +196,12 @@ export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, renderItem }: Props) 
           return;
         }
 
-        reconnectTimeoutId = window.setTimeout(connect, RECONNECT_DELAY_MS);
+        if (retryCount < MAX_RETRY_COUNT) {
+          retryCount++;
+          reconnectTimeoutId = window.setTimeout(connect, RECONNECT_DELAY_MS);
+        } else {
+          setItems((current) => (current.length === 0 ? MOCK_LIVE_ITEMS : current));
+        }
       };
     };
 

@@ -366,8 +366,8 @@ export const ProfilePage: FC = () => {
         <p className="text-white/60">@{profile.username}</p>
       </div>
 
-      <div className="relative z-10 mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-3 opacity-100">
-        <div className="rounded-[16px] border border-[#272525] !bg-[#131214] p-2">
+      <div className="relative z-10 mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
+        <div className="rounded-[16px] border border-[#272525] !bg-[#131214] p-3">
           <div className="flex items-center justify-between gap-2">
             <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] border border-[#3A373E] bg-[#232027] px-2.5 py-1.5">
               <TonIcon className="h-4 w-4" />

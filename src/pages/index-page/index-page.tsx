@@ -19,7 +19,7 @@ import { useToast } from '@/shared/ui/toast';
 import { Button } from '@/shared/ui/button';
 import HistoryIcon from '@/shared/assets/history.svg?react';
 import { Loader } from '@/shared/ui/spinner';
-import { ArrowUp, ArrowDown } from 'lucide-react';
+import Arrow from '@/shared/assets/arrow.svg?react';
 
 export const IndexPage = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -137,7 +137,11 @@ export const IndexPage = () => {
             />
 
             <Button className="bg-ghost h-[50px]" onClick={() => setSortAscending(!sortAscending)}>
-              {sortAscending ? <ArrowUp /> : <ArrowDown />}
+              {sortAscending ? (
+                <Arrow className="size-4" />
+              ) : (
+                <Arrow className="size-4 rotate-180" />
+              )}
             </Button>
           </div>
         </div>

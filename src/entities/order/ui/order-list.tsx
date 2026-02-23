@@ -24,7 +24,7 @@ const formatOrderTimestamp = (timestamp: number) => {
 
 const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
   return (
-    <div className="grid h-[66px] grid-cols-[42px_1fr_80px_auto] items-center gap-3 rounded-lg border border-[#5F81D8]/25 bg-[#131214] px-4">
+    <div className="grid h-[66px] grid-cols-[42px_1fr_80px_auto] items-center gap-3 rounded-lg border border-[#5F81D8]/25 bg-[#131214] pr-4 pl-2">
       <img
         src={order.owner.avatar}
         alt={order.owner.name}
@@ -32,13 +32,13 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
       />
 
       <div className="min-w-0">
-        <p className="truncate text-sm font-semibold text-white">{order.owner.username}</p>
+        <p className="truncate text-base font-light text-white">{order.owner.username}</p>
         <p className="text-xs text-white/60">{formatOrderTimestamp(order.create_date)}</p>
       </div>
 
       <div className="flex items-center justify-start gap-1.5">
         <TonIcon className="size-4 text-white" />
-        <span className="text-xl font-medium text-white">{order.current_ton_amount}</span>
+        <span className="text-xl font-normal text-white">{order.current_ton_amount}</span>
       </div>
 
       <button

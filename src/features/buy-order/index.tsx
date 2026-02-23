@@ -103,7 +103,7 @@ export const BuyOrderDrawer = ({
               <X className="h-6 w-6 stroke-2" />
             </Button>
           </div>
-          <DrawerDescription className="font-sans text-[15px] leading-[18.4px] font-light text-white/60">
+          <DrawerDescription className="font-sans text-[13px] leading-[18.4px] font-light text-balance text-white/60">
             После выкупа собственного предложения на ваш баланс будет зачислен TON с удержанием
             комиссии (15%) за мгновенную ликвидность.
           </DrawerDescription>
@@ -118,7 +118,7 @@ export const BuyOrderDrawer = ({
           <div className="grid grid-cols-1 gap-3">
             <div className="relative">
               <div className="mb-2 flex items-center justify-between">
-                <span className="font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
+                <span className="font-sans text-[16.72px] leading-[18.39px] font-light text-white">
                   Получите обычным выкупом
                 </span>
                 <div className="flex items-center gap-1">
@@ -143,7 +143,7 @@ export const BuyOrderDrawer = ({
 
             <div className="relative">
               <div className="mb-2 flex items-center justify-between">
-                <span className="font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
+                <span className="font-sans text-[16.72px] leading-[18.39px] font-light text-white">
                   Получите прямо сейчас
                 </span>
               </div>

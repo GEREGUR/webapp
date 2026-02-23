@@ -11,16 +11,16 @@ export const MarketStatsBar: FC<MarketStatsBarProps> = ({ tonAmount, orderCount,
   return (
     <div
       className={cn(
-        'relative z-10 flex h-[26px] w-full items-center rounded-[10px] border border-white/10 bg-[#131214] px-3.5 opacity-100',
+        'relative z-10 flex h-[26px] w-full items-center rounded-[10px] border border-white/10 bg-[#131214] px-3.5 font-normal opacity-100',
         className
       )}
     >
       <div className="flex flex-1 items-center justify-center">
-        <span className="text-xs font-medium text-white">{tonAmount} TON</span>
+        <span className="text-xs text-white">{tonAmount} TON</span>
       </div>
       <div className="h-2.5 w-px bg-white" />
       <div className="flex flex-1 items-center justify-center">
-        <span className="text-xs font-medium text-white">{orderCount} Предложений</span>
+        <span className="text-xs text-white">{orderCount} Предложений</span>
       </div>
     </div>
   );

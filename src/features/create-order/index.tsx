@@ -14,6 +14,7 @@ import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import BpIcon from '@/shared/assets/bp.svg?react';
 import TonIcon from '@/shared/assets/ton.svg?react';
+import Arrow from '@/shared/assets/arrow.svg?react';
 
 const createOrderSchema = z.object({
   bpAmount: z.string().min(1, 'Минимум 1 BP'),
@@ -77,14 +78,14 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
             <Button
               type="button"
               variant="ghost"
-              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent p-0 text-white"
               onClick={handleClose}
               aria-label="Закрыть"
             >
               <X className="h-6 w-6 stroke-2" />
             </Button>
           </div>
-          <DrawerDescription className="font-sans text-[15px] leading-[18.4px] font-light text-white/60">
+          <DrawerDescription className="font-sans text-[13px] leading-[18.4px] font-light text-balance text-white/60">
             После создания предложение станет доступно для покупки другими пользователями, вы
             сможете выкупить его досрочно в разделе "Мои ордеры"
           </DrawerDescription>
@@ -99,15 +100,19 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
           <div className="grid grid-cols-1 gap-1">
             <div className="relative">
               <div className="mb-2 flex items-center justify-between">
-                <span className="font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
+                <span className="font-sans text-[16.72px] leading-[18.39px] font-light text-white">
                   Введите количество BP
                 </span>
-                <div className="flex items-center gap-1">
-                  <TonIcon className="size-3 text-white" />
-                  <span className="font-sans text-xs font-normal text-white">1</span>
-                  <span className="font-sans text-xs font-normal text-white">=</span>
-                  <BpIcon className="size-4 text-[#C37CE2]" />
-                  <span className="font-sans text-xs font-normal text-white">1</span>
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1">
+                    <TonIcon className="size-3 text-white" />
+                    <span className="font-sans text-xs font-normal text-white"> 1 </span>
+                  </div>
+                  <span className="font-sans text-xs font-normal text-white"> = </span>
+                  <div className="flex items-center gap-1">
+                    <BpIcon className="size-4 text-[#C37CE2]" />
+                    <span className="font-sans text-xs font-normal text-white"> 1 </span>
+                  </div>
                 </div>
               </div>
               <div className="relative">
@@ -122,20 +127,12 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
               </div>
             </div>
 
-            <div className="flex items-center justify-center">
-              <svg
-                className="size-7 text-white"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-              >
-                <path d="M12 5v14M5 12l7 7 7-7" />
-              </svg>
+            <div className="mt-2 flex items-center justify-center">
+              <Arrow className="rotate-180" />
             </div>
 
             <div className="relative">
-              <span className="mb-2 block font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
+              <span className="mb-2 block font-sans text-[16.72px] leading-[18.39px] font-light text-white">
                 Получите TON
               </span>
               <div className="relative">
@@ -203,7 +200,7 @@ export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
       <div className="flex justify-center pt-2">
         <Button
           onClick={() => setOpen(true)}
-          className="bg-blue-dark h-[50px] w-[214px] text-[16px]"
+          className="bg-blue-dark h-[50px] w-[214px] text-[16px] font-medium"
         >
           Создать предложение
         </Button>

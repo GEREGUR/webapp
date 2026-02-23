@@ -16,7 +16,9 @@ import { useToast } from '@/shared/ui/toast';
 import { useProfile } from '@/entities/user';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points.svg?react';
-import { ArrowDown, ArrowUp, Copy, History, UserPlus, Users, WalletMinimal, X } from 'lucide-react';
+import HistoryIcon from '@/shared/assets/history.svg?react';
+import Arrow from '@/shared/assets/arrow.svg?react';
+import { Copy, UserPlus, Users, X } from 'lucide-react';
 import { BattlePassPromoCard } from '@/features/battle-pass-promo';
 
 interface DepositBalanceDrawerProps {
@@ -362,23 +364,23 @@ export const ProfilePage: FC = () => {
           size="xl"
           className="mb-3"
         />
-        <h1 className="text-xl font-bold text-white">{profile.name}</h1>
-        <p className="text-white/60">@{profile.username}</p>
+        <h1 className="text-xl font-semibold text-white">{profile.name}</h1>
+        <p className="text-[13px] text-white/60">@{profile.username}</p>
       </div>
 
       <div className="relative z-10 mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
         <div className="rounded-[16px] border border-[#272525] !bg-[#131214] p-3">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] border border-[#3A373E] bg-[#232027] px-2.5 py-1.5">
+            <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">
               <TonIcon className="h-4 w-4" />
-              <span className="text-[14px] leading-none font-medium text-white">
+              <span className="text-[16px] leading-none font-semibold text-white">
                 {profile.ton_balance.toLocaleString()}
               </span>
             </div>
-            <p className="text-center text-[18px] leading-none font-semibold text-white">Баланс</p>
-            <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] border border-[#3A373E] bg-[#232027] px-2.5 py-1.5">
+            <p className="text-center text-[14px] leading-none font-medium text-white">Баланс</p>
+            <div className="flex min-w-[88px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">
               <BpPointsIcon className="h-4 w-4" />
-              <span className="text-[14px] leading-none font-medium text-white">
+              <span className="text-[16px] leading-none font-semibold text-white">
                 {profile.internal_balance.toLocaleString()}
               </span>
             </div>
@@ -392,7 +394,7 @@ export const ProfilePage: FC = () => {
             className="inline-flex h-[41px] items-center justify-center rounded-[12px] bg-[#2F3033] text-[13px] font-semibold text-white hover:brightness-110"
             onClick={() => setIsDepositOpen(true)}
           >
-            <ArrowDown className="mr-1 h-4 w-4 stroke-2" />
+            <Arrow className="mr-1 h-4 w-4" />
             Внести
           </Button>
           <Button
@@ -401,7 +403,7 @@ export const ProfilePage: FC = () => {
             className="inline-flex h-[41px] items-center justify-center rounded-[12px] bg-[#2F3033] text-[13px] font-semibold text-white hover:brightness-110"
             onClick={() => setIsWithdrawOpen(true)}
           >
-            <ArrowUp className="mr-1 h-4 w-4 stroke-2" />
+            <Arrow className="mr-1 h-4 w-4 rotate-180" />
             Вывести
           </Button>
         </div>
@@ -412,7 +414,6 @@ export const ProfilePage: FC = () => {
             className="inline-flex h-[41px] flex-1 items-center justify-center rounded-[12px] bg-white text-[13px] font-semibold text-black hover:bg-white/90"
             onClick={() => showToast('Подключение кошелька в разработке', 'info')}
           >
-            <WalletMinimal className="mr-1 h-4 w-4 stroke-2" />
             Подключить кошелек
           </Button>
           <Button
@@ -422,7 +423,7 @@ export const ProfilePage: FC = () => {
             aria-label="История"
             onClick={() => setIsHistoryOpen(true)}
           >
-            <History className="h-5 w-5 stroke-2" />
+            <HistoryIcon className="h-5 w-5" />
           </Button>
         </div>
       </div>
@@ -431,7 +432,7 @@ export const ProfilePage: FC = () => {
         <BattlePassPromoCard />
       </div>
 
-      <div className="relative z-10 mx-auto mt-3 flex h-[194px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-3 opacity-100">
+      <div className="relative z-10 mx-auto mt-3 flex h-[194px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
         <h2 className="max-w-[300px] text-[15px] leading-[1.25] font-semibold text-balance text-white">
           Приглашайте друзей и зарабатывайте 10% от их сделок
         </h2>
@@ -455,7 +456,7 @@ export const ProfilePage: FC = () => {
           <Button
             type="button"
             variant="secondary"
-            className="inline-flex h-[40px] items-center justify-center rounded-[10px] bg-[#2F3033] text-[12px] font-semibold text-white hover:brightness-110"
+            className="inline-flex h-[40px] items-center justify-center rounded-[10px] bg-[#2F3033] text-[13px] font-semibold text-white hover:brightness-110"
             onClick={() =>
               void handleCopy(
                 `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/webapp?ref=${profile.id}`)}`,
@@ -468,7 +469,7 @@ export const ProfilePage: FC = () => {
           </Button>
           <Button
             type="button"
-            className="inline-flex h-[40px] items-center justify-center rounded-[10px] bg-[#5F81D8] text-[12px] font-semibold text-white hover:brightness-110"
+            className="inline-flex h-[40px] items-center justify-center rounded-[10px] bg-[#5F81D8] text-[13px] font-semibold text-white hover:brightness-110"
             onClick={() => showToast('Инвайт отправлен', 'success')}
           >
             <UserPlus className="mr-1 h-4 w-4 stroke-2" />

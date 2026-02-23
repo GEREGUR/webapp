@@ -364,8 +364,8 @@ export const ProfilePage: FC = () => {
           size="xl"
           className="mb-3"
         />
-        <h1 className="text-xl font-semibold text-white">{profile.name}</h1>
-        <p className="text-[13px] text-white/60">@{profile.username}</p>
+        <h1 className="text-xl font-normal text-white">{profile.name}</h1>
+        <p className="text-[13px] text-white/60">ID: #{profile.username}</p>
       </div>
 
       <div className="relative z-10 mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">

@@ -45,7 +45,7 @@ const RewardCard: FC<RewardCardProps> = ({ reward, onClaim }) => {
       )}
     >
       <div className="bg-blue-bp absolute top-0 left-0 flex h-[38px] w-[38px] items-center justify-center rounded-[12px] p-[8px]">
-        <span className="text-[28px] leading-[16.71px] font-medium text-white">{reward.level}</span>
+        <span className="text-[28px] leading-[16.71px] font-normal text-white">{reward.level}</span>
       </div>
 
       <div className="bg-ghost mt-[10px] flex h-[116px] w-[119px] items-center justify-center self-center rounded-[10px]">

@@ -433,20 +433,20 @@ export const ProfilePage: FC = () => {
       </div>
 
       <div className="relative z-10 mx-auto mt-3 flex h-[194px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
-        <h2 className="max-w-[300px] text-[15px] leading-[1.25] font-semibold text-balance text-white">
+        <h2 className="max-w-[300px] text-[14px] leading-[1.25] font-normal text-balance text-white">
           Приглашайте друзей и зарабатывайте 10% от их сделок
         </h2>
 
         <div className="grid grid-cols-2 overflow-hidden rounded-[12px] bg-[#232027]">
           <div className="flex h-[60px] items-center justify-center gap-1 px-2">
-            <span className="text-[12px] font-semibold text-white">Приглашено:</span>
+            <span className="text-[12px] font-normal text-white">Приглашено:</span>
             <Users className="h-4 w-4 text-[#C37CE2]" />
-            <span className="text-[12px] leading-none font-semibold text-white">0</span>
+            <span className="text-[12px] leading-none font-normal text-white">0</span>
           </div>
           <div className="flex h-[60px] items-center justify-center gap-1 border-l border-white/20 px-2">
-            <span className="text-[12px] font-semibold text-white">Заработано:</span>
+            <span className="text-[12px] font-normal text-white">Заработано:</span>
             <TonIcon className="h-4 w-4" />
-            <span className="text-[12px] leading-none font-semibold text-white">
+            <span className="text-[12px] leading-none font-normal text-white">
               {profile.referral_earn.toLocaleString()}
             </span>
           </div>
@@ -456,7 +456,7 @@ export const ProfilePage: FC = () => {
           <Button
             type="button"
             variant="secondary"
-            className="inline-flex h-[40px] items-center justify-center rounded-[10px] bg-[#2F3033] text-[13px] font-semibold text-white hover:brightness-110"
+            className="inline-flex h-[40px] items-center justify-center rounded-[10px] bg-[#2F3033] text-[13px] font-normal text-white hover:brightness-110"
             onClick={() =>
               void handleCopy(
                 `https://t.me/share/url?url=${encodeURIComponent(`https://t.me/webapp?ref=${profile.id}`)}`,
@@ -469,7 +469,7 @@ export const ProfilePage: FC = () => {
           </Button>
           <Button
             type="button"
-            className="inline-flex h-[40px] items-center justify-center rounded-[10px] bg-[#5F81D8] text-[13px] font-semibold text-white hover:brightness-110"
+            className="inline-flex h-[40px] items-center justify-center rounded-[10px] bg-[#5F81D8] text-[13px] font-normal text-white hover:brightness-110"
             onClick={() => showToast('Инвайт отправлен', 'success')}
           >
             <UserPlus className="mr-1 h-4 w-4 stroke-2" />

@@ -15,7 +15,7 @@ export const Button = ({
   return (
     <button
       className={cn(
-        'rounded-lg font-semibold transition-all',
+        'rounded-md font-semibold transition-all',
         'disabled:cursor-not-allowed disabled:opacity-50',
         {
           'bg-[#1a3a6e] text-white hover:brightness-110 active:scale-[0.98] disabled:bg-[#6E91E7]':

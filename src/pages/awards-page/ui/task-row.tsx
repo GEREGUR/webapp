@@ -51,7 +51,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
           size="sm"
           disabled={isPending}
           onClick={() => onStart(task.id)}
-          className="rounded-lg bg-white px-[10px] text-[10px] font-normal text-black hover:bg-white/90"
+          className="rounded-md bg-white px-[10px] text-[10px] font-normal text-black hover:bg-white/90"
         >
           Начать
         </Button>
@@ -61,7 +61,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
           size="sm"
           disabled={isPending}
           onClick={() => onClaim(task.id)}
-          className="roundend-lg bg-[#AA55D0] px-[10px] text-[10px] font-normal text-white hover:brightness-110"
+          className="roundend-md bg-[#AA55D0] px-[10px] text-[10px] font-normal text-white hover:brightness-110"
         >
           Забрать
         </Button>
@@ -70,7 +70,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
         <Button
           size="sm"
           disabled
-          className="rounded-lg bg-white/12 px-[10px] text-[10px] font-normal text-white/45"
+          className="rounded-md bg-white/12 px-[10px] text-[10px] font-normal text-white/45"
         >
           Забрать
         </Button>
@@ -80,7 +80,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
           size="sm"
           disabled
           variant="purple"
-          className="rounded-lg px-[10px] text-[10px] font-normal text-white/45"
+          className="rounded-md px-[10px] text-[10px] font-normal text-white/45"
         >
           Забрано
         </Button>
@@ -106,7 +106,7 @@ export const TaskList: FC<TaskListProps> = ({ tasks, isPending, onStart, onClaim
   }
 
   return (
-    <Card className="overflow-hidden rounded-[18px] border-[#272525] bg-[#131214] p-0">
+    <Card className="overflow-hidden rounded-[10px] border-[#272525] bg-[#131214] p-0">
       {tasks.map((task, index) => (
         <TaskRow
           key={task.id}

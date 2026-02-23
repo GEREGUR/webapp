@@ -1,39 +1,26 @@
 import { type FC, useEffect, useMemo, useState } from 'react';
 import { Page } from '@/pages/page';
-import { BattlePassProgress, useBattlePassProgress } from '@/features/battle-pass-progress';
+import { BattlePassProgress } from '@/features/battle-pass-progress';
 import { BattlePassPromoCard } from '@/features/battle-pass-promo';
+import {
+  useBattlePass,
+  useClaimBattlePassReward,
+  mapBattlePassReward,
+  type BattlePassRewardUI,
+} from '@/entities/battle-pass';
 import BpPointsIcon from '@/shared/assets/bp-points.svg?react';
 import CheckmarkIcon from '@/shared/assets/checkmark.svg?react';
 import TomCatIcon from '@/shared/assets/tom-cat.png';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
 import PepeGiftIcon from '@/shared/assets/pepe-gift.png';
+import { useToast } from '@/shared/ui/toast';
+import { Loader } from '@/shared/ui/spinner';
 import { X } from 'lucide-react';
 
-export interface BattlePassReward {
-  id: number;
-  level: number;
-  multiplier: number;
-  isCompleted: boolean;
-  rewardType: 'brick' | 'bp';
-}
-
-const REWARDS: BattlePassReward[] = [
-  { id: 1, level: 1, multiplier: 100, isCompleted: true, rewardType: 'brick' },
-  { id: 2, level: 2, multiplier: 150, isCompleted: true, rewardType: 'bp' },
-  { id: 3, level: 3, multiplier: 200, isCompleted: true, rewardType: 'brick' },
-  { id: 4, level: 4, multiplier: 250, isCompleted: false, rewardType: 'bp' },
-  { id: 5, level: 5, multiplier: 300, isCompleted: false, rewardType: 'brick' },
-  { id: 6, level: 6, multiplier: 350, isCompleted: false, rewardType: 'bp' },
-  { id: 7, level: 7, multiplier: 400, isCompleted: false, rewardType: 'brick' },
-  { id: 8, level: 8, multiplier: 450, isCompleted: false, rewardType: 'bp' },
-  { id: 9, level: 9, multiplier: 500, isCompleted: false, rewardType: 'brick' },
-  { id: 10, level: 10, multiplier: 550, isCompleted: false, rewardType: 'bp' },
-];
-
 interface RewardCardProps {
-  reward: BattlePassReward;
-  onClaim: (reward: BattlePassReward) => void;
+  reward: BattlePassRewardUI;
+  onClaim: (reward: BattlePassRewardUI) => void;
 }
 
 const RewardCard: FC<RewardCardProps> = ({ reward, onClaim }) => {
@@ -86,7 +73,7 @@ const RewardCard: FC<RewardCardProps> = ({ reward, onClaim }) => {
 
 interface ClaimOverlayProps {
   open: boolean;
-  reward: BattlePassReward | null;
+  reward: BattlePassRewardUI | null;
   onClose: () => void;
 }
 
@@ -187,49 +174,43 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
   );
 };
 
-interface BattlePassPageProps {
-  currentLevel?: number;
-  nextLevel?: number;
-  progress?: number;
-  rewards?: BattlePassReward[];
-}
+export const BattlePassPage: FC = () => {
+  const { data, isLoading } = useBattlePass();
+  const claimReward = useClaimBattlePassReward();
+  const { showToast } = useToast();
+  const [claimedReward, setClaimedReward] = useState<BattlePassRewardUI | null>(null);
 
-export const BattlePassPage: FC<BattlePassPageProps> = ({
-  currentLevel = 5,
-  nextLevel = 6,
-  progress = 65,
-  rewards = REWARDS,
-}) => {
-  const [claimedRewardIds, setClaimedRewardIds] = useState<Set<number>>(new Set());
-  const [claimedReward, setClaimedReward] = useState<BattlePassReward | null>(null);
+  const rewards = useMemo(() => {
+    if (!data?.rewards) return [];
+    return data.rewards.map(mapBattlePassReward);
+  }, [data?.rewards]);
 
-  const {
-    currentLevel: level,
-    nextLevel: next,
-    progress: percent,
-    currentExp,
-  } = useBattlePassProgress({
-    currentLevel,
-    nextLevel,
-    progress,
-  });
+  const nextLevel = (data?.level ?? 0) + 1;
+  const progress = data?.progress ?? 0;
 
-  const rewardsState = useMemo(
-    () =>
-      rewards.map((reward) =>
-        claimedRewardIds.has(reward.id) ? { ...reward, isCompleted: true } : reward
-      ),
-    [rewards, claimedRewardIds]
-  );
-
-  const handleClaimReward = (rewardToClaim: BattlePassReward) => {
-    setClaimedRewardIds((previous) => new Set(previous).add(rewardToClaim.id));
-    setClaimedReward({ ...rewardToClaim, isCompleted: true });
+  const handleClaimReward = (rewardToClaim: BattlePassRewardUI) => {
+    claimReward.mutate(rewardToClaim.id, {
+      onSuccess: () => {
+        setClaimedReward({ ...rewardToClaim, isCompleted: true });
+        showToast('Награда получена!', 'success');
+      },
+      onError: () => {
+        showToast('Не удалось получить награду', 'error');
+      },
+    });
   };
 
   const handleCloseOverlay = () => {
     setClaimedReward(null);
   };
+
+  if (isLoading) {
+    return (
+      <Page back>
+        <Loader />
+      </Page>
+    );
+  }
 
   return (
     <>
@@ -238,14 +219,14 @@ export const BattlePassPage: FC<BattlePassPageProps> = ({
           <BattlePassPromoCard />
 
           <BattlePassProgress
-            currentLevel={level}
-            nextLevel={next}
-            progress={percent}
-            currentExp={currentExp}
+            currentLevel={data?.level ?? 1}
+            nextLevel={nextLevel}
+            progress={progress}
+            currentExp={data?.exp ?? 0}
           />
 
           <div className="grid grid-cols-2 gap-[10px]">
-            {rewardsState.map((reward) => (
+            {rewards.map((reward) => (
               <RewardCard key={reward.id} reward={reward} onClaim={handleClaimReward} />
             ))}
           </div>

@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { api, getRequiredUserId, getTelegramUserData } from '@/shared/api';
 import type { UserProfile } from './api.dto';
-import { MOCK_PROFILE } from './mock';
 
 interface GetMeResponse {
   id: number;
@@ -19,10 +18,6 @@ export const useProfile = () => {
   return useQuery({
     queryKey: QUERY_KEYS.profile,
     queryFn: async (): Promise<UserProfile> => {
-      if (import.meta.env.DEV) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        return MOCK_PROFILE;
-      }
       try {
         const response = await api.get<GetMeResponse>('/user/me', {
           params: {

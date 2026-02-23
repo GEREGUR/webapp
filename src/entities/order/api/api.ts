@@ -1,7 +1,6 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api, getRequiredUserId } from '@/shared/api';
 import type { Order, CreateOrderRequest, BuyOrderRequest } from './api.dto';
-import { MOCK_ORDERS } from './mock';
 
 const QUERY_KEYS = {
   orders: ['orders'] as const,
@@ -13,10 +12,6 @@ export const useMarketOrders = () => {
   return useQuery({
     queryKey: QUERY_KEYS.marketOrders,
     queryFn: async (): Promise<Order[]> => {
-      if (import.meta.env.DEV) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        return MOCK_ORDERS;
-      }
       try {
         const response = await api.get<Order[]>('/order/self_orders', {
           params: {
@@ -36,10 +31,6 @@ export const useOrders = () => {
   return useQuery({
     queryKey: QUERY_KEYS.orders,
     queryFn: async (): Promise<Order[]> => {
-      if (import.meta.env.DEV) {
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        return MOCK_ORDERS.slice(0, 3);
-      }
       try {
         const response = await api.get<Order[]>('/order/self_orders', {
           params: {

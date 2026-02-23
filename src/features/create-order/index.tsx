@@ -96,7 +96,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
           }}
           className="space-y-4 px-4 pb-4"
         >
-          <div className="grid grid-cols-1 gap-3">
+          <div className="grid grid-cols-1 gap-1">
             <div className="relative">
               <div className="mb-2 flex items-center justify-between">
                 <span className="font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
@@ -124,7 +124,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
 
             <div className="flex items-center justify-center">
               <svg
-                className="size-5 text-white"
+                className="size-7 text-white"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -201,7 +201,10 @@ export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
   return (
     <>
       <div className="flex justify-center pt-2">
-        <Button onClick={() => setOpen(true)} className="bg-blue-dark w-[214px] text-[16px]">
+        <Button
+          onClick={() => setOpen(true)}
+          className="bg-blue-dark h-[50px] w-[214px] text-[16px]"
+        >
           Создать предложение
         </Button>
       </div>

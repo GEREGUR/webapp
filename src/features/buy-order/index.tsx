@@ -136,7 +136,7 @@ export const BuyOrderDrawer = ({
                 <Input
                   {...register('regularTonAmount')}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-white placeholder:text-white/40"
+                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-[20px] text-white placeholder:text-white/40"
                 />
               </div>
             </div>
@@ -149,12 +149,12 @@ export const BuyOrderDrawer = ({
               </div>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <BpIcon className="size-5 text-[#C37CE2]" />
+                  <TonIcon className="size-5" />
                 </div>
                 <Input
                   {...register('instantBpAmount')}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-[#A6FF8B] placeholder:text-white/40"
+                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-[20px] text-[#A6FF8B] placeholder:text-white/40"
                 />
               </div>
             </div>

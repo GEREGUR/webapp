@@ -36,7 +36,7 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
         <p className="text-xs text-white/60">{formatOrderTimestamp(order.create_date)}</p>
       </div>
 
-      <div className="flex justify-start gap-1.5">
+      <div className="flex items-center justify-start gap-1.5">
         <TonIcon className="size-4 text-white" />
         <span className="text-sm font-medium text-white">{order.current_ton_amount}</span>
       </div>

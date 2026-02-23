@@ -170,7 +170,7 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
                       {reward.rewardType === 'brick' ? (
                         <img src={TomCatIcon} alt="Brick reward" className="h-[64px] w-[64px]" />
                       ) : (
-                        <BpPointsIcon className="h-[62px] w-[62px]" />
+                        <BpPointsIcon className="h-[31px] w-[62px]" />
                       )}
                       <span className="text-[32px] leading-none font-bold text-white">
                         x{reward.multiplier}

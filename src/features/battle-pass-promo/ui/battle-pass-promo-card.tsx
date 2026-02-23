@@ -19,8 +19,16 @@ export const BattlePassPromoCard: FC = () => {
         className="absolute -bottom-[10px] left-[18px] z-1 h-[89px] w-[83px] max-w-none object-contain"
       />
 
-      <img src={RightOrnament} className="absolute right-0 z-2" alt="Background ornament " />
-      <img src={RightOrnamentTwo} className="absolute right-2 z-1" alt="Background ornament " />
+      <img
+        src={RightOrnament}
+        className="absolute -right-5 bottom-0 z-2 scale-120 rotate-5"
+        alt="Background ornament "
+      />
+      <img
+        src={RightOrnamentTwo}
+        className="absolute -right-7 bottom-0 z-1 scale-130 rotate-6"
+        alt="Background ornament "
+      />
 
       <img src={LightOne} className="absolute top-0 left-10 z-0" alt="Background ornament " />
       <img

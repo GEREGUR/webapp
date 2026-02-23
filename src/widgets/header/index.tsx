@@ -34,7 +34,7 @@ export const Header: FC<HeaderProps> = ({
           type="button"
           className="flex size-6 items-center justify-center rounded-full bg-white"
         >
-          <PlusIcon className="size-5 text-[#232027]" />
+          <PlusIcon className="size-4 text-[#232027]" />
         </button>
         <div className="flex h-8 items-center gap-1.5 rounded-[10px] bg-[#232027] px-3">
           <TonIcon className="size-3.5 text-white" />

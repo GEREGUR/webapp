@@ -87,7 +87,7 @@ export const TonAmountCard = ({ value, onChange, tonAmount, className }: TonAmou
 
       <div className="flex items-center justify-center gap-2 pr-4">
         <TonIcon className="size-4 pt-px" />
-        <span className="text-base font-semibold text-white">{tonAmount}</span>
+        <span className="text-base font-semibold text-white">{Number(tonAmount) * 10}</span>
       </div>
     </div>
   );

@@ -122,7 +122,7 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
         />
         <div className="relative z-10">
           <div className="mb-2 flex items-center justify-center">
-            <h2 className="text-[40px] leading-none font-medium text-white/95">Батлпасс</h2>
+            <h2 className="text-[38px] leading-none font-medium text-white/95">Батлпасс</h2>
             <button
               type="button"
               className="absolute top-0 -right-8 rounded-md p-1 text-white/90 transition hover:bg-white/10 hover:text-white"

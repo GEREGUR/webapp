@@ -1,17 +1,14 @@
-@import url('https://fonts.cdnfonts.com/css/bebasneuecyrillic');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
-@utility scrollbar-hide {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  &::-webkit-scrollbar {
-    display: none;
-  }
+@font-face {
+  font-family: 'BebasNeueCyrillic';
+  src: url('@/shared/assets/bebas-neue.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
 }
-
-@custom-variant dark (&:is(.dark *));
 
 @theme {
   --color-purple: #7517f8;

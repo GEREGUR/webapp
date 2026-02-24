@@ -28,11 +28,7 @@ export const useOrders = () => {
     queryKey: QUERY_KEYS.orders,
     queryFn: async (): Promise<Order[]> => {
       try {
-        const response = await api.get<Order[]>('/order/self_orders', {
-          params: {
-            user_id: getRequiredUserId(),
-          },
-        });
+        const response = await api.get<Order[]>('/order/self_orders');
         return response.data;
       } catch (error) {
         console.error('API Error useOrders:', error);
@@ -45,11 +41,7 @@ export const useOrders = () => {
 export const useCreateOrder = () => {
   return useMutation({
     mutationFn: async (data: CreateOrderRequest): Promise<void> => {
-      await api.post('/order/create', data, {
-        params: {
-          user_id: getRequiredUserId(),
-        },
-      });
+      await api.post('/order/create', data);
     },
     onSuccess: (_data, _variables, _onMutateResult, context) => {
       void context.client.invalidateQueries({ queryKey: QUERY_KEYS.orders });
@@ -61,11 +53,7 @@ export const useCreateOrder = () => {
 export const useBuyOrder = () => {
   return useMutation({
     mutationFn: async (data: BuyOrderRequest): Promise<void> => {
-      await api.post('/order/buy', data, {
-        params: {
-          user_id: getRequiredUserId(),
-        },
-      });
+      await api.post('/order/buy', data);
     },
     onSuccess: (_data, _variables, _onMutateResult, context) => {
       void context.client.invalidateQueries({ queryKey: QUERY_KEYS.orders });

@@ -38,11 +38,7 @@ export const useTasks = () => {
 export const useActivateTask = () => {
   return useMutation({
     mutationFn: async (taskId: number): Promise<void> => {
-      await api.post(`/tasks/activate/${taskId}`, null, {
-        params: {
-          user_id: getRequiredUserId(),
-        },
-      });
+      await api.post(`/tasks/activate/${taskId}`, null);
     },
     onMutate: async (taskId: number, context) => {
       await context.client.cancelQueries({ queryKey: QUERY_KEYS.tasks });
@@ -76,11 +72,7 @@ export const useActivateTask = () => {
 export const useClaimTaskReward = () => {
   return useMutation({
     mutationFn: async (taskId: number): Promise<void> => {
-      await api.post(`/tasks/claim/${taskId}`, null, {
-        params: {
-          user_id: getRequiredUserId(),
-        },
-      });
+      await api.post(`/tasks/claim/${taskId}`, null);
     },
     onMutate: async (taskId: number, context) => {
       await context.client.cancelQueries({ queryKey: QUERY_KEYS.tasks });

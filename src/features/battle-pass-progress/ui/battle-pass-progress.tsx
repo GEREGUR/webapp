@@ -5,7 +5,7 @@ const LEVEL_STYLES = 'font-medium text-[14px] leading-[20.94px] tracking-[0] ali
 
 const EXP_STYLES = 'font-medium text-[17px] leading-[20.94px] tracking-[0] align-middle text-black';
 
-export interface BattlePassProgressProps {
+interface BattlePassProgressProps {
   currentLevel: number;
   nextLevel: number;
   progress: number;

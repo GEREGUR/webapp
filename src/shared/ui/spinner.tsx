@@ -12,7 +12,7 @@ const sizes = {
   lg: 32,
 };
 
-export const Spinner = ({ size = 'md', className }: SpinnerProps) => {
+const Spinner = ({ size = 'md', className }: SpinnerProps) => {
   return <Loader2 className={cn('text-primary animate-spin', className)} size={sizes[size]} />;
 };
 

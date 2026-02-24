@@ -2,7 +2,7 @@ import { type FC } from 'react';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import { cn } from '@/shared/lib/utils';
 
-export type LiveWinCardProps = {
+type LiveWinCardProps = {
   id: number;
   tonAmount?: number;
   status?: 'bought' | 'active' | 'unavailable';

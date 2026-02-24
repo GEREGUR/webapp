@@ -11,13 +11,7 @@ type AmountSliderProps = {
 
 const TOTAL_STEPS = 7;
 
-export const AmountSlider = ({
-  value,
-  onChange,
-  min = 1,
-  max = 7,
-  className,
-}: AmountSliderProps) => {
+const AmountSlider = ({ value, onChange, min = 1, max = 7, className }: AmountSliderProps) => {
   const progress = ((value - min) / (max - min)) * 100;
 
   return (

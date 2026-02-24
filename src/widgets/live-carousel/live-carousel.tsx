@@ -1,8 +1,8 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useReducer, useRef } from 'react';
 import { retrieveLaunchParams } from '@tma.js/sdk-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { LazyMotion, AnimatePresence, m, domAnimation, useReducedMotion } from 'motion/react';
 
-export type DropItem = {
+type DropItem = {
   id: number;
   uid: string;
   tonAmount: number;
@@ -44,7 +44,7 @@ type WsEvent = WsInitialStateEvent | WsNewDealEvent;
 
 type Props = {
   initialItems?: DropItem[];
-  renderItem: (item: DropItem) => React.ReactNode;
+  children: (item: DropItem) => React.ReactNode;
 };
 
 const getWsUrl = (): string | null => {
@@ -140,21 +140,67 @@ const mapDealToDropItem = (deal: WsDeal): DropItem => {
   };
 };
 
-export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, renderItem }: Props) => {
-  const [items, setItems] = useState<DropItem[]>(initialItems);
+type State = DropItem[];
 
-  const pushItem = useCallback((item: DropItem) => {
-    setItems((prev) => {
-      const next = [item, ...prev];
-      return next.slice(0, MAX_ITEMS);
-    });
-  }, []);
+type Action =
+  | { type: 'set_items'; payload: DropItem[] }
+  | { type: 'push_item'; payload: DropItem }
+  | { type: 'set_fallback' };
+
+const itemsReducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'set_items':
+      return action.payload;
+    case 'push_item':
+      return [action.payload, ...state].slice(0, MAX_ITEMS);
+    case 'set_fallback':
+      return state.length === 0 ? MOCK_LIVE_ITEMS : state;
+    default:
+      return state;
+  }
+};
+
+const LiveCarouselItem = ({
+  item,
+  children,
+  reducedMotion,
+}: {
+  item: DropItem;
+  children: (item: DropItem) => React.ReactNode;
+  reducedMotion: boolean | null;
+}) => {
+  return (
+    <m.div
+      key={item.uid}
+      layout
+      {...(reducedMotion
+        ? {}
+        : {
+            initial: { x: -80, opacity: 0 },
+            animate: { x: 0, opacity: 1 },
+            exit: { opacity: 0 },
+            transition: {
+              type: 'spring',
+              stiffness: 260,
+              damping: 25,
+            },
+          })}
+    >
+      {children(item)}
+    </m.div>
+  );
+};
+
+export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, children }: Props) => {
+  const [items, dispatch] = useReducer(itemsReducer, initialItems);
+  const reducedMotion = useReducedMotion();
+  const wsInitialized = useRef(false);
 
   useEffect(() => {
     const wsUrl = getWsUrl();
 
     const fallbackTimeout = setTimeout(() => {
-      setItems((current) => (current.length === 0 ? MOCK_LIVE_ITEMS : current));
+      dispatch({ type: 'set_fallback' });
     }, 3000);
 
     if (!wsUrl) {
@@ -181,12 +227,16 @@ export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, renderItem }: Props) 
 
         if (message.type === 'initial_state') {
           const historyItems = (message.data.history ?? []).map(mapDealToDropItem);
-          setItems(historyItems.length > 0 ? historyItems.slice(0, MAX_ITEMS) : MOCK_LIVE_ITEMS);
+          wsInitialized.current = true;
+          dispatch({
+            type: 'set_items',
+            payload: historyItems.length > 0 ? historyItems.slice(0, MAX_ITEMS) : MOCK_LIVE_ITEMS,
+          });
           return;
         }
 
         if (message.type === 'new_deal') {
-          pushItem(mapDealToDropItem(message.data));
+          dispatch({ type: 'push_item', payload: mapDealToDropItem(message.data) });
         }
       };
 
@@ -199,7 +249,7 @@ export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, renderItem }: Props) 
           retryCount++;
           reconnectTimeoutId = window.setTimeout(connect, RECONNECT_DELAY_MS);
         } else {
-          setItems((current) => (current.length === 0 ? MOCK_LIVE_ITEMS : current));
+          dispatch({ type: 'set_fallback' });
         }
       };
     };
@@ -216,34 +266,28 @@ export const LiveCarousel = ({ initialItems = EMPTY_ITEMS, renderItem }: Props) 
         socket.close();
       }
     };
-  }, [pushItem]);
+  }, []);
 
   return (
-    <div className="relative mt-2.5 w-full overflow-hidden">
-      <div className="scrollbar-hide flex gap-3 overflow-x-auto overflow-y-hidden py-0.5">
-        <div className="bg-ghost flex w-6 shrink-0 flex-col items-center justify-center gap-1.5 rounded-2xl pt-1.5">
-          <span className="-rotate-90 text-[10px] font-bold whitespace-nowrap">Live</span>
-          <div className="size-2 animate-pulse rounded-full bg-[#5F81D8]" />
+    <LazyMotion features={domAnimation}>
+      <div className="relative mt-2.5 w-full overflow-hidden">
+        <div className="scrollbar-hide flex gap-3 overflow-x-auto overflow-y-hidden py-0.5">
+          <div className="bg-ghost flex w-6 shrink-0 flex-col items-center justify-center gap-1.5 rounded-2xl pt-1.5">
+            <span className="-rotate-90 text-[10px] font-bold whitespace-nowrap">Live</span>
+            <div className="size-2 animate-pulse rounded-full bg-[#5F81D8]" />
+          </div>
+          <AnimatePresence initial={false}>
+            {items.map((item) => (
+              <LiveCarouselItem
+                key={item.uid}
+                item={item}
+                children={children}
+                reducedMotion={reducedMotion}
+              />
+            ))}
+          </AnimatePresence>
         </div>
-        <AnimatePresence initial={false}>
-          {items.map((item) => (
-            <motion.div
-              key={item.uid}
-              layout
-              initial={{ x: -80, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{
-                type: 'spring',
-                stiffness: 260,
-                damping: 25,
-              }}
-            >
-              {renderItem(item)}
-            </motion.div>
-          ))}
-        </AnimatePresence>
       </div>
-    </div>
+    </LazyMotion>
   );
 };

@@ -39,6 +39,7 @@ export const IndexPage = () => {
     if (!selectedOrder) {
       return;
     }
+
     buyOrderMutation.mutate(
       {
         order_id: selectedOrder.id,
@@ -81,7 +82,7 @@ export const IndexPage = () => {
 
       <TabPanel value="market">
         <MaxWidthWrapper disableRightPadding>
-          <LiveCarousel renderItem={(item) => <LiveWinCard {...item} />} />
+          <LiveCarousel>{(item) => <LiveWinCard {...item} />}</LiveCarousel>
         </MaxWidthWrapper>
         <div className="px-4 md:px-12">
           <div className="my-2">

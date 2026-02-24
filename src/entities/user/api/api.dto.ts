@@ -8,19 +8,3 @@ export interface UserProfile {
   wallet_address: string | null;
   referral_earn: number;
 }
-
-export interface Transaction {
-  id: number;
-  type:
-    | 'CREATE_ORDER'
-    | 'BUY_ORDER'
-    | 'BUY_ORDER_OTHER_USER'
-    | 'REFERRAL'
-    | 'PAYMENT'
-    | 'WITHDRAWAL'
-    | 'BATTLE_PASS';
-  currency: 'BP' | 'TON';
-  value: number;
-  obj_id: number | null;
-  create_date: number;
-}

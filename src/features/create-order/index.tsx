@@ -69,7 +69,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
 
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : handleClose())}>
-      <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
+      <DrawerContent className="mx-auto rounded-t-[30px] bg-[#131214] sm:max-w-[400px]">
         <DrawerHeader>
           <div className="flex items-center justify-between">
             <DrawerTitle className="font-sans text-2xl leading-[22.32px] font-medium text-white">
@@ -95,7 +95,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
           onSubmit={(event) => {
             void handleSubmit(onFormSubmit)(event);
           }}
-          className="space-y-4 px-4 pb-4"
+          className="space-y-4 px-[20px] pb-[35px]"
         >
           <div className="grid grid-cols-1 gap-1">
             <div className="relative">
@@ -122,7 +122,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
                 <Input
                   {...register('bpAmount')}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pl-10 text-white placeholder:text-white/40"
+                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-white placeholder:text-white/40"
                 />
               </div>
             </div>
@@ -142,7 +142,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
                 <Input
                   {...register('tonAmount')}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pl-10 text-white placeholder:text-white/40"
+                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-white placeholder:text-white/40"
                 />
               </div>
             </div>

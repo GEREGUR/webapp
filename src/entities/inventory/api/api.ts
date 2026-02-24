@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { api, getRequiredUserId } from '@/shared/api';
+import { api } from '@/shared/api';
 import type {
   BattlePassResponse,
   BattlePassReward,

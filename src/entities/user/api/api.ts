@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { api, getRequiredUserId, getTelegramUserData } from '@/shared/api';
+import { api, getTelegramUserData } from '@/shared/api';
 import type { UserProfile } from './api.dto';
 
 interface GetMeResponse {

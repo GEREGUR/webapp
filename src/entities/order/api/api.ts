@@ -1,5 +1,5 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { api, getRequiredUserId } from '@/shared/api';
+import { api } from '@/shared/api';
 import type { Order, CreateOrderRequest, BuyOrderRequest } from './api.dto';
 
 const QUERY_KEYS = {

@@ -19,11 +19,7 @@ export const useProfile = () => {
     queryKey: QUERY_KEYS.profile,
     queryFn: async (): Promise<UserProfile> => {
       try {
-        const response = await api.get<GetMeResponse>('/user/me', {
-          params: {
-            user_id: getRequiredUserId(),
-          },
-        });
+        const response = await api.get<GetMeResponse>('/user/me');
         const telegramUser = getTelegramUserData();
 
         return {

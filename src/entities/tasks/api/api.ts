@@ -11,11 +11,7 @@ export const useTasks = () => {
     queryKey: QUERY_KEYS.tasks,
     queryFn: async (): Promise<TasksListResponse> => {
       try {
-        const response = await api.get<ApiTask[]>('/tasks/list', {
-          params: {
-            user_id: getRequiredUserId(),
-          },
-        });
+        const response = await api.get<ApiTask[]>('/tasks/list');
 
         const tasks = response.data.map((task) => {
           const taskType = mapTaskType(task.type);

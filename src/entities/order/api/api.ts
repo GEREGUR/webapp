@@ -13,11 +13,7 @@ export const useMarketOrders = () => {
     queryKey: QUERY_KEYS.marketOrders,
     queryFn: async (): Promise<Order[]> => {
       try {
-        const response = await api.get<Order[]>('/order/self_orders', {
-          params: {
-            user_id: getRequiredUserId(),
-          },
-        });
+        const response = await api.get<Order[]>('/order/self_orders');
         return response.data;
       } catch (error) {
         console.error('API Error useMarketOrders:', error);

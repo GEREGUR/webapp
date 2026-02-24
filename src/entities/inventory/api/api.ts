@@ -16,11 +16,7 @@ export const useInventory = () => {
     queryKey: QUERY_KEYS.inventory,
     queryFn: async (): Promise<InventoryResponse> => {
       try {
-        const response = await api.get<BattlePassResponse>('/battle/me', {
-          params: {
-            user_id: getRequiredUserId(),
-          },
-        });
+        const response = await api.get<BattlePassResponse>('/battle/me');
 
         const items = response.data.rewards.map(mapRewardToInventoryItem);
         return {

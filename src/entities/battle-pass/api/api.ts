@@ -11,11 +11,7 @@ export const useBattlePass = () => {
     queryKey: QUERY_KEYS.battlePass,
     queryFn: async (): Promise<BattlePassResponse> => {
       try {
-        const response = await api.get<BattlePassResponse>('/battle/me', {
-          params: {
-            user_id: getRequiredUserId(),
-          },
-        });
+        const response = await api.get<BattlePassResponse>('/battle/me');
         return response.data;
       } catch (error) {
         console.error('API Error useBattlePass:', error);
@@ -28,11 +24,7 @@ export const useBattlePass = () => {
 export const useClaimBattlePassReward = () => {
   return useMutation({
     mutationFn: async (rewardId: number): Promise<void> => {
-      await api.post(`/battle/claim/${rewardId}`, null, {
-        params: {
-          user_id: getRequiredUserId(),
-        },
-      });
+      await api.post(`/battle/claim/${rewardId}`, null);
     },
     onSuccess: (_data, _variables, _onMutateResult, context) => {
       void context.client.invalidateQueries({ queryKey: QUERY_KEYS.battlePass });

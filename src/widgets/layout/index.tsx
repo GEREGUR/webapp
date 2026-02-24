@@ -26,12 +26,6 @@ export const Layout: FC<LayoutProps> = ({ children, tonBalance, bpBalance }) => 
     if (swipeBehavior.isSupported()) {
       swipeBehavior.disableVertical();
     }
-
-    return () => {
-      closingBehavior.disableConfirmation();
-      swipeBehavior.enableVertical();
-      miniApp.close();
-    };
   }, []);
 
   return (

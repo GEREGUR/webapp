@@ -43,6 +43,7 @@ type WsEvent = WsInitialStateEvent | WsNewDealEvent;
 const getWsUrl = (): string | null => {
   const apiBaseUrl = import.meta.env.VITE_API_URL as string | undefined;
   const proxyTarget = import.meta.env.VITE_PROXY_TARGET as string | undefined;
+  const wsUrl = import.meta.env.VITE_WS_URL as string | undefined;
   const fallbackUrl = window.location.origin;
   const sourceUrl =
     apiBaseUrl && /^https?:\/\//.test(apiBaseUrl)
@@ -61,19 +62,31 @@ const getWsUrl = (): string | null => {
   const wsProtocol = parsedApiUrl.protocol === 'https:' ? 'wss:' : 'ws:';
   const wsPath = '/api/v1/socket/ws';
 
-  const wsUrl = new URL(`${wsProtocol}//${parsedApiUrl.host}`);
-  wsUrl.pathname = wsPath;
+  let wsHost: string;
+  if (wsUrl) {
+    try {
+      const parsedWsUrl = new URL(wsUrl);
+      wsHost = parsedWsUrl.host;
+    } catch {
+      wsHost = parsedApiUrl.host;
+    }
+  } else {
+    wsHost = parsedApiUrl.host;
+  }
+
+  const socketUrl = new URL(`${wsProtocol}//${wsHost}`);
+  socketUrl.pathname = wsPath;
 
   try {
     const initData = retrieveLaunchParams();
     if (initData?.tgWebAppData?.user?.id) {
-      wsUrl.searchParams.set('auth', initData.tgWebAppData.user.id.toString());
+      socketUrl.searchParams.set('auth', initData.tgWebAppData.user.id.toString());
     }
   } catch {
     // Telegram SDK not ready yet
   }
 
-  return wsUrl.toString();
+  return socketUrl.toString();
 };
 
 const isWsDeal = (value: unknown): value is WsDeal => {

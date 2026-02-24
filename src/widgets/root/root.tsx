@@ -4,6 +4,7 @@ import { AppRoot } from '@telegram-apps/telegram-ui';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { useLaunchParams } from '@tma.js/sdk-react';
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v6';
+import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { MobileDock } from '@/widgets/mobile-dock';
 import { Layout } from '@/widgets/layout';
 import { ToastProvider } from '@/shared/ui/toast';
@@ -36,38 +37,40 @@ export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' 
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ToastProvider>
-        <WebSocketProvider>
-          <div className="min-h-screen w-screen overflow-x-hidden pb-16">
-            <AppRoot
-              appearance={'dark'}
-              platform={['macos', 'ios'].includes(platform as string) ? 'ios' : 'base'}
-            >
-              <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                <NuqsAdapter>
-                  <Layout tonBalance={tonBalance} bpBalance={bpBalance}>
-                    <Routes>
-                      {routes.map((route) => (
-                        <Route key={route.path} path={route.path} Component={route.Component} />
-                      ))}
-                      <Route path="*" element={<Navigate to="/" />} />
-                    </Routes>
-                  </Layout>
-                </NuqsAdapter>
-                <MobileDock
-                  buttons={[
-                    { to: '/', icon: MarketIcon, label: 'Рынок' },
-                    { to: '/inventory', icon: InventoryIcon, label: 'Инвентарь', disabled: true },
-                    { to: '/battle-pass', icon: BattlePassIcon, label: 'БП' },
-                    { to: '/awards', icon: RewardsIcon, label: 'Награды' },
-                    { to: '/profile', icon: ProfileIcon, label: 'Профиль' },
-                  ]}
-                />
-              </BrowserRouter>
-            </AppRoot>
-          </div>
-        </WebSocketProvider>
-      </ToastProvider>
+      <TonConnectUIProvider manifestUrl="https://webapp-pied.vercel.app/tonconnect-manifest.json">
+        <ToastProvider>
+          <WebSocketProvider>
+            <div className="min-h-screen w-screen overflow-x-hidden pb-16">
+              <AppRoot
+                appearance={'dark'}
+                platform={['macos', 'ios'].includes(platform as string) ? 'ios' : 'base'}
+              >
+                <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                  <NuqsAdapter>
+                    <Layout tonBalance={tonBalance} bpBalance={bpBalance}>
+                      <Routes>
+                        {routes.map((route) => (
+                          <Route key={route.path} path={route.path} Component={route.Component} />
+                        ))}
+                        <Route path="*" element={<Navigate to="/" />} />
+                      </Routes>
+                    </Layout>
+                  </NuqsAdapter>
+                  <MobileDock
+                    buttons={[
+                      { to: '/', icon: MarketIcon, label: 'Рынок' },
+                      { to: '/inventory', icon: InventoryIcon, label: 'Инвентарь', disabled: true },
+                      { to: '/battle-pass', icon: BattlePassIcon, label: 'БП' },
+                      { to: '/awards', icon: RewardsIcon, label: 'Награды' },
+                      { to: '/profile', icon: ProfileIcon, label: 'Профиль' },
+                    ]}
+                  />
+                </BrowserRouter>
+              </AppRoot>
+            </div>
+          </WebSocketProvider>
+        </ToastProvider>
+      </TonConnectUIProvider>
     </QueryClientProvider>
   );
 };

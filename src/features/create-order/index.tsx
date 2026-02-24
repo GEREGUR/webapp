@@ -132,7 +132,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
             </div>
 
             <div className="relative">
-              <span className="mb-2 block font-sans text-[16.72px] leading-[18.39px] font-light text-white">
+              <span className="mb-2 block font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
                 Получите TON
               </span>
               <div className="relative">
@@ -155,7 +155,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
           )}
 
           <div className="pt-2">
-            <p className="mb-3 text-center text-sm font-medium text-[#FFE88B]">
+            <p className="mb-3 text-center text-sm font-semibold text-[#FFE88B]">
               Подтвердите создание предложения
             </p>
 

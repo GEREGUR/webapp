@@ -15,7 +15,7 @@ import { Loader } from '@/shared/ui/spinner';
 import { useToast } from '@/shared/ui/toast';
 import { useProfile } from '@/entities/user';
 import TonIcon from '@/shared/assets/ton.svg?react';
-import BpPointsIcon from '@/shared/assets/bp-points.svg?react';
+import BpPointsIcon from '@/shared/assets/bp-points-sm.svg?react';
 import HistoryIcon from '@/shared/assets/history.svg?react';
 import WalletIcon from '@/shared/assets/wallet-icon.svg?react';
 import Arrow from '@/shared/assets/arrow-sm.svg?react';
@@ -244,7 +244,7 @@ const WalletHistoryDrawer = ({ open, onClose, items }: WalletHistoryDrawerProps)
             <Button
               type="button"
               variant="ghost"
-              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent p-0 text-white"
               onClick={onClose}
               aria-label="Закрыть"
             >
@@ -274,7 +274,7 @@ const WalletHistoryDrawer = ({ open, onClose, items }: WalletHistoryDrawerProps)
                     {Math.abs(item.amount)}
                   </span>
                 </div>
-                <p className="flex-1 px-2 text-center text-[14px] font-medium text-white">
+                <p className="flex-1 px-2 text-center text-[14px] font-normal text-white">
                   {item.title}
                 </p>
                 <span className="text-[12px] font-medium text-white">{item.date}</span>

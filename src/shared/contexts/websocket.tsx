@@ -59,7 +59,6 @@ const getWsUrl = (): string | null => {
     return null;
   }
 
-  const wsProtocol = parsedApiUrl.protocol === 'https:' ? 'wss:' : 'ws:';
   const wsPath = '/api/v1/socket/ws';
 
   let wsHost: string;
@@ -74,7 +73,7 @@ const getWsUrl = (): string | null => {
     wsHost = parsedApiUrl.host;
   }
 
-  const socketUrl = new URL(`${wsProtocol}.tld//${wsHost}`);
+  const socketUrl = new URL(`wss://${wsHost}`);
   socketUrl.pathname = wsPath;
 
   try {

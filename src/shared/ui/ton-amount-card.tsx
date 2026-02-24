@@ -40,8 +40,8 @@ const AmountSlider = ({ value, onChange, min = 1, max = 1000, className }: Amoun
         style={{ left: `${progress}%` }}
       />
       <div className="absolute inset-0 z-10 flex w-full items-center justify-between">
-        {STEPS.map((step) => {
-          const stepPosition = ((step - min) / (max - min)) * 100;
+        {STEPS.map((step, index) => {
+          const stepPosition = (index / (STEPS.length - 1)) * 100;
           const isActive = step <= value;
           return (
             <button

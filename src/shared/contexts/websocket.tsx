@@ -186,12 +186,15 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
 
   useEffect(() => {
     const wsUrl = getWsUrl();
+    console.log('[WebSocket] Initializing with URL:', wsUrl);
 
     const fallbackTimeout = setTimeout(() => {
+      console.log('[WebSocket] Fallback timeout reached, using mock data');
       dispatch({ type: 'set_fallback' });
     }, 3000);
 
     if (!wsUrl) {
+      console.log('[WebSocket] No URL available, using mock data');
       return () => clearTimeout(fallbackTimeout);
     }
 
@@ -201,16 +204,28 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     let isUnmounted = false;
 
     const connect = () => {
+      console.log('[WebSocket] Connecting to:', wsUrl, 'retry:', retryCount);
       socket = new WebSocket(wsUrl);
+
+      socket.onopen = () => {
+        console.log('[WebSocket] Connected successfully');
+      };
+
+      socket.onerror = (error) => {
+        console.error('[WebSocket] Error:', error);
+      };
 
       socket.onmessage = (event) => {
         if (isUnmounted) return;
+        console.log('[WebSocket] Received message:', event.data);
+
         if (typeof event.data !== 'string') {
           return;
         }
 
         const message = parseWsEvent(event.data);
         if (!message) {
+          console.log('[WebSocket] Failed to parse message');
           return;
         }
 
@@ -229,7 +244,8 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
         }
       };
 
-      socket.onclose = () => {
+      socket.onclose = (event) => {
+        console.log('[WebSocket] Closed:', event.code, event.reason);
         if (isUnmounted) return;
 
         if (retryCount < MAX_RETRY_COUNT) {

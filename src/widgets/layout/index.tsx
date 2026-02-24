@@ -1,7 +1,7 @@
 import { useLayoutEffect, type FC, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from '@/widgets/header';
-import { closingBehavior, miniApp } from '@tma.js/sdk-react';
+import { closingBehavior, miniApp, swipeBehavior } from '@tma.js/sdk-react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -22,6 +22,16 @@ export const Layout: FC<LayoutProps> = ({ children, tonBalance, bpBalance }) => 
     if (closingBehavior.isConfirmationEnabled()) {
       closingBehavior.enableConfirmation();
     }
+
+    if (swipeBehavior.isSupported()) {
+      swipeBehavior.disableVertical();
+    }
+
+    return () => {
+      closingBehavior.disableConfirmation();
+      swipeBehavior.enableVertical();
+      miniApp.close();
+    };
   }, []);
 
   return (

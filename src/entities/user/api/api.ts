@@ -63,7 +63,7 @@ export const useWalletHistory = () => {
     queryKey: QUERY_KEYS.walletHistory,
     queryFn: async (): Promise<WalletHistoryItem[]> => {
       try {
-        const response = await api.get<GetWalletHistoryResponse>('/wallet/history');
+        const response = await api.get<GetWalletHistoryResponse>('/user/wallet/history');
         return response.data.history;
       } catch (error) {
         console.error('API Error useWalletHistory:', error);

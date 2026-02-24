@@ -27,6 +27,10 @@ interface WithdrawRequest {
   address: string;
 }
 
+interface SetWalletRequest {
+  address: string;
+}
+
 const QUERY_KEYS = {
   profile: ['user', 'profile'] as const,
   walletHistory: ['user', 'wallet', 'history'] as const,
@@ -72,7 +76,29 @@ export const useWalletHistory = () => {
 export const useWithdraw = () => {
   return useMutation({
     mutationFn: async (data: WithdrawRequest): Promise<void> => {
-      await api.post('/wallet/withdraw', data);
+      await api.post('/wallet/withdrawal', data);
+    },
+  });
+};
+
+export const useSetWallet = () => {
+  return useMutation({
+    mutationFn: async (data: SetWalletRequest): Promise<void> => {
+      await api.post(`/user/wallet/${data.address}`, null);
+    },
+    onSuccess: (_data, _variables, _onMutateResult, context) => {
+      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.profile });
+    },
+  });
+};
+
+export const useClearWallet = () => {
+  return useMutation({
+    mutationFn: async (): Promise<void> => {
+      await api.post('/user/wallet/clear', null);
+    },
+    onSuccess: (_data, _variables, _onMutateResult, context) => {
+      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.profile });
     },
   });
 };

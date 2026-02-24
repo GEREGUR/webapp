@@ -62,6 +62,7 @@ export const BuyOrderDrawer = ({
     if (!open) {
       return;
     }
+
     reset({
       regularTonAmount: defaultRegularTonAmount?.toString() ?? '',
       instantBpAmount: defaultInstantBpAmount?.toString() ?? '',

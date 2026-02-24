@@ -429,7 +429,7 @@ export const ProfilePage: FC = () => {
         </div>
       </div>
 
-      <div className="pt-6 pb-3">
+      <div className="px-6 pt-6 pb-3">
         <BattlePassPromoCard />
       </div>
 

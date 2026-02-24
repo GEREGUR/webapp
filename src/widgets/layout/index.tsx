@@ -14,17 +14,29 @@ export const Layout: FC<LayoutProps> = ({ children, tonBalance, bpBalance }) => 
   const hideHeaderLeftSide = pathname === '/profile' || pathname === '/awards';
 
   useLayoutEffect(() => {
-    if (miniApp.setHeaderColor.supports('rgb')) {
-      miniApp.setHeaderColor('#000000');
-      miniApp.headerColor();
+    try {
+      if (miniApp.setHeaderColor.supports('rgb')) {
+        miniApp.setHeaderColor('#000000');
+        miniApp.headerColor();
+      }
+    } catch {
+      // SDK not ready
     }
 
-    if (closingBehavior.isConfirmationEnabled()) {
-      closingBehavior.enableConfirmation();
+    try {
+      if (closingBehavior.isConfirmationEnabled()) {
+        closingBehavior.enableConfirmation();
+      }
+    } catch {
+      // SDK not ready
     }
 
-    if (swipeBehavior.isSupported()) {
-      swipeBehavior.disableVertical();
+    try {
+      if (swipeBehavior.isSupported()) {
+        swipeBehavior.disableVertical();
+      }
+    } catch {
+      // SDK not ready
     }
   }, []);
 

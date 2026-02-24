@@ -100,22 +100,9 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
         >
           <div className="grid grid-cols-1 gap-1">
             <div className="relative">
-              <div className="mb-2 flex items-center justify-between">
-                <span className="font-sans text-[16.72px] leading-[18.39px] font-light text-white">
-                  Введите количество BP
-                </span>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1">
-                    <TonIcon className="size-4 text-white" />
-                    <span className="font-sans text-sm font-normal text-white"> 1 </span>
-                  </div>
-                  <span className="font-sans text-sm font-normal text-white"> = </span>
-                  <div className="flex items-center gap-1">
-                    <BpIcon className="size-5 text-[#C37CE2]" />
-                    <span className="font-sans text-sm font-normal text-white"> 1 </span>
-                  </div>
-                </div>
-              </div>
+              <span className="mb-2 block font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
+                Введите количество BP
+              </span>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <BpIcon className="size-5 text-[#C37CE2]" />
@@ -123,12 +110,19 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
                 <Input
                   {...register('bpAmount')}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-white placeholder:text-white/40"
+                  className="rounded-[10px] bg-[#232027] pr-12 pl-10 text-center text-white placeholder:text-white/40 focus:placeholder:text-transparent"
                 />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="absolute inset-y-1 right-1 rounded-[8px] px-3 text-xs font-medium text-white hover:bg-[#3a3a42]"
+                >
+                  MAX
+                </Button>
               </div>
             </div>
 
-            <div className="mt-2 flex items-center justify-center pl-5">
+            <div className="mt-2 flex items-center justify-center pr-1">
               <Arrow className="rotate-180" />
             </div>
 
@@ -143,7 +137,8 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
                 <Input
                   {...register('tonAmount')}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pl-10 text-center text-white placeholder:text-white/40"
+                  disabled
+                  className="rounded-[10px] bg-[#232027] pr-10 pl-10 text-center text-white placeholder:text-white/40 focus:placeholder:text-transparent"
                 />
               </div>
             </div>
@@ -160,7 +155,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
               Подтвердите создание предложения
             </p>
 
-            <div className="flex gap-2">
+            <div className="flex gap-[22px]">
               <Button
                 type="button"
                 variant="secondary"

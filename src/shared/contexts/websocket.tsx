@@ -193,11 +193,13 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     let socket: WebSocket | null = null;
     let reconnectTimeoutId: number | undefined;
     let retryCount = 0;
+    let isUnmounted = false;
 
     const connect = () => {
       socket = new WebSocket(wsUrl);
 
       socket.onmessage = (event) => {
+        if (isUnmounted) return;
         if (typeof event.data !== 'string') {
           return;
         }
@@ -223,6 +225,8 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
       };
 
       socket.onclose = () => {
+        if (isUnmounted) return;
+
         if (retryCount < MAX_RETRY_COUNT) {
           retryCount++;
           reconnectTimeoutId = window.setTimeout(connect, RECONNECT_DELAY_MS);
@@ -235,6 +239,7 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
     connect();
 
     return () => {
+      isUnmounted = true;
       clearTimeout(fallbackTimeout);
       if (reconnectTimeoutId) {
         window.clearTimeout(reconnectTimeoutId);

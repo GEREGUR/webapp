@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { api, getTelegramUserData } from '@/shared/api';
 import type { UserProfile } from './api.dto';
 
@@ -10,8 +10,26 @@ interface GetMeResponse {
   referral_earn: number;
 }
 
+interface WalletHistoryItem {
+  id: number;
+  currency: 'TON' | 'BP';
+  amount: number;
+  title: string;
+  date: string;
+}
+
+interface GetWalletHistoryResponse {
+  history: WalletHistoryItem[];
+}
+
+interface WithdrawRequest {
+  amount: number;
+  address: string;
+}
+
 const QUERY_KEYS = {
   profile: ['user', 'profile'] as const,
+  walletHistory: ['user', 'wallet', 'history'] as const,
 };
 
 export const useProfile = () => {
@@ -32,6 +50,29 @@ export const useProfile = () => {
         console.error('API Error useProfile:', error);
         throw error;
       }
+    },
+  });
+};
+
+export const useWalletHistory = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.walletHistory,
+    queryFn: async (): Promise<WalletHistoryItem[]> => {
+      try {
+        const response = await api.get<GetWalletHistoryResponse>('/wallet/history');
+        return response.data.history;
+      } catch (error) {
+        console.error('API Error useWalletHistory:', error);
+        throw error;
+      }
+    },
+  });
+};
+
+export const useWithdraw = () => {
+  return useMutation({
+    mutationFn: async (data: WithdrawRequest): Promise<void> => {
+      await api.post('/wallet/withdraw', data);
     },
   });
 };

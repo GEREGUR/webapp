@@ -13,7 +13,7 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Loader } from '@/shared/ui/spinner';
 import { useToast } from '@/shared/ui/toast';
-import { useProfile } from '@/entities/user';
+import { useProfile, useWalletHistory, useWithdraw } from '@/entities/user';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points-sm.svg?react';
 import HistoryIcon from '@/shared/assets/history.svg?react';
@@ -230,9 +230,10 @@ interface WalletHistoryDrawerProps {
   open: boolean;
   onClose: () => void;
   items: WalletHistoryItem[];
+  isLoading?: boolean;
 }
 
-const WalletHistoryDrawer = ({ open, onClose, items }: WalletHistoryDrawerProps) => {
+const WalletHistoryDrawer = ({ open, onClose, items, isLoading }: WalletHistoryDrawerProps) => {
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
       <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
@@ -254,33 +255,41 @@ const WalletHistoryDrawer = ({ open, onClose, items }: WalletHistoryDrawerProps)
         </DrawerHeader>
 
         <div className="max-h-[66vh] space-y-2 overflow-y-auto px-4 pb-5">
-          {items.map((item) => {
-            const isPositive = item.amount >= 0;
-            return (
-              <div
-                key={item.id}
-                className="flex h-[56px] items-center justify-between rounded-[12px] bg-[#232027] px-3"
-              >
-                <div className="flex min-w-[76px] items-center gap-1">
-                  {item.currency === 'TON' ? (
-                    <TonIcon className="h-4 w-4" />
-                  ) : (
-                    <BpPointsIcon className="h-4 w-4" />
-                  )}
-                  <span
-                    className={`text-[18px] leading-none font-medium ${isPositive ? 'text-[#A6FF8B]' : 'text-[#FF6363]'}`}
-                  >
-                    {isPositive ? '+' : '-'}
-                    {Math.abs(item.amount)}
-                  </span>
+          {isLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader />
+            </div>
+          ) : items.length === 0 ? (
+            <p className="py-8 text-center text-white/60">История пуста</p>
+          ) : (
+            items.map((item) => {
+              const isPositive = item.amount >= 0;
+              return (
+                <div
+                  key={item.id}
+                  className="flex h-[56px] items-center justify-between rounded-[12px] bg-[#232027] px-3"
+                >
+                  <div className="flex min-w-[76px] items-center gap-1">
+                    {item.currency === 'TON' ? (
+                      <TonIcon className="h-4 w-4" />
+                    ) : (
+                      <BpPointsIcon className="h-4 w-4" />
+                    )}
+                    <span
+                      className={`text-[18px] leading-none font-medium ${isPositive ? 'text-[#A6FF8B]' : 'text-[#FF6363]'}`}
+                    >
+                      {isPositive ? '+' : '-'}
+                      {Math.abs(item.amount)}
+                    </span>
+                  </div>
+                  <p className="flex-1 px-2 text-center text-[14px] font-normal text-white">
+                    {item.title}
+                  </p>
+                  <span className="text-[12px] font-medium text-white">{item.date}</span>
                 </div>
-                <p className="flex-1 px-2 text-center text-[14px] font-normal text-white">
-                  {item.title}
-                </p>
-                <span className="text-[12px] font-medium text-white">{item.date}</span>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </DrawerContent>
     </Drawer>
@@ -290,6 +299,8 @@ const WalletHistoryDrawer = ({ open, onClose, items }: WalletHistoryDrawerProps)
 export const ProfilePage: FC = () => {
   const { showToast } = useToast();
   const { data: profile, isLoading } = useProfile();
+  const { data: historyData, isLoading: isHistoryLoading } = useWalletHistory();
+  const withdrawMutation = useWithdraw();
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -299,15 +310,6 @@ export const ProfilePage: FC = () => {
   const walletAddressForDeposit =
     profile?.wallet_address ?? 'UQBZKlyfMpa5IVenwd2v-2bcoWgmxhHLo4B_G8zKOe2lXuby';
   const depositMemo = `ID-${profile?.id ?? 7}`;
-  const historyItems: WalletHistoryItem[] = [
-    { id: 1, currency: 'TON', amount: 50, title: 'Выкуп ордера', date: '17.01 23:00' },
-    { id: 2, currency: 'TON', amount: 50, title: 'Пополнение баланса', date: '17.01 23:00' },
-    { id: 3, currency: 'TON', amount: 50, title: 'Реферальная система', date: '17.01 23:00' },
-    { id: 4, currency: 'BP', amount: 50, title: 'Покупка ордера', date: '17.01 23:00' },
-    { id: 5, currency: 'BP', amount: -50, title: 'Создание ордера', date: '17.01 23:00' },
-    { id: 6, currency: 'BP', amount: -50, title: 'Создание ордера', date: '17.01 23:00' },
-    { id: 7, currency: 'BP', amount: -50, title: 'Создание ордера', date: '17.01 23:00' },
-  ];
 
   const handleCopy = (value: string, label: string) => {
     void navigator.clipboard
@@ -331,10 +333,20 @@ export const ProfilePage: FC = () => {
       return;
     }
 
-    setIsWithdrawOpen(false);
-    setWithdrawAmount('');
-    setWithdrawAddress('');
-    showToast('Заявка на вывод отправлена', 'success');
+    withdrawMutation.mutate(
+      { amount: Number(withdrawAmount), address: withdrawAddress },
+      {
+        onSuccess: () => {
+          setIsWithdrawOpen(false);
+          setWithdrawAmount('');
+          setWithdrawAddress('');
+          showToast('Заявка на вывод отправлена', 'success');
+        },
+        onError: () => {
+          showToast('Не удалось отправить заявку на вывод', 'error');
+        },
+      }
+    );
   };
 
   if (isLoading) {
@@ -502,7 +514,8 @@ export const ProfilePage: FC = () => {
       <WalletHistoryDrawer
         open={isHistoryOpen}
         onClose={() => setIsHistoryOpen(false)}
-        items={historyItems}
+        items={historyData ?? []}
+        isLoading={isHistoryLoading}
       />
     </Page>
   );

@@ -105,7 +105,7 @@ export const IndexPage = () => {
           </div>
         </div>
         {marketLoading ? (
-          <Card>
+          <Card className="mx-4">
             <Loader size="sm" />
           </Card>
         ) : marketOrders && marketOrders.length > 0 ? (
@@ -147,7 +147,7 @@ export const IndexPage = () => {
           </div>
         </div>
         {ordersLoading ? (
-          <Card>
+          <Card className="mx-4">
             <Loader size="sm" />
           </Card>
         ) : orders && orders.length > 0 ? (

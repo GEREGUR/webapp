@@ -191,11 +191,11 @@ const WithdrawBalanceDrawer = ({
             />
           </div>
 
-          <p className="pt-6 text-center text-[14px] leading-[1.1] font-semibold text-[#FFE88B]">
+          <p className="pt-[45px] pb-[23px] text-center text-[14px] leading-[1.1] font-semibold text-[#FFE88B]">
             Подтвердите вывод средств, данное действие невозможно отменить.
           </p>
 
-          <div className="flex gap-2">
+          <div className="flex gap-[22px]">
             <Button
               type="button"
               variant="secondary"

@@ -59,14 +59,7 @@ const getWsUrl = (): string | null => {
   }
 
   const wsProtocol = parsedApiUrl.protocol === 'https:' ? 'wss:' : 'ws:';
-  const basePath = parsedApiUrl.pathname.replace(/\/+$/, '');
-
-  let wsPath = '/api/v1/socket/ws';
-  if (basePath.endsWith('/api/v1')) {
-    wsPath = `${basePath.replace(/\/v1$/, '')}/socket/ws`;
-  } else if (basePath.endsWith('/api')) {
-    wsPath = `${basePath}/socket/ws`;
-  }
+  const wsPath = '/api/v1/socket/ws';
 
   const wsUrl = new URL(`${wsProtocol}//${parsedApiUrl.host}`);
   wsUrl.pathname = wsPath;

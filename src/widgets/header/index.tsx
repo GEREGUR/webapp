@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import TonIcon from '@/shared/assets/ton.svg?react';
-import BpIcon from '@/shared/assets/bp.svg?react';
+import BpIcon from '@/shared/assets/bp-points.svg?react';
 import PlusIcon from '@/shared/assets/plus.svg?react';
 import { ChatButton } from '@/features/chat-button';
 import { FaqButton } from '@/features/faq-button';

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,6 +15,7 @@ import { Button } from '@/shared/ui/button';
 import BpIcon from '@/shared/assets/bp.svg?react';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import Arrow from '@/shared/assets/arrow.svg?react';
+import { cn } from '@/shared/lib/utils';
 
 const createOrderSchema = z.object({
   bpAmount: z.string().min(1, 'Минимум 1 BP'),
@@ -190,6 +191,25 @@ interface CreateOrderButtonProps {
 
 export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
   const [open, setOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleSubmit = (data: { bpAmount: number; tonAmount: number }) => {
     onSubmit({ bp_amount: data.bpAmount });
@@ -197,7 +217,12 @@ export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
 
   return (
     <>
-      <div className="flex justify-center pt-2">
+      <div
+        className={cn(
+          'flex justify-center pt-2 transition-transform duration-300',
+          !isVisible && 'translate-y-full'
+        )}
+      >
         <Button
           onClick={() => setOpen(true)}
           className="bg-blue-dark h-[50px] w-[214px] text-[16px] font-medium"

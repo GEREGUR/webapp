@@ -74,7 +74,7 @@ const getWsUrl = (): string | null => {
     wsHost = parsedApiUrl.host;
   }
 
-  const socketUrl = new URL(`${wsProtocol}//${wsHost}`);
+  const socketUrl = new URL(`${wsProtocol}.tld//${wsHost}`);
   socketUrl.pathname = wsPath;
 
   try {

@@ -9,10 +9,14 @@ type AmountSliderProps = {
   className?: string;
 };
 
-const TOTAL_STEPS = 7;
+const STEPS = [1, 10, 50, 100, 250, 500, 1000];
 
-const AmountSlider = ({ value, onChange, min = 1, max = 7, className }: AmountSliderProps) => {
+const AmountSlider = ({ value, onChange, min = 1, max = 1000, className }: AmountSliderProps) => {
   const progress = ((value - min) / (max - min)) * 100;
+
+  const handleChange = (newValue: number) => {
+    onChange(Math.max(min, Math.min(max, newValue)));
+  };
 
   return (
     <div className={cn('relative flex h-full w-full min-w-44 flex-1', className)}>
@@ -28,7 +32,7 @@ const AmountSlider = ({ value, onChange, min = 1, max = 7, className }: AmountSl
         max={max}
         step={1}
         value={value}
-        onChange={(e) => onChange(Number(e.target.value))}
+        onChange={(e) => handleChange(Number(e.target.value))}
         className="absolute inset-0 z-20 h-full w-full cursor-pointer opacity-0"
       />
       <div
@@ -36,15 +40,14 @@ const AmountSlider = ({ value, onChange, min = 1, max = 7, className }: AmountSl
         style={{ left: `${progress}%` }}
       />
       <div className="absolute inset-0 z-10 flex w-full items-center justify-between">
-        {Array.from({ length: TOTAL_STEPS }).map((_, index) => {
-          const stepNumber = index + 1;
-          const stepPosition = (index / (TOTAL_STEPS - 1)) * 100;
-          const isActive = stepNumber <= value;
+        {STEPS.map((step) => {
+          const stepPosition = ((step - min) / (max - min)) * 100;
+          const isActive = step <= value;
           return (
             <button
-              key={stepNumber}
+              key={step}
               type="button"
-              onClick={() => onChange(stepNumber)}
+              onClick={() => handleChange(step)}
               className={cn(
                 'absolute h-1.5 w-1.5 -translate-x-1/2 rounded-full transition-all',
                 isActive ? 'bg-white' : 'bg-[#6E6E6E]'
@@ -74,7 +77,7 @@ export const TonAmountCard = ({ value, onChange, tonAmount, className }: TonAmou
       )}
     >
       <div className="flex flex-1 items-center">
-        <AmountSlider value={value} onChange={onChange} />
+        <AmountSlider value={value} onChange={onChange} min={1} max={1000} />
       </div>
 
       <div className="mx-4 h-10 w-px bg-white/10" />
@@ -87,7 +90,7 @@ export const TonAmountCard = ({ value, onChange, tonAmount, className }: TonAmou
             Number(tonAmount) * 10 > 100 ? 'text-[10px]' : 'text-base'
           )}
         >
-          {Number(tonAmount) * 10 - 100}
+          {tonAmount}
         </span>
       </div>
     </div>

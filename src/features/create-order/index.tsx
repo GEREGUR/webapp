@@ -105,13 +105,13 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
                 </span>
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1">
-                    <TonIcon className="size-3 text-white" />
-                    <span className="font-sans text-xs font-normal text-white"> 1 </span>
+                    <TonIcon className="size-4 text-white" />
+                    <span className="font-sans text-sm font-normal text-white"> 1 </span>
                   </div>
-                  <span className="font-sans text-xs font-normal text-white"> = </span>
+                  <span className="font-sans text-sm font-normal text-white"> = </span>
                   <div className="flex items-center gap-1">
-                    <BpIcon className="size-4 text-[#C37CE2]" />
-                    <span className="font-sans text-xs font-normal text-white"> 1 </span>
+                    <BpIcon className="size-5 text-[#C37CE2]" />
+                    <span className="font-sans text-sm font-normal text-white"> 1 </span>
                   </div>
                 </div>
               </div>
@@ -127,7 +127,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
               </div>
             </div>
 
-            <div className="mt-2 flex items-center justify-center">
+            <div className="mt-2 flex items-center justify-center pl-5">
               <Arrow className="rotate-180" />
             </div>
 

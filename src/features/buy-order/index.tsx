@@ -122,11 +122,11 @@ export const BuyOrderDrawer = ({
                   Получите обычным выкупом
                 </span>
                 <div className="flex items-center gap-1">
-                  <TonIcon className="size-3 text-white" />
-                  <span className="font-sans text-xs font-normal text-white">1</span>
-                  <span className="font-sans text-xs font-normal text-white">=</span>
-                  <BpIcon className="size-4 text-[#C37CE2]" />
-                  <span className="font-sans text-xs font-normal text-white">1</span>
+                  <TonIcon className="size-4 text-white" />
+                  <span className="font-sans text-sm font-normal text-white">1</span>
+                  <span className="font-sans text-sm font-normal text-white">=</span>
+                  <BpIcon className="size-5 text-[#C37CE2]" />
+                  <span className="font-sans text-sm font-normal text-white">1</span>
                 </div>
               </div>
               <div className="relative">

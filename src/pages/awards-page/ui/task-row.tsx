@@ -1,5 +1,5 @@
 import { type FC } from 'react';
-import BpIcon from '@/shared/assets/bp.svg?react';
+import BpIcon from '@/shared/assets/bp-white-sm.svg?react';
 import { Card } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import type { Task } from '@/entities/tasks';

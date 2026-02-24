@@ -49,7 +49,7 @@ export const BattlePassPromoCard: FC = () => {
 
       <div className="absolute top-2.5 right-[14px] z-10 flex max-w-[125px] flex-col items-center">
         <p className="font-bebas-cyrillic ml-3 text-[38px] leading-8.5 font-semibold text-white uppercase">
-          баттлпас
+          батлпас
         </p>
         <Button
           className="font-bebas-cyrillic bg-button-bp-dark ml-3 h-[26px] w-full rounded-[6px] px-0 py-0 text-center text-[12.59px] leading-[13.85px] font-normal -tracking-tight text-white"

@@ -119,7 +119,7 @@ export const IndexPage = () => {
           </>
         ) : (
           <>
-            <Card>
+            <Card className="mx-8">
               <p className="text-center text-white/60">Нет ордеров</p>
             </Card>
             <CreateOrderButton onSubmit={handleCreateOrder} />

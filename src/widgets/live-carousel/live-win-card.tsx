@@ -27,9 +27,11 @@ export const LiveWinCard: FC<LiveWinCardProps> = ({ className, id, tonAmount = 0
       <div className="bg-ghost h-4.5 w-full pt-0.5 text-center text-[10px] text-[#5F81D8]">
         №{id} Выкуплен
       </div>
-      <div className="flex items-center justify-center gap-1 pt-1">
-        <TonIcon className="size-4 text-white" />
-        <span className="text-[15px] font-medium text-white">{formatTonAmount(tonAmount)}</span>
+      <div className="flex items-center justify-center gap-1 pt-0.5 text-center">
+        <TonIcon className="size-4 text-center text-white" />
+        <span className="text-center text-[15px] font-medium text-white">
+          {formatTonAmount(tonAmount)}
+        </span>
       </div>
     </div>
   );

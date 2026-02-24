@@ -17,7 +17,8 @@ import { useProfile } from '@/entities/user';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points.svg?react';
 import HistoryIcon from '@/shared/assets/history.svg?react';
-import Arrow from '@/shared/assets/arrow.svg?react';
+import WalletIcon from '@/shared/assets/wallet-icon.svg?react';
+import Arrow from '@/shared/assets/arrow-sm.svg?react';
 import { Copy, UserPlus, Users, X } from 'lucide-react';
 import { BattlePassPromoCard } from '@/features/battle-pass-promo';
 
@@ -53,7 +54,7 @@ const DepositBalanceDrawer = ({
               <X className="h-6 w-6 stroke-2" />
             </Button>
           </div>
-          <DrawerDescription className="font-sans text-[13px] leading-[18.4px] font-light text-balance text-white/60">
+          <DrawerDescription className="font-sans text-[15px] leading-[18.4px] font-light text-balance text-white/60">
             Для пополнения баланса совершите перевод с нужным количеством монеты TON в сети TON на
             ниже указанный адрес с указанным MEMO.
           </DrawerDescription>
@@ -92,7 +93,7 @@ const DepositBalanceDrawer = ({
             </Button>
           </div>
 
-          <div className="space-y-2 pt-1 text-center text-[13px] leading-[1.1] font-semibold text-[#FFD700]">
+          <div className="space-y-2 pt-1 text-center text-[13px] leading-[1.1] font-normal text-[#FFD700]">
             <p>Минимальная сумма пополнения: 1 TON</p>
             <p>
               Отправка другой монеты в другой сети без корректного MEMO приведёт к безвозвратной
@@ -139,7 +140,7 @@ const WithdrawBalanceDrawer = ({
             <Button
               type="button"
               variant="ghost"
-              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent p-0 text-white"
               onClick={onClose}
               aria-label="Закрыть"
             >
@@ -198,14 +199,14 @@ const WithdrawBalanceDrawer = ({
             <Button
               type="button"
               variant="secondary"
-              className="h-[46px] flex-1 rounded-[12px] bg-[#2F3033] text-[14px] font-semibold text-white"
+              className="h-[46px] flex-1 rounded-[12px] bg-[#2F3033] text-[15px] font-semibold text-white"
               onClick={onClose}
             >
               Закрыть
             </Button>
             <Button
               type="button"
-              className="h-[46px] flex-1 rounded-[12px] bg-[#5F81D8] text-[14px] font-semibold text-white hover:brightness-110"
+              className="h-[46px] flex-1 rounded-[12px] bg-[#5F81D8] text-[15px] font-semibold text-white hover:brightness-110"
               onClick={onSubmit}
             >
               Вывести
@@ -394,7 +395,7 @@ export const ProfilePage: FC = () => {
             className="inline-flex h-[41px] items-center justify-center rounded-[12px] bg-[#2F3033] text-[13px] font-semibold text-white hover:brightness-110"
             onClick={() => setIsDepositOpen(true)}
           >
-            <Arrow className="mr-1 h-4 w-4" />
+            <Arrow className="mr-1 size-3" />
             Внести
           </Button>
           <Button
@@ -403,7 +404,7 @@ export const ProfilePage: FC = () => {
             className="inline-flex h-[41px] items-center justify-center rounded-[12px] bg-[#2F3033] text-[13px] font-semibold text-white hover:brightness-110"
             onClick={() => setIsWithdrawOpen(true)}
           >
-            <Arrow className="mr-1 size-3.5 rotate-180" />
+            <Arrow className="mr-1 size-3 rotate-180" />
             Вывести
           </Button>
         </div>
@@ -411,10 +412,10 @@ export const ProfilePage: FC = () => {
         <div className="flex items-center gap-2">
           <Button
             type="button"
-            className="inline-flex h-[40px] flex-1 items-center justify-center rounded-[12px] bg-white text-[13px] font-semibold text-black hover:bg-white/90"
+            className="inline-flex h-[40px] flex-1 items-center justify-center gap-1 rounded-[12px] bg-white text-[13px] font-semibold text-black hover:bg-white/90"
             onClick={() => showToast('Подключение кошелька в разработке', 'info')}
           >
-            Подключить кошелек
+            <WalletIcon className="size-[14px]" /> Подключить кошелек
           </Button>
           <Button
             type="button"

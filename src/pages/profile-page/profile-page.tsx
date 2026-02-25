@@ -58,13 +58,7 @@ export const ProfilePage: FC = () => {
   return (
     <Page back>
       <div className="mb-6 flex flex-col items-center">
-        <Avatar
-          src={profile.avatar}
-          alt={profile.name}
-          fallback={profile.name}
-          size="xl"
-          className="mb-3"
-        />
+        <Avatar src={profile.avatar} alt={profile.name} size="xl" className="mb-3" />
         <h1 className="text-xl font-normal text-white">{profile.name}</h1>
         <p className="text-[13px] text-white/60">ID: #{profile.username}</p>
       </div>

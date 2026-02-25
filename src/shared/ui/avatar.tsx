@@ -3,7 +3,6 @@ import { cn } from '@/shared/lib/utils';
 interface AvatarProps extends React.HTMLAttributes<HTMLDivElement> {
   src?: string;
   alt?: string;
-  fallback?: string;
   size?: 'sm' | 'md' | 'lg' | 'xl';
 }
 
@@ -14,7 +13,7 @@ const sizes = {
   xl: 'w-[104px] h-[104px] text-2xl',
 };
 
-export const Avatar = ({ className, src, alt, fallback, size = 'md', ...props }: AvatarProps) => {
+export const Avatar = ({ className, src, alt, size = 'md', ...props }: AvatarProps) => {
   return (
     <div
       className={cn(
@@ -24,11 +23,7 @@ export const Avatar = ({ className, src, alt, fallback, size = 'md', ...props }:
       )}
       {...props}
     >
-      {src ? (
-        <img src={src} alt={alt} className="h-full w-full object-cover" />
-      ) : (
-        <span className="font-medium text-white">{fallback?.charAt(0).toUpperCase() || '?'}</span>
-      )}
+      <img src={src ?? '/durov.png'} alt={alt} className="h-full w-full object-cover" />
     </div>
   );
 };

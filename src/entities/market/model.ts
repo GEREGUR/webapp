@@ -1,5 +1,5 @@
 import type { DropItem, WsOrder, WsOrderUpdate, WsStats } from './types';
-import { MAX_ITEMS, MOCK_LIVE_ITEMS } from './config';
+import { MAX_ITEMS } from './config';
 
 export type MarketState = {
   items: DropItem[];
@@ -29,7 +29,7 @@ export const marketReducer = (state: MarketState, action: MarketAction): MarketS
     case 'push_item':
       return { ...state, items: [action.payload, ...state.items].slice(0, MAX_ITEMS) };
     case 'set_fallback':
-      return { ...state, items: state.items.length === 0 ? MOCK_LIVE_ITEMS : state.items };
+      return state;
     case 'set_orders':
       return { ...state, orders: action.payload };
     case 'add_order':

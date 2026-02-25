@@ -71,13 +71,15 @@ interface WsNewOrderEvent {
   data: WsOrder;
 }
 
+interface WsOrderUpdate {
+  id: number;
+  current_ton_amount: number;
+  status: 'PARTIAL' | 'CLOSED';
+}
+
 interface WsOrderUpdateEvent {
   type: 'order_update';
-  data: {
-    id: number;
-    current_ton_amount: number;
-    status: 'PARTIAL' | 'CLOSED';
-  };
+  data: WsOrderUpdate;
 }
 
 interface WsNewDealEvent {
@@ -190,7 +192,22 @@ const isWsOrder = (value: unknown): value is WsOrder => {
     typeof order.initial_bp_amount === 'number' &&
     typeof order.initial_ton_amount === 'number' &&
     typeof order.current_ton_amount === 'number' &&
-    typeof order.status === 'string'
+    typeof order.status === 'string' &&
+    typeof order.create_date === 'number' &&
+    order.owner !== undefined
+  );
+};
+
+const isWsOrderUpdate = (value: unknown): value is WsOrderUpdate => {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const update = value as WsOrderUpdate;
+  return (
+    typeof update.id === 'number' &&
+    typeof update.current_ton_amount === 'number' &&
+    (update.status === 'PARTIAL' || update.status === 'CLOSED')
   );
 };
 
@@ -268,26 +285,11 @@ const parseWsEvent = (rawMessage: string): WsEvent | null => {
     };
   }
 
-  if (event.type === 'order_update' && event.data && typeof event.data === 'object') {
-    const orderUpdate = event.data as {
-      id?: unknown;
-      current_ton_amount?: unknown;
-      status?: unknown;
+  if (event.type === 'order_update' && isWsOrderUpdate(event.data)) {
+    return {
+      type: 'order_update',
+      data: event.data,
     };
-    if (
-      typeof orderUpdate.id === 'number' &&
-      typeof orderUpdate.current_ton_amount === 'number' &&
-      (orderUpdate.status === 'PARTIAL' || orderUpdate.status === 'CLOSED')
-    ) {
-      return {
-        type: 'order_update',
-        data: {
-          id: orderUpdate.id,
-          current_ton_amount: orderUpdate.current_ton_amount,
-          status: orderUpdate.status,
-        },
-      };
-    }
   }
 
   if (event.type === 'stats_update' && isWsStats(event.data)) {
@@ -359,10 +361,7 @@ type Action =
   | { type: 'set_fallback' }
   | { type: 'set_orders'; payload: WsOrder[] }
   | { type: 'add_order'; payload: WsOrder }
-  | {
-      type: 'update_order';
-      payload: { id: number; current_ton_amount: number; status: 'PARTIAL' | 'CLOSED' };
-    };
+  | { type: 'update_order'; payload: WsOrderUpdate };
 
 const initialState: State = {
   items: [],

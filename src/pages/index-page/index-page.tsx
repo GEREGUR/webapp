@@ -20,12 +20,10 @@ export const IndexPage = () => {
   const [sliderValue, setSliderValue] = useState(1);
   const [sortAscending, setSortAscending] = useState(true);
   const { data: orders, isLoading: ordersLoading } = useOrders();
-  const { orders: marketOrders, stats } = useMarket();
+  const { orders: marketOrders, stats, isLoading: marketLoading } = useMarket();
   const buyOrderMutation = useBuyOrder();
   const createOrderMutation = useCreateOrder();
   const { showToast } = useToast();
-
-  const marketLoading = false;
 
   const handleOrderBuy = (order: Order) => {
     setSelectedOrder(order);

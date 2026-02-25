@@ -131,7 +131,7 @@
 
 ## 🔌 WebSocket (Real-time)
 
-**URL:** `wss://[domain]/api/order/ws?x_telegram_data=[initData]`
+**URL:** `wss://domain.tld/api/v1/socket/ws?auth=user_id`
 
 Сервер использует WebSocket для трансляции изменений на рынке и уведомлений пользователя. Все сообщения приходят в формате JSON и имеют общую структуру:
 

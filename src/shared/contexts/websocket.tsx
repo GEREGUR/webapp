@@ -26,10 +26,48 @@ interface WsDeal {
   date?: number;
 }
 
+interface WsOrderOwner {
+  id: number;
+  avatar: string;
+  name: string;
+  username: string;
+}
+
+interface WsOrder {
+  id: number;
+  owner: WsOrderOwner;
+  initial_bp_amount: number;
+  initial_ton_amount: number;
+  current_ton_amount: number;
+  status: 'OPEN' | 'PARTIAL';
+  create_date: number;
+}
+
+interface WsStats {
+  total_ton: number;
+  total_orders: number;
+}
+
 interface WsInitialStateEvent {
   type: 'initial_state';
   data: {
+    stats?: WsStats;
+    orders?: WsOrder[];
     history?: WsDeal[];
+  };
+}
+
+interface WsNewOrderEvent {
+  type: 'new_order';
+  data: WsOrder;
+}
+
+interface WsOrderUpdateEvent {
+  type: 'order_update';
+  data: {
+    id: number;
+    current_ton_amount: number;
+    status: 'PARTIAL' | 'CLOSED';
   };
 }
 
@@ -38,7 +76,42 @@ interface WsNewDealEvent {
   data: WsDeal;
 }
 
-type WsEvent = WsInitialStateEvent | WsNewDealEvent;
+interface WsStatsUpdateEvent {
+  type: 'stats_update';
+  data: WsStats;
+}
+
+interface WsOrdersBumpEvent {
+  type: 'orders_bump';
+  data: {
+    orders: WsOrder[];
+  };
+}
+
+interface WsSuccessPaymentEvent {
+  type: 'success_payment';
+  data: {
+    amount: number;
+    tx_hash: string;
+  };
+}
+
+interface WsSuccessWithdrawalEvent {
+  type: 'success_withdrawal';
+  data: {
+    amount: number;
+  };
+}
+
+type WsEvent =
+  | WsInitialStateEvent
+  | WsNewOrderEvent
+  | WsOrderUpdateEvent
+  | WsNewDealEvent
+  | WsStatsUpdateEvent
+  | WsOrdersBumpEvent
+  | WsSuccessPaymentEvent
+  | WsSuccessWithdrawalEvent;
 
 const getWsUrl = (): string | null => {
   const apiBaseUrl = import.meta.env.VITE_API_URL as string | undefined;
@@ -97,6 +170,30 @@ const isWsDeal = (value: unknown): value is WsDeal => {
   return typeof deal.order_id === 'number' && typeof deal.ton_amount === 'number';
 };
 
+const isWsOrder = (value: unknown): value is WsOrder => {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const order = value as WsOrder;
+  return (
+    typeof order.id === 'number' &&
+    typeof order.initial_bp_amount === 'number' &&
+    typeof order.initial_ton_amount === 'number' &&
+    typeof order.current_ton_amount === 'number' &&
+    typeof order.status === 'string'
+  );
+};
+
+const isWsStats = (value: unknown): value is WsStats => {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const stats = value as WsStats;
+  return typeof stats.total_ton === 'number' && typeof stats.total_orders === 'number';
+};
+
 const parseWsEvent = (rawMessage: string): WsEvent | null => {
   let payload: unknown;
   try {
@@ -119,15 +216,91 @@ const parseWsEvent = (rawMessage: string): WsEvent | null => {
   }
 
   if (event.type === 'initial_state' && event.data && typeof event.data === 'object') {
-    const initialState = event.data as { history?: unknown };
+    const initialState = event.data as {
+      stats?: unknown;
+      orders?: unknown;
+      history?: unknown;
+    };
+
+    const stats =
+      initialState.stats && isWsStats(initialState.stats) ? initialState.stats : undefined;
+    const orders = Array.isArray(initialState.orders)
+      ? initialState.orders.filter(isWsOrder)
+      : undefined;
     const history = Array.isArray(initialState.history)
       ? initialState.history.filter(isWsDeal)
       : undefined;
 
     return {
       type: 'initial_state',
-      data: { history },
+      data: { stats, orders, history },
     };
+  }
+
+  if (event.type === 'new_order' && isWsOrder(event.data)) {
+    return {
+      type: 'new_order',
+      data: event.data,
+    };
+  }
+
+  if (event.type === 'order_update' && event.data && typeof event.data === 'object') {
+    const orderUpdate = event.data as {
+      id?: unknown;
+      current_ton_amount?: unknown;
+      status?: unknown;
+    };
+    if (
+      typeof orderUpdate.id === 'number' &&
+      typeof orderUpdate.current_ton_amount === 'number' &&
+      (orderUpdate.status === 'PARTIAL' || orderUpdate.status === 'CLOSED')
+    ) {
+      return {
+        type: 'order_update',
+        data: {
+          id: orderUpdate.id,
+          current_ton_amount: orderUpdate.current_ton_amount,
+          status: orderUpdate.status,
+        },
+      };
+    }
+  }
+
+  if (event.type === 'stats_update' && isWsStats(event.data)) {
+    return {
+      type: 'stats_update',
+      data: event.data,
+    };
+  }
+
+  if (event.type === 'orders_bump' && event.data && typeof event.data === 'object') {
+    const bumpData = event.data as { orders?: unknown };
+    if (Array.isArray(bumpData.orders)) {
+      return {
+        type: 'orders_bump',
+        data: { orders: bumpData.orders.filter(isWsOrder) },
+      };
+    }
+  }
+
+  if (event.type === 'success_payment' && event.data && typeof event.data === 'object') {
+    const paymentData = event.data as { amount?: unknown; tx_hash?: unknown };
+    if (typeof paymentData.amount === 'number' && typeof paymentData.tx_hash === 'string') {
+      return {
+        type: 'success_payment',
+        data: { amount: paymentData.amount, tx_hash: paymentData.tx_hash },
+      };
+    }
+  }
+
+  if (event.type === 'success_withdrawal' && event.data && typeof event.data === 'object') {
+    const withdrawalData = event.data as { amount?: unknown };
+    if (typeof withdrawalData.amount === 'number') {
+      return {
+        type: 'success_withdrawal',
+        data: { amount: withdrawalData.amount },
+      };
+    }
   }
 
   return null;

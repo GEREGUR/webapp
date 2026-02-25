@@ -10,7 +10,7 @@ import { useOrders, useBuyOrder, useCreateOrder, OrderList, type Order } from '@
 import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
 import { useToast } from '@/shared/ui/toast';
 import { Button } from '@/shared/ui/button';
-import { useLiveDeals } from '@/shared/contexts/websocket';
+import { useMarket } from '@/entities/market';
 import HistoryIcon from '@/shared/assets/history.svg?react';
 import { Loader } from '@/shared/ui/spinner';
 import Arrow from '@/shared/assets/arrow.svg?react';
@@ -20,7 +20,7 @@ export const IndexPage = () => {
   const [sliderValue, setSliderValue] = useState(1);
   const [sortAscending, setSortAscending] = useState(true);
   const { data: orders, isLoading: ordersLoading } = useOrders();
-  const { orders: marketOrders, stats } = useLiveDeals();
+  const { orders: marketOrders, stats } = useMarket();
   const buyOrderMutation = useBuyOrder();
   const createOrderMutation = useCreateOrder();
   const { showToast } = useToast();

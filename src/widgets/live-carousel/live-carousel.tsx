@@ -1,13 +1,6 @@
 import { useReducedMotion } from 'motion/react';
-import { useLiveDeals } from '@/shared/contexts/websocket';
+import { useMarket, type DropItem } from '@/entities/market';
 import { LazyMotion, AnimatePresence, m, domAnimation } from 'motion/react';
-
-type DropItem = {
-  id: number;
-  uid: string;
-  tonAmount: number;
-  status?: 'bought' | 'active' | 'unavailable';
-};
 
 const LiveCarouselItem = ({
   item,
@@ -46,7 +39,7 @@ interface Props {
 }
 
 export const LiveCarousel = ({ children }: Props) => {
-  const { items } = useLiveDeals();
+  const { items } = useMarket();
   const reducedMotion = useReducedMotion();
 
   return (

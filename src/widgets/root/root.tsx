@@ -8,7 +8,7 @@ import { TonConnectUIProvider } from '@tonconnect/ui-react';
 import { MobileDock } from '@/widgets/mobile-dock';
 import { Layout } from '@/widgets/layout';
 import { ToastProvider } from '@/shared/ui/toast';
-import { WebSocketProvider } from '@/shared/contexts/websocket';
+import { MarketProvider } from '@/entities/market';
 import type { RouteObject } from '@/app/routes';
 import MarketIcon from '@/shared/assets/market.svg?react';
 import BattlePassIcon from '@/shared/assets/bp.svg?react';
@@ -39,7 +39,7 @@ export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' 
     <QueryClientProvider client={queryClient}>
       <TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">
         <ToastProvider>
-          <WebSocketProvider>
+          <MarketProvider>
             <div className="min-h-screen w-screen overflow-x-hidden pb-16">
               <AppRoot
                 appearance={'dark'}
@@ -68,7 +68,7 @@ export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' 
                 </BrowserRouter>
               </AppRoot>
             </div>
-          </WebSocketProvider>
+          </MarketProvider>
         </ToastProvider>
       </TonConnectUIProvider>
     </QueryClientProvider>

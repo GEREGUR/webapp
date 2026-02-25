@@ -18,6 +18,7 @@ export interface WsOrder {
 export interface WsStats {
   total_ton: number;
   total_orders: number;
+  totaR_orders?: number;
 }
 
 export interface WsTransaction {

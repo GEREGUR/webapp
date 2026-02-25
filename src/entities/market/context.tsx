@@ -1,4 +1,12 @@
-import { createContext, useContext, useEffect, useReducer, useRef, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import {
   initialMarketState,
   marketReducer,
@@ -13,6 +21,7 @@ interface MarketContextValue {
   items: DropItem[];
   orders: WsOrder[];
   stats: WsStats | null;
+  isLoading: boolean;
 }
 
 const MarketContext = createContext<MarketContextValue | null>(null);
@@ -31,6 +40,7 @@ interface MarketProviderProps {
 
 export const MarketProvider = ({ children }: MarketProviderProps) => {
   const [state, dispatch] = useReducer(marketReducer, initialMarketState);
+  const [isLoading, setIsLoading] = useState(true);
   const wsInitialized = useRef(false);
 
   useEffect(() => {
@@ -38,6 +48,7 @@ export const MarketProvider = ({ children }: MarketProviderProps) => {
 
     const fallbackTimeout = setTimeout(() => {
       dispatch({ type: 'set_fallback' });
+      setIsLoading(false);
     }, FALLBACK_TIMEOUT_MS);
 
     if (!wsUrl) {
@@ -73,6 +84,7 @@ export const MarketProvider = ({ children }: MarketProviderProps) => {
             mapTransactionToDropItem(tx, i)
           );
           wsInitialized.current = true;
+          setIsLoading(false);
           dispatch({
             type: 'set_items',
             payload: historyItems.length > 0 ? historyItems.slice(0, 15) : [],
@@ -134,7 +146,7 @@ export const MarketProvider = ({ children }: MarketProviderProps) => {
 
   return (
     <MarketContext.Provider
-      value={{ items: state.items, orders: state.orders, stats: state.stats }}
+      value={{ items: state.items, orders: state.orders, stats: state.stats, isLoading }}
     >
       {children}
     </MarketContext.Provider>

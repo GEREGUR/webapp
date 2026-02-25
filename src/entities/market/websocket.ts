@@ -141,8 +141,15 @@ export const parseWsEvent = (rawMessage: string): WsEvent | null => {
       history?: unknown;
     };
 
-    const stats =
-      initialState.stats && isWsStats(initialState.stats) ? initialState.stats : undefined;
+    let stats: { total_ton: number; total_orders: number } | undefined;
+    if (initialState.stats && typeof initialState.stats === 'object') {
+      const rawStats = initialState.stats as Record<string, unknown>;
+      const totalTon = rawStats.total_ton;
+      const totalOrders = rawStats.total_orders ?? rawStats.totaR_orders;
+      if (typeof totalTon === 'number' && typeof totalOrders === 'number') {
+        stats = { total_ton: totalTon, total_orders: totalOrders };
+      }
+    }
     const orders = Array.isArray(initialState.orders)
       ? initialState.orders.filter(isWsOrder)
       : undefined;
@@ -170,11 +177,16 @@ export const parseWsEvent = (rawMessage: string): WsEvent | null => {
     };
   }
 
-  if (event.type === 'stats_update' && isWsStats(event.data)) {
-    return {
-      type: 'stats_update',
-      data: event.data,
-    };
+  if (event.type === 'stats_update' && event.data && typeof event.data === 'object') {
+    const rawStats = event.data as Record<string, unknown>;
+    const totalTon = rawStats.total_ton;
+    const totalOrders = rawStats.total_orders ?? rawStats.totaR_orders;
+    if (typeof totalTon === 'number' && typeof totalOrders === 'number') {
+      return {
+        type: 'stats_update',
+        data: { total_ton: totalTon, total_orders: totalOrders },
+      };
+    }
   }
 
   if (event.type === 'orders_bump' && event.data && typeof event.data === 'object') {

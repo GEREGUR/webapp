@@ -37,7 +37,7 @@ export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' 
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TonConnectUIProvider manifestUrl="https://webapp-pied.vercel.app/tonconnect-manifest.json">
+      <TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">
         <ToastProvider>
           <WebSocketProvider>
             <div className="min-h-screen w-screen overflow-x-hidden pb-16">

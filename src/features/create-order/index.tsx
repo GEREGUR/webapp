@@ -1,7 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import { LazyMotion, m, domAnimation } from 'motion/react';
@@ -14,60 +11,65 @@ import {
 } from '@/shared/ui/drawer';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
+import { useCreateOrder } from '@/entities/order';
 import BpIcon from '@/shared/assets/bp.svg?react';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import Arrow from '@/shared/assets/arrow.svg?react';
 
-const createOrderSchema = z.object({
-  bpAmount: z.string().min(1, 'Минимум 1 BP'),
-  tonAmount: z.string().min(1, 'Минимум 1 TON'),
-});
-
-interface CreateOrderFormData {
-  bpAmount: string;
-  tonAmount: string;
-}
-
 interface CreateOrderModalProps {
   open: boolean;
+  bpBalance: number;
   onClose: () => void;
-  onSubmit: (data: { bpAmount: number; tonAmount: number }) => void;
 }
 
-const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
+const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) => {
+  const createOrderMutation = useCreateOrder();
+  const [bpAmount, setBpAmount] = useState('');
+  const [tonAmount, setTonAmount] = useState('');
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<CreateOrderFormData>({
-    resolver: zodResolver(createOrderSchema),
-    defaultValues: {
-      bpAmount: '',
-      tonAmount: '',
-    },
-  });
-
-  const onFormSubmit = (data: CreateOrderFormData) => {
-    setIsSubmitting(true);
-    try {
-      onSubmit({
-        bpAmount: Number(data.bpAmount),
-        tonAmount: Number(data.tonAmount),
-      });
-      reset();
-      onClose();
-    } finally {
-      setIsSubmitting(false);
+  useEffect(() => {
+    if (!open) {
+      setBpAmount('');
+      setTonAmount('');
     }
+  }, [open]);
+
+  const handleBpAmountChange = (value: string) => {
+    const numValue = Number(value) || 0;
+    setBpAmount(value);
+    setTonAmount(String(numValue * 0.2));
+  };
+
+  const handleMaxClick = () => {
+    setBpAmount(String(Math.floor(bpBalance)));
+    setTonAmount(String(Math.floor(bpBalance) * 0.2));
+  };
+
+  const handleSubmit = () => {
+    const bp = Number(bpAmount);
+    if (isNaN(bp) || bp <= 0 || bp > bpBalance) {
+      return;
+    }
+    createOrderMutation.mutate(
+      { bp_amount: bp },
+      {
+        onSuccess: () => {
+          setBpAmount('');
+          setTonAmount('');
+          onClose();
+        },
+      }
+    );
   };
 
   const handleClose = () => {
-    reset();
+    setBpAmount('');
+    setTonAmount('');
     onClose();
   };
+
+  const isValid = Number(bpAmount) > 0 && Number(bpAmount) <= bpBalance;
+  const isSubmitting = createOrderMutation.isPending;
 
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : handleClose())}>
@@ -89,27 +91,26 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
           </div>
           <DrawerDescription className="font-sans text-[13px] leading-[18.4px] font-light text-balance text-white/60">
             После создания предложение станет доступно для покупки другими пользователями, вы
-            сможете выкупить его досрочно в разделе "Мои ордеры"
+            сможете выкупить его досрочно в разделе &quot;Мои ордеры&quot;
           </DrawerDescription>
         </DrawerHeader>
 
-        <form
-          onSubmit={(event) => {
-            void handleSubmit(onFormSubmit)(event);
-          }}
-          className="space-y-4 px-[20px] pb-[35px]"
-        >
+        <div className="space-y-4 px-[20px] pb-[35px]">
           <div className="grid grid-cols-1 gap-1">
             <div className="relative">
-              <span className="mb-2 block font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
-                Введите количество BP
-              </span>
+              <div className="mb-2 flex items-center justify-between">
+                <span className="font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
+                  Введите количество BP
+                </span>
+                <span className="text-xs text-white/60">Доступно: {bpBalance} BP</span>
+              </div>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <BpIcon className="size-5 text-[#C37CE2]" />
                 </div>
                 <Input
-                  {...register('bpAmount')}
+                  value={bpAmount}
+                  onChange={(e) => handleBpAmountChange(e.target.value)}
                   placeholder="0"
                   className="rounded-[10px] bg-[#232027] pr-12 pl-10 text-center text-white placeholder:text-white/40 focus:placeholder:text-transparent"
                 />
@@ -117,6 +118,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
                   type="button"
                   variant="ghost"
                   className="absolute inset-y-1 right-1 rounded-[8px] px-3 text-xs font-medium text-white hover:bg-[#3a3a42]"
+                  onClick={handleMaxClick}
                 >
                   MAX
                 </Button>
@@ -136,7 +138,7 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
                   <TonIcon className="size-5 text-white" />
                 </div>
                 <Input
-                  {...register('tonAmount')}
+                  value={tonAmount}
                   placeholder="0"
                   disabled
                   className="rounded-[10px] bg-[#232027] pr-10 pl-10 text-center text-white placeholder:text-white/40 focus:placeholder:text-transparent"
@@ -144,12 +146,6 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
               </div>
             </div>
           </div>
-
-          {(errors.bpAmount || errors.tonAmount) && (
-            <p className="text-sm text-red-400">
-              {errors.bpAmount?.message || errors.tonAmount?.message}
-            </p>
-          )}
 
           <div className="pt-2">
             <p className="mb-3 text-center text-sm font-semibold text-[#FFE88B]">
@@ -167,25 +163,26 @@ const CreateOrderModal = ({ open, onClose, onSubmit }: CreateOrderModalProps) =>
                 Закрыть
               </Button>
               <Button
-                type="submit"
+                type="button"
                 className="flex-1 bg-[#7a9be8] hover:bg-[#8facf2] disabled:bg-[#5F81D8]"
-                disabled={isSubmitting}
+                onClick={handleSubmit}
+                disabled={!isValid || isSubmitting}
               >
                 {isSubmitting ? 'Создание...' : 'Создать'}
               </Button>
             </div>
           </div>
-        </form>
+        </div>
       </DrawerContent>
     </Drawer>
   );
 };
 
 interface CreateOrderButtonProps {
-  onSubmit: (data: { bp_amount: number }) => void;
+  bpBalance: number;
 }
 
-export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
+export const CreateOrderButton = ({ bpBalance }: CreateOrderButtonProps) => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -208,10 +205,6 @@ export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleSubmit = (data: { bpAmount: number; tonAmount: number }) => {
-    onSubmit({ bp_amount: data.bpAmount });
-  };
-
   return (
     <LazyMotion features={domAnimation}>
       <m.div
@@ -227,7 +220,7 @@ export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
           Создать предложение
         </Button>
       </m.div>
-      <CreateOrderModal open={open} onClose={() => setOpen(false)} onSubmit={handleSubmit} />
+      <CreateOrderModal open={open} bpBalance={bpBalance} onClose={() => setOpen(false)} />
     </LazyMotion>
   );
 };

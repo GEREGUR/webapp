@@ -6,11 +6,11 @@ import { CreateOrderButton } from '@/features/create-order';
 import { BuyOrderDrawer } from '@/features/buy-order';
 import { LiveCarousel, LiveWinCard } from '@/widgets/live-carousel';
 import { MarketStatsBar } from '@/widgets/market-stats-bar';
-import { useOrders, useBuyOrder, useCreateOrder, OrderList, type Order } from '@/entities/order';
+import { useOrders, OrderList, type Order } from '@/entities/order';
 import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
-import { useToast } from '@/shared/ui/toast';
 import { Button } from '@/shared/ui/button';
 import { useMarket } from '@/entities/market';
+import { useProfile } from '@/entities/user';
 import HistoryIcon from '@/shared/assets/history.svg?react';
 import { Loader } from '@/shared/ui/spinner';
 import Arrow from '@/shared/assets/arrow.svg?react';
@@ -21,42 +21,12 @@ export const IndexPage = () => {
   const [sortAscending, setSortAscending] = useState(true);
   const { data: orders, isLoading: ordersLoading } = useOrders();
   const { orders: marketOrders, stats, isLoading: marketLoading } = useMarket();
-  const buyOrderMutation = useBuyOrder();
-  const createOrderMutation = useCreateOrder();
-  const { showToast } = useToast();
+  const { data: profile } = useProfile();
+
+  const bpBalance = profile?.internal_balance ?? 0;
 
   const handleOrderBuy = (order: Order) => {
     setSelectedOrder(order);
-  };
-
-  const handleBuyOrderSubmit = (data: { regularTonAmount: number; instantBpAmount: number }) => {
-    if (!selectedOrder) {
-      return;
-    }
-
-    buyOrderMutation.mutate(
-      {
-        order_id: selectedOrder.id,
-        ton_amount: data.regularTonAmount,
-      },
-      {
-        onSuccess: () => {
-          setSelectedOrder(null);
-          showToast('Ордер успешно куплен', 'success');
-        },
-        onError: () => showToast('Не удалось купить ордер', 'error'),
-      }
-    );
-  };
-
-  const handleCreateOrder = (data: { bp_amount: number }) => {
-    createOrderMutation.mutate(
-      { bp_amount: data.bp_amount },
-      {
-        onSuccess: () => showToast('Ордер успешно создан', 'success'),
-        onError: () => showToast('Не удалось создать ордер', 'error'),
-      }
-    );
   };
 
   return (
@@ -104,19 +74,15 @@ export const IndexPage = () => {
           </Card>
         ) : marketOrders && marketOrders.length > 0 ? (
           <>
-            <OrderList
-              orders={marketOrders}
-              onBuy={handleOrderBuy}
-              isBuying={buyOrderMutation.isPending}
-            />
-            <CreateOrderButton onSubmit={handleCreateOrder} />
+            <OrderList orders={marketOrders} onBuy={handleOrderBuy} />
+            <CreateOrderButton bpBalance={bpBalance} />
           </>
         ) : (
           <>
             <Card className="mx-4">
               <p className="text-center text-white/60">Нет ордеров</p>
             </Card>
-            <CreateOrderButton onSubmit={handleCreateOrder} />
+            <CreateOrderButton bpBalance={bpBalance} />
           </>
         )}
       </TabPanel>
@@ -145,7 +111,7 @@ export const IndexPage = () => {
             <Loader size="sm" />
           </Card>
         ) : orders && orders.length > 0 ? (
-          <OrderList orders={orders} onBuy={handleOrderBuy} isBuying={buyOrderMutation.isPending} />
+          <OrderList orders={orders} onBuy={handleOrderBuy} />
         ) : (
           <Card className="mx-4">
             <p className="text-center text-white/60">У вас пока нет ордеров</p>
@@ -157,11 +123,10 @@ export const IndexPage = () => {
         <BuyOrderDrawer
           open={Boolean(selectedOrder)}
           lotId={selectedOrder.id}
+          tonBalance={profile?.ton_balance ?? 0}
           defaultRegularTonAmount={selectedOrder.current_ton_amount}
           defaultInstantBpAmount={Math.floor(selectedOrder.current_ton_amount * 0.85)}
-          isSubmitting={buyOrderMutation.isPending}
           onClose={() => setSelectedOrder(null)}
-          onSubmit={handleBuyOrderSubmit}
         />
       )}
     </Tabs>

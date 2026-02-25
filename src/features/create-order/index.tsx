@@ -3,6 +3,8 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
+import { useReducedMotion } from 'motion/react';
+import { LazyMotion, m, domAnimation } from 'motion/react';
 import {
   Drawer,
   DrawerContent,
@@ -15,7 +17,6 @@ import { Button } from '@/shared/ui/button';
 import BpIcon from '@/shared/assets/bp.svg?react';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import Arrow from '@/shared/assets/arrow.svg?react';
-import { cn } from '@/shared/lib/utils';
 
 const createOrderSchema = z.object({
   bpAmount: z.string().min(1, 'Минимум 1 BP'),
@@ -188,6 +189,7 @@ export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
+  const reducedMotion = useReducedMotion();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -211,12 +213,12 @@ export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
   };
 
   return (
-    <>
-      <div
-        className={cn(
-          'flex justify-center pt-2 transition-transform duration-300',
-          !isVisible && 'translate-y-full'
-        )}
+    <LazyMotion features={domAnimation}>
+      <m.div
+        initial={reducedMotion ? false : { opacity: 0, y: 20 }}
+        animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.3 }}
+        className="flex justify-center pt-2"
       >
         <Button
           onClick={() => setOpen(true)}
@@ -224,8 +226,8 @@ export const CreateOrderButton = ({ onSubmit }: CreateOrderButtonProps) => {
         >
           Создать предложение
         </Button>
-      </div>
+      </m.div>
       <CreateOrderModal open={open} onClose={() => setOpen(false)} onSubmit={handleSubmit} />
-    </>
+    </LazyMotion>
   );
 };

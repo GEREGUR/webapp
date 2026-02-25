@@ -119,7 +119,7 @@ export const IndexPage = () => {
           </>
         ) : (
           <>
-            <Card className="mx-8">
+            <Card className="mx-4">
               <p className="text-center text-white/60">Нет ордеров</p>
             </Card>
             <CreateOrderButton onSubmit={handleCreateOrder} />
@@ -153,7 +153,7 @@ export const IndexPage = () => {
         ) : orders && orders.length > 0 ? (
           <OrderList orders={orders} onBuy={handleOrderBuy} isBuying={buyOrderMutation.isPending} />
         ) : (
-          <Card>
+          <Card className="mx-4">
             <p className="text-center text-white/60">У вас пока нет ордеров</p>
           </Card>
         )}

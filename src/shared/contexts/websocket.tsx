@@ -20,6 +20,15 @@ const MOCK_LIVE_ITEMS: DropItem[] = [
   { id: 5, uid: 'mock-5', tonAmount: 1.8, status: 'bought' },
 ];
 
+interface WsTransaction {
+  id: number;
+  type: string;
+  currency: string;
+  value: number;
+  obj_id: number | null;
+  create_date: number;
+}
+
 interface WsDeal {
   order_id: number;
   ton_amount: number;
@@ -53,7 +62,7 @@ interface WsInitialStateEvent {
   data: {
     stats?: WsStats;
     orders?: WsOrder[];
-    history?: WsDeal[];
+    history?: WsTransaction[];
   };
 }
 
@@ -194,6 +203,21 @@ const isWsStats = (value: unknown): value is WsStats => {
   return typeof stats.total_ton === 'number' && typeof stats.total_orders === 'number';
 };
 
+const isWsTransaction = (value: unknown): value is WsTransaction => {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const tx = value as WsTransaction;
+  return (
+    typeof tx.id === 'number' &&
+    typeof tx.type === 'string' &&
+    typeof tx.currency === 'string' &&
+    typeof tx.value === 'number' &&
+    typeof tx.create_date === 'number'
+  );
+};
+
 const parseWsEvent = (rawMessage: string): WsEvent | null => {
   let payload: unknown;
   try {
@@ -228,7 +252,7 @@ const parseWsEvent = (rawMessage: string): WsEvent | null => {
       ? initialState.orders.filter(isWsOrder)
       : undefined;
     const history = Array.isArray(initialState.history)
-      ? initialState.history.filter(isWsDeal)
+      ? initialState.history.filter(isWsTransaction)
       : undefined;
 
     return {
@@ -311,6 +335,15 @@ const mapDealToDropItem = (deal: WsDeal): DropItem => {
     id: deal.order_id,
     uid: `${deal.order_id}-${deal.date ?? Date.now()}-${Math.random().toString(16).slice(2)}`,
     tonAmount: deal.ton_amount,
+    status: 'bought',
+  };
+};
+
+const mapTransactionToDropItem = (tx: WsTransaction, index: number): DropItem => {
+  return {
+    id: tx.id,
+    uid: `${tx.id}-${tx.create_date}-${index}`,
+    tonAmount: tx.value,
     status: 'bought',
   };
 };
@@ -403,7 +436,9 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
         }
 
         if (message.type === 'initial_state') {
-          const historyItems = (message.data.history ?? []).map(mapDealToDropItem);
+          const historyItems = (message.data.history ?? []).map((tx, i) =>
+            mapTransactionToDropItem(tx, i)
+          );
           wsInitialized.current = true;
           dispatch({
             type: 'set_items',

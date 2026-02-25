@@ -136,6 +136,8 @@ const getWsUrl = (): string | null => {
         ? proxyTarget
         : apiBaseUrl || fallbackUrl;
 
+  console.log(sourceUrl);
+
   let parsedApiUrl: URL;
   try {
     parsedApiUrl = new URL(sourceUrl, fallbackUrl);
@@ -216,8 +218,10 @@ const isWsStats = (value: unknown): value is WsStats => {
     return false;
   }
 
-  const stats = value as WsStats;
-  return typeof stats.total_ton === 'number' && typeof stats.total_orders === 'number';
+  const stats = value as Record<string, unknown>;
+  const totalTon = stats.total_ton;
+  const totalOrders = stats.total_orders ?? stats.totaR_orders;
+  return typeof totalTon === 'number' && typeof totalOrders === 'number';
 };
 
 const isWsTransaction = (value: unknown): value is WsTransaction => {
@@ -353,6 +357,7 @@ const mapTransactionToDropItem = (tx: WsTransaction, index: number): DropItem =>
 type State = {
   items: DropItem[];
   orders: WsOrder[];
+  stats: WsStats | null;
 };
 
 type Action =
@@ -361,11 +366,13 @@ type Action =
   | { type: 'set_fallback' }
   | { type: 'set_orders'; payload: WsOrder[] }
   | { type: 'add_order'; payload: WsOrder }
-  | { type: 'update_order'; payload: WsOrderUpdate };
+  | { type: 'update_order'; payload: WsOrderUpdate }
+  | { type: 'set_stats'; payload: WsStats };
 
 const initialState: State = {
   items: [],
   orders: [],
+  stats: null,
 };
 
 const itemsReducer = (state: State, action: Action): State => {
@@ -389,6 +396,8 @@ const itemsReducer = (state: State, action: Action): State => {
         ),
       };
     }
+    case 'set_stats':
+      return { ...state, stats: action.payload };
     default:
       return state;
   }
@@ -397,6 +406,7 @@ const itemsReducer = (state: State, action: Action): State => {
 interface WebSocketContextValue {
   items: DropItem[];
   orders: WsOrder[];
+  stats: WsStats | null;
 }
 
 const WebSocketContext = createContext<WebSocketContextValue | null>(null);
@@ -474,6 +484,14 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
           if (message.data.orders) {
             dispatch({ type: 'set_orders', payload: message.data.orders });
           }
+          if (message.data.stats) {
+            dispatch({ type: 'set_stats', payload: message.data.stats });
+          }
+          return;
+        }
+
+        if (message.type === 'stats_update') {
+          dispatch({ type: 'set_stats', payload: message.data });
           return;
         }
 
@@ -520,7 +538,9 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   }, []);
 
   return (
-    <WebSocketContext.Provider value={{ items: state.items, orders: state.orders }}>
+    <WebSocketContext.Provider
+      value={{ items: state.items, orders: state.orders, stats: state.stats }}
+    >
       {children}
     </WebSocketContext.Provider>
   );

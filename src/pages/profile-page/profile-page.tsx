@@ -80,7 +80,7 @@ export const ProfilePage: FC = () => {
         walletAddress={walletAddress}
       />
 
-      <div className="px-6 pt-6 pb-3">
+      <div className="px-1.5 pt-6 pb-3">
         <BattlePassPromoCard />
       </div>
 

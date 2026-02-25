@@ -136,8 +136,6 @@ const getWsUrl = (): string | null => {
         ? proxyTarget
         : apiBaseUrl || fallbackUrl;
 
-  console.log(sourceUrl);
-
   let parsedApiUrl: URL;
   try {
     parsedApiUrl = new URL(sourceUrl, fallbackUrl);
@@ -356,6 +354,7 @@ const mapTransactionToDropItem = (tx: WsTransaction, index: number): DropItem =>
 
 type State = {
   items: DropItem[];
+  orders: WsOrder[];
   stats: WsStats | null;
 };
 
@@ -363,10 +362,14 @@ type Action =
   | { type: 'set_items'; payload: DropItem[] }
   | { type: 'push_item'; payload: DropItem }
   | { type: 'set_fallback' }
+  | { type: 'set_orders'; payload: WsOrder[] }
+  | { type: 'add_order'; payload: WsOrder }
+  | { type: 'update_order'; payload: WsOrderUpdate }
   | { type: 'set_stats'; payload: WsStats };
 
 const initialState: State = {
   items: [],
+  orders: [],
   stats: null,
 };
 
@@ -378,6 +381,19 @@ const itemsReducer = (state: State, action: Action): State => {
       return { ...state, items: [action.payload, ...state.items].slice(0, MAX_ITEMS) };
     case 'set_fallback':
       return { ...state, items: state.items.length === 0 ? MOCK_LIVE_ITEMS : state.items };
+    case 'set_orders':
+      return { ...state, orders: action.payload };
+    case 'add_order':
+      return { ...state, orders: [action.payload, ...state.orders] };
+    case 'update_order': {
+      const { id, current_ton_amount, status } = action.payload;
+      return {
+        ...state,
+        orders: state.orders.map((order) =>
+          order.id === id ? { ...order, current_ton_amount, status } : order
+        ),
+      };
+    }
     case 'set_stats':
       return { ...state, stats: action.payload };
     default:
@@ -387,6 +403,7 @@ const itemsReducer = (state: State, action: Action): State => {
 
 interface WebSocketContextValue {
   items: DropItem[];
+  orders: WsOrder[];
   stats: WsStats | null;
 }
 
@@ -462,9 +479,22 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
             type: 'set_items',
             payload: historyItems.length > 0 ? historyItems.slice(0, MAX_ITEMS) : MOCK_LIVE_ITEMS,
           });
+          if (message.data.orders) {
+            dispatch({ type: 'set_orders', payload: message.data.orders });
+          }
           if (message.data.stats) {
             dispatch({ type: 'set_stats', payload: message.data.stats });
           }
+          return;
+        }
+
+        if (message.type === 'new_order') {
+          dispatch({ type: 'add_order', payload: message.data });
+          return;
+        }
+
+        if (message.type === 'order_update') {
+          dispatch({ type: 'update_order', payload: message.data });
           return;
         }
 
@@ -506,7 +536,9 @@ export const WebSocketProvider = ({ children }: WebSocketProviderProps) => {
   }, []);
 
   return (
-    <WebSocketContext.Provider value={{ items: state.items, stats: state.stats }}>
+    <WebSocketContext.Provider
+      value={{ items: state.items, orders: state.orders, stats: state.stats }}
+    >
       {children}
     </WebSocketContext.Provider>
   );

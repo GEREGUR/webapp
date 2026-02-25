@@ -6,17 +6,11 @@ import { CreateOrderButton } from '@/features/create-order';
 import { BuyOrderDrawer } from '@/features/buy-order';
 import { LiveCarousel, LiveWinCard } from '@/widgets/live-carousel';
 import { MarketStatsBar } from '@/widgets/market-stats-bar';
-import {
-  useOrders,
-  useBuyOrder,
-  useMarketOrders,
-  useCreateOrder,
-  OrderList,
-  type Order,
-} from '@/entities/order';
+import { useOrders, useBuyOrder, useCreateOrder, OrderList, type Order } from '@/entities/order';
 import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
 import { useToast } from '@/shared/ui/toast';
 import { Button } from '@/shared/ui/button';
+import { useLiveDeals } from '@/shared/contexts/websocket';
 import HistoryIcon from '@/shared/assets/history.svg?react';
 import { Loader } from '@/shared/ui/spinner';
 import Arrow from '@/shared/assets/arrow.svg?react';
@@ -26,10 +20,14 @@ export const IndexPage = () => {
   const [sliderValue, setSliderValue] = useState(1);
   const [sortAscending, setSortAscending] = useState(true);
   const { data: orders, isLoading: ordersLoading } = useOrders();
-  const { data: marketOrders, isLoading: marketLoading } = useMarketOrders();
+  const { orders: marketOrders, stats } = useLiveDeals();
   const buyOrderMutation = useBuyOrder();
   const createOrderMutation = useCreateOrder();
   const { showToast } = useToast();
+
+  const marketLoading = false;
+  const tonAmount = stats?.total_ton ?? 0;
+  const orderCount = stats?.total_orders ?? marketOrders.length ?? 0;
 
   const handleOrderBuy = (order: Order) => {
     setSelectedOrder(order);
@@ -86,10 +84,7 @@ export const IndexPage = () => {
         </MaxWidthWrapper>
         <div className="px-4 md:px-12">
           <div className="my-2">
-            <MarketStatsBar
-              tonAmount={marketOrders?.reduce((sum, o) => sum + o.current_ton_amount, 0) ?? 0}
-              orderCount={marketOrders?.length ?? 0}
-            />
+            <MarketStatsBar tonAmount={tonAmount} orderCount={orderCount} />
           </div>
           <div className="mb-3 flex items-center justify-between gap-2.5">
             <TonAmountCard

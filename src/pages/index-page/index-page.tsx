@@ -26,8 +26,6 @@ export const IndexPage = () => {
   const { showToast } = useToast();
 
   const marketLoading = false;
-  const tonAmount = stats?.total_ton ?? 0;
-  const orderCount = stats?.total_orders ?? marketOrders.length ?? 0;
 
   const handleOrderBuy = (order: Order) => {
     setSelectedOrder(order);
@@ -84,7 +82,10 @@ export const IndexPage = () => {
         </MaxWidthWrapper>
         <div className="px-4 md:px-12">
           <div className="my-2">
-            <MarketStatsBar tonAmount={tonAmount} orderCount={orderCount} />
+            <MarketStatsBar
+              tonAmount={stats?.total_ton ?? 0}
+              orderCount={stats?.total_orders ?? 0}
+            />
           </div>
           <div className="mb-3 flex items-center justify-between gap-2.5">
             <TonAmountCard

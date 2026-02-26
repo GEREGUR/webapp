@@ -78,6 +78,9 @@ export const useWithdraw = () => {
     mutationFn: async (data: WithdrawRequest): Promise<void> => {
       await api.post('/wallet/withdrawal', data);
     },
+    onSuccess: (_data, _variables, _onMutateResult, context) => {
+      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.walletHistory });
+    },
   });
 };
 

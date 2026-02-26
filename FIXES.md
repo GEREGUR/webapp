@@ -15,7 +15,6 @@ type image url
 
 exp mix blend
 иконка тон кошелька
-обновление истории апи
 
 claim/task на reward -> true / false
 set nick, bio, story

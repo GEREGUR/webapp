@@ -205,8 +205,9 @@ export const WithdrawDrawer: WithdrawDrawer = ({ open, maxTon, onClose }) => {
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-4 text-[14px] font-semibold text-white"
+                className="absolute inset-y-0 right-4 text-[14px] font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={handleSetMax}
+                disabled={maxTon <= 0}
               >
                 MAX
               </button>

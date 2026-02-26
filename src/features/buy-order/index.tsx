@@ -149,8 +149,9 @@ export const BuyOrderDrawer = ({
                     <Button
                       type="button"
                       variant="ghost"
-                      className="absolute inset-y-1 right-1 rounded-[8px] px-2 text-xs font-medium text-white hover:bg-[#3a3a42]"
+                      className="absolute inset-y-1 right-1 rounded-[8px] px-2 text-xs font-medium text-white hover:bg-[#3a3a42] disabled:opacity-50 disabled:cursor-not-allowed"
                       onClick={handleMaxClick}
+                      disabled={tonBalance <= 0}
                     >
                       MAX
                     </Button>

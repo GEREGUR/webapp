@@ -3,7 +3,8 @@ import { cn } from '@/shared/lib/utils';
 
 const LEVEL_STYLES = 'font-medium text-[14px] leading-[20.94px] tracking-[0] align-middle';
 
-const EXP_STYLES = 'font-medium text-[17px] leading-[20.94px] tracking-[0] align-middle text-black';
+const EXP_STYLES =
+  'font-medium text-[17px] leading-[20.94px] tracking-[0] align-middle text-black mix-blend-difference text-white';
 
 interface BattlePassProgressProps {
   currentLevel: number;

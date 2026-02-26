@@ -11,6 +11,7 @@ import {
 import { Input } from '@/shared/ui/input';
 import { useToast } from '@/shared/ui/toast';
 import { useWalletHistory, useWithdraw } from '@/entities/user';
+import { parseNumberInput } from '@/shared/lib/utils';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points-sm.svg?react';
 import { Copy, X } from 'lucide-react';
@@ -185,12 +186,10 @@ export const WithdrawDrawer: WithdrawDrawer = ({ open, maxTon, onClose }) => {
                 <TonIcon className="h-4 w-4" />
               </div>
               <Input
-                type="number"
+                type="text"
                 inputMode="decimal"
-                min="0"
-                step="0.1"
                 value={amount}
-                onChange={(event) => setAmount(event.target.value)}
+                onChange={(event) => setAmount(parseNumberInput(event.target.value))}
                 placeholder={`Не более ${maxTon}`}
                 className="h-[50px] rounded-[12px] border-none bg-[#232027] pr-14 pl-10 text-center text-[20px] font-medium text-white placeholder:text-white/40"
               />

@@ -12,6 +12,7 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { useCreateOrder } from '@/entities/order';
+import { parseNumberInput } from '@/shared/lib/utils';
 import BpIcon from '@/shared/assets/bp.svg?react';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import Arrow from '@/shared/assets/arrow.svg?react';
@@ -35,8 +36,9 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
   }, [open]);
 
   const handleBpAmountChange = (value: string) => {
-    const numValue = Number(value) || 0;
-    setBpAmount(value);
+    const parsedValue = parseNumberInput(value);
+    const numValue = Number(parsedValue) || 0;
+    setBpAmount(parsedValue);
     setTonAmount(String(numValue * 0.2));
   };
 
@@ -109,6 +111,8 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
                   <BpIcon className="size-5 text-[#C37CE2]" />
                 </div>
                 <Input
+                  type="text"
+                  inputMode="decimal"
                   value={bpAmount}
                   onChange={(e) => handleBpAmountChange(e.target.value)}
                   placeholder="0"

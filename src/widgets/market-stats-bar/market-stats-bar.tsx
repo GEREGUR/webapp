@@ -16,13 +16,13 @@ export const MarketStatsBar: FC<MarketStatsBarProps> = ({ tonAmount, orderCount,
       )}
     >
       <div className="flex flex-1 items-center justify-center">
-        <span className="text-[13px] text-white" key={tonAmount}>
+        <span className="min-w-fit text-[13px] text-white" key={tonAmount}>
           {tonAmount?.toFixed(0) ?? 0} TON
         </span>
       </div>
       <div className="h-2.5 w-px bg-white" />
       <div className="flex flex-1 items-center justify-center">
-        <span className="text-[13px] text-white" key={orderCount}>
+        <span className="min-w-fit text-[13px] text-white" key={orderCount}>
           {orderCount?.toFixed(0) ?? 0} Предложений
         </span>
       </div>

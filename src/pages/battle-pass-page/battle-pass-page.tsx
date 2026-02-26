@@ -216,7 +216,7 @@ export const BattlePassPage: FC = () => {
     <>
       <Page back>
         <div className="flex flex-col gap-[20px]">
-          <BattlePassPromoCard />
+          <BattlePassPromoCard isActive={data?.is_active ?? false} />
 
           <BattlePassProgress
             currentLevel={data?.level ?? 1}

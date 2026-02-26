@@ -15,4 +15,5 @@ export interface BattlePassResponse {
   exp: number;
   progress: number;
   rewards: BattlePassReward[];
+  is_active: boolean;
 }

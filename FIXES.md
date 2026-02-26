@@ -3,7 +3,6 @@
 ## payment/
 
 скопировать стейт
-ton type not number, max button disabled
 
 ## /payment/transaction
 

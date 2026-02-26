@@ -10,7 +10,15 @@ import LightTwo from '@/shared/assets/light-2.svg';
 import LightThree from '@/shared/assets/light-3.svg';
 import LightFour from '@/shared/assets/light-4.svg';
 
-export const BattlePassPromoCard: FC = () => {
+interface BattlePassPromoCardProps {
+  isActive?: boolean;
+}
+
+export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({ isActive = false }) => {
+  const handleActivate = () => {
+    console.log('Activate battle pass');
+  };
+
   return (
     <div className="relative h-[80px] w-full overflow-hidden rounded-[10px] bg-[#5F81D8]">
       <img
@@ -51,12 +59,22 @@ export const BattlePassPromoCard: FC = () => {
         <p className="font-bebas-cyrillic ml-3 text-[38px] leading-8.5 font-semibold text-white uppercase">
           батлпас
         </p>
-        <Button
-          className="font-bebas-cyrillic bg-button-bp-dark ml-3 h-[26px] w-full rounded-[6px] px-0 py-0 text-center text-[12.59px] leading-[13.85px] font-normal -tracking-tight text-white"
-          variant="primary"
-        >
-          ПОЛУЧИТЬ
-        </Button>
+        {isActive ? (
+          <Button
+            className="font-bebas-cyrillic bg-button-bp-dark ml-3 h-[26px] w-full rounded-[6px] px-0 py-0 text-center text-[12.59px] leading-[13.85px] font-normal -tracking-tight text-white"
+            variant="primary"
+          >
+            ПОЛУЧИТЬ
+          </Button>
+        ) : (
+          <Button
+            className="font-bebas-cyrillic bg-green-500 ml-3 h-[26px] w-full rounded-[6px] px-0 py-0 text-center text-[12.59px] leading-[13.85px] font-normal -tracking-tight text-white hover:bg-green-600"
+            variant="primary"
+            onClick={handleActivate}
+          >
+            АКТИВИРОВАТЬ
+          </Button>
+        )}
       </div>
     </div>
   );

@@ -35,11 +35,21 @@ export const ProfilePage: FC = () => {
     syncedRef.current = true;
     setWalletMutation.mutate({ address: walletAddress });
   }
-  };
 
-  if (isConnected && walletAddress && profile && profile.wallet_address !== walletAddress) {
-    setWalletMutation.mutate({ address: walletAddress });
-  }
+  const walletAddressForDeposit =
+    profile?.wallet_address ?? 'UQBZKlyfMpa5IVenwd2v-2bcoWgmxhHLo4B_G8zKOe2lXuby';
+  const depositMemo = `ID-${profile?.id ?? 7}`;
+
+  const handleConnectWallet = () => {
+    if (isConnected && walletAddress) {
+      showToast(
+        `Кошелек подключен: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
+        'success'
+      );
+    } else {
+      void connect();
+    }
+  };
 
   if (isLoading) {
     return (

@@ -5,7 +5,7 @@ import { TonAmountCard } from '@/shared/ui/ton-amount-card';
 import { CreateOrderButton } from '@/features/create-order';
 import { BuyOrderDrawer } from '@/features/buy-order';
 import { LiveCarousel, LiveWinCard } from '@/widgets/live-carousel';
-import { MarketStatsBar } from '@/widgets/market-stats-bar';
+import { MarketStatsBar } from '@/features/market-stats-bar';
 import { useOrders, OrderList, type Order } from '@/entities/order';
 import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
 import { Button } from '@/shared/ui/button';

@@ -2,8 +2,8 @@ import { type FC } from 'react';
 import { cn } from '@/shared/lib/utils';
 
 interface MarketStatsBarProps {
-  tonAmount: number | undefined;
-  orderCount: number | undefined;
+  tonAmount: number;
+  orderCount: number;
   className?: string;
 }
 
@@ -17,13 +17,13 @@ export const MarketStatsBar: FC<MarketStatsBarProps> = ({ tonAmount, orderCount,
     >
       <div className="flex flex-1 items-center justify-center">
         <span className="min-w-fit text-[13px] text-white" key={tonAmount}>
-          {tonAmount?.toFixed(0) ?? 0} TON
+          {tonAmount.toFixed(0)} TON
         </span>
       </div>
       <div className="h-2.5 w-px bg-white" />
       <div className="flex flex-1 items-center justify-center">
         <span className="min-w-fit text-[13px] text-white" key={orderCount}>
-          {orderCount?.toFixed(0) ?? 0} Предложений
+          {orderCount.toFixed(0)} Предложений
         </span>
       </div>
     </div>

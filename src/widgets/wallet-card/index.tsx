@@ -124,6 +124,11 @@ export const WithdrawDrawer: WithdrawDrawer = ({ open, maxTon, onClose }) => {
   const [amount, setAmount] = useState('');
   const [address, setAddress] = useState('');
 
+  const isValidTonAddress = (addr: string): boolean => {
+    const tonAddressRegex = /^(U|EQ)[A-Za-z0-9_-]{46}$/;
+    return tonAddressRegex.test(addr.trim());
+  };
+
   const handleSetMax = () => {
     setAmount(maxTon.toString());
   };
@@ -136,6 +141,11 @@ export const WithdrawDrawer: WithdrawDrawer = ({ open, maxTon, onClose }) => {
 
     if (!address.trim()) {
       showToast('Введите адрес кошелька', 'error');
+      return;
+    }
+
+    if (!isValidTonAddress(address)) {
+      showToast('Введите корректный адрес TON кошелька', 'error');
       return;
     }
 

@@ -189,7 +189,7 @@ export const WithdrawDrawer: WithdrawDrawer = ({ open, maxTon, onClose }) => {
                 type="text"
                 inputMode="decimal"
                 value={amount}
-                onChange={(event) => setAmount(parseNumberInput(event.target.value))}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAmount(parseNumberInput(event.target.value))}
                 placeholder={`Не более ${maxTon}`}
                 className="h-[50px] rounded-[12px] border-none bg-[#232027] pr-14 pl-10 text-center text-[20px] font-medium text-white placeholder:text-white/40"
               />

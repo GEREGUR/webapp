@@ -27,11 +27,9 @@ const queryClient = new QueryClient({
 
 interface RootProps {
   routes: RouteObject[];
-  tonBalance?: string;
-  bpBalance?: string;
 }
 
-export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' }) => {
+export const Root: FC<RootProps> = ({ routes }) => {
   const lp = useLaunchParams();
   const platform = lp.platform || 'unknown';
 
@@ -47,7 +45,7 @@ export const Root: FC<RootProps> = ({ routes, tonBalance = '0', bpBalance = '0' 
               >
                 <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
                   <NuqsAdapter>
-                    <Layout tonBalance={tonBalance} bpBalance={bpBalance}>
+                    <Layout>
                       <Routes>
                         {routes.map((route) => (
                           <Route key={route.path} path={route.path} Component={route.Component} />

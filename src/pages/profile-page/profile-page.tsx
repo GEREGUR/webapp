@@ -5,6 +5,7 @@ import { Loader } from '@/shared/ui/spinner';
 import { useToast } from '@/shared/ui/toast';
 import { useProfile } from '@/entities/user';
 import { useTonConnect } from '@/shared/hooks/use-ton-connect';
+import { useSetWallet } from '@/entities/user';
 import { BattlePassPromoCard } from '@/features/battle-pass-promo';
 import {
   WalletCard,
@@ -18,6 +19,7 @@ export const ProfilePage: FC = () => {
   const { showToast } = useToast();
   const { data: profile, isLoading } = useProfile();
   const { isConnected, connect, walletAddress } = useTonConnect();
+  const setWalletMutation = useSetWallet();
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
@@ -36,6 +38,10 @@ export const ProfilePage: FC = () => {
       void connect();
     }
   };
+
+  if (isConnected && walletAddress && profile && profile.wallet_address !== walletAddress) {
+    setWalletMutation.mutate({ address: walletAddress });
+  }
 
   if (isLoading) {
     return (

@@ -50,10 +50,7 @@ export const IndexPage = () => {
         </MaxWidthWrapper>
         <div className="px-4 md:px-12">
           <div className="my-2">
-            <MarketStatsBar
-              tonAmount={stats?.total_ton ?? 0}
-              orderCount={stats?.total_orders ?? 0}
-            />
+            <MarketStatsBar tonAmount={stats?.total_ton} orderCount={stats?.total_orders} />
           </div>
           <div className="mb-3 flex items-center justify-between gap-2.5">
             <TonAmountCard
@@ -124,6 +121,7 @@ export const IndexPage = () => {
           open={Boolean(selectedOrder)}
           lotId={selectedOrder.id}
           tonBalance={profile?.ton_balance ?? 0}
+          orderType="instant"
           defaultRegularTonAmount={selectedOrder.current_ton_amount}
           defaultInstantBpAmount={Math.floor(selectedOrder.current_ton_amount * 0.85)}
           onClose={() => setSelectedOrder(null)}

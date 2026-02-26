@@ -2,16 +2,19 @@ import { useLayoutEffect, type FC, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from '@/widgets/header';
 import { closingBehavior, miniApp, swipeBehavior } from '@tma.js/sdk-react';
+import { useProfile } from '@/entities/user';
 
 interface LayoutProps {
   children: ReactNode;
-  tonBalance?: string;
-  bpBalance?: string;
 }
 
-export const Layout: FC<LayoutProps> = ({ children, tonBalance, bpBalance }) => {
+export const Layout: FC<LayoutProps> = ({ children }) => {
   const { pathname } = useLocation();
   const hideHeaderLeftSide = pathname === '/profile' || pathname === '/awards';
+  const { data: profile } = useProfile();
+
+  const tonBalance = profile?.ton_balance.toString() ?? '0';
+  const bpBalance = profile?.internal_balance.toString() ?? '0';
 
   useLayoutEffect(() => {
     try {

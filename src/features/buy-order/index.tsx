@@ -11,6 +11,7 @@ import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { cn, parseNumberInput } from '@/shared/lib/utils';
 import { useBuyOrder } from '@/entities/order';
+import { marketWebSocketService } from '@/entities/market';
 import TonIcon from '@/shared/assets/ton.svg?react';
 
 interface BuyOrderDrawerProps {
@@ -95,6 +96,9 @@ export const BuyOrderDrawer = ({
       return;
     }
 
+    const previousOrders = marketWebSocketService.getState().orders;
+    marketWebSocketService.optimisticRemoveOrder(lotId);
+
     buyOrderMutation.mutate(
       {
         order_id: lotId,
@@ -104,6 +108,9 @@ export const BuyOrderDrawer = ({
         onSuccess: () => {
           dispatch({ type: 'reset' });
           onClose();
+        },
+        onError: () => {
+          marketWebSocketService.revertOrders(previousOrders);
         },
       }
     );

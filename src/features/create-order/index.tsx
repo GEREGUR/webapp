@@ -12,6 +12,7 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { useCreateOrder } from '@/entities/order';
+import { marketWebSocketService } from '@/entities/market';
 import { parseNumberInput } from '@/shared/lib/utils';
 import BpIcon from '@/shared/assets/bp.svg?react';
 import TonIcon from '@/shared/assets/ton.svg?react';
@@ -52,6 +53,21 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
     if (isNaN(bp) || bp <= 0 || bp > bpBalance) {
       return;
     }
+
+    const tonAmount = Math.floor(bp * 0.2);
+    const optimisticOrder = {
+      id: Date.now(),
+      owner: { id: 0, avatar: '', name: 'You', username: '' },
+      initial_bp_amount: bp,
+      initial_ton_amount: tonAmount,
+      current_ton_amount: tonAmount,
+      status: 'OPEN' as const,
+      create_date: Date.now(),
+    };
+
+    const previousOrders = marketWebSocketService.getState().orders;
+    marketWebSocketService.optimisticAddOrder(optimisticOrder);
+
     createOrderMutation.mutate(
       { bp_amount: bp },
       {
@@ -59,6 +75,9 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
           setBpAmount('');
           setTonAmount('');
           onClose();
+        },
+        onError: () => {
+          marketWebSocketService.revertOrders(previousOrders);
         },
       }
     );

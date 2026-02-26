@@ -64,6 +64,32 @@ class MarketWebSocketService {
     return this.marketState$.getValue();
   }
 
+  optimisticRemoveOrder(orderId: number): void {
+    const currentOrders = this.ordersSubject$.getValue();
+    const updatedOrders = currentOrders.filter((o) => o.id !== orderId);
+    this.ordersSubject$.next(updatedOrders);
+    this.marketState$.next({ ...this.marketState$.getValue(), orders: updatedOrders });
+  }
+
+  optimisticAddOrder(order: WsOrder): void {
+    const currentOrders = this.ordersSubject$.getValue();
+    const updatedOrders = [order, ...currentOrders];
+    this.ordersSubject$.next(updatedOrders);
+    this.marketState$.next({ ...this.marketState$.getValue(), orders: updatedOrders });
+  }
+
+  optimisticUpdateOrder(orderId: number, updates: Partial<WsOrder>): void {
+    const currentOrders = this.ordersSubject$.getValue();
+    const updatedOrders = currentOrders.map((o) => (o.id === orderId ? { ...o, ...updates } : o));
+    this.ordersSubject$.next(updatedOrders);
+    this.marketState$.next({ ...this.marketState$.getValue(), orders: updatedOrders });
+  }
+
+  revertOrders(previousOrders: WsOrder[]): void {
+    this.ordersSubject$.next(previousOrders);
+    this.marketState$.next({ ...this.marketState$.getValue(), orders: previousOrders });
+  }
+
   connect(): void {
     const wsUrl = getWsUrl();
     if (!wsUrl) {

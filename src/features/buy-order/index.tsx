@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from 'react';
+import { useEffect, useState } from 'react';
 import { X } from 'lucide-react';
 import {
   Drawer,
@@ -11,7 +11,6 @@ import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { cn, parseNumberInput } from '@/shared/lib/utils';
 import { useBuyOrder } from '@/entities/order';
-import { marketWebSocketService } from '@/entities/market';
 import TonIcon from '@/shared/assets/ton.svg?react';
 
 interface BuyOrderDrawerProps {
@@ -34,60 +33,31 @@ export const BuyOrderDrawer = ({
   onClose,
 }: BuyOrderDrawerProps) => {
   const buyOrderMutation = useBuyOrder();
-
-  type OrderFormState = {
-    regularTonAmount: string;
-    instantBpAmount: string;
-  };
-
-  type OrderFormAction =
-    | { type: 'reset' }
-    | { type: 'setDefaults'; regularTonAmount: string; instantBpAmount: string }
-    | { type: 'setTonAmount'; value: string; instantBpAmount: string }
-    | { type: 'setMaxTon'; value: string; instantBpAmount: string };
-
-  const [formState, dispatch] = useReducer(
-    (state: OrderFormState, action: OrderFormAction): OrderFormState => {
-      switch (action.type) {
-        case 'reset':
-          return { regularTonAmount: '', instantBpAmount: '' };
-        case 'setDefaults':
-          return { regularTonAmount: action.regularTonAmount, instantBpAmount: action.instantBpAmount };
-        case 'setTonAmount':
-          return { regularTonAmount: action.value, instantBpAmount: action.instantBpAmount };
-        case 'setMaxTon':
-          return { regularTonAmount: action.value, instantBpAmount: action.instantBpAmount };
-        default:
-          return state;
-      }
-    },
-    { regularTonAmount: '', instantBpAmount: '' }
-  );
-
-  const { regularTonAmount, instantBpAmount } = formState;
+  const [regularTonAmount, setRegularTonAmount] = useState('');
+  const [instantBpAmount, setInstantBpAmount] = useState('');
 
   useEffect(() => {
     if (!open) {
-      dispatch({ type: 'reset' });
+      setRegularTonAmount('');
+      setInstantBpAmount('');
       return;
     }
 
-    dispatch({
-      type: 'setDefaults',
-      regularTonAmount: defaultRegularTonAmount?.toString() ?? '',
-      instantBpAmount: defaultInstantBpAmount?.toString() ?? '',
-    });
+    setRegularTonAmount(defaultRegularTonAmount?.toString() ?? '');
+    setInstantBpAmount(defaultInstantBpAmount?.toString() ?? '');
   }, [open, defaultRegularTonAmount, defaultInstantBpAmount]);
 
   const handleRegularTonChange = (value: string) => {
     const parsedValue = parseNumberInput(value);
     const ton = Number(parsedValue) || 0;
-    dispatch({ type: 'setTonAmount', value: parsedValue, instantBpAmount: String(Math.floor(ton * 0.85)) });
+    setRegularTonAmount(parsedValue);
+    setInstantBpAmount(String(Math.floor(ton * 0.85)));
   };
 
   const handleMaxClick = () => {
     const maxTon = Math.min(tonBalance, defaultRegularTonAmount ?? 0);
-    dispatch({ type: 'setMaxTon', value: String(maxTon), instantBpAmount: String(Math.floor(maxTon * 0.85)) });
+    setRegularTonAmount(String(maxTon));
+    setInstantBpAmount(String(Math.floor(maxTon * 0.85)));
   };
 
   const handleSubmit = () => {
@@ -96,9 +66,6 @@ export const BuyOrderDrawer = ({
       return;
     }
 
-    const previousOrders = marketWebSocketService.getState().orders;
-    marketWebSocketService.optimisticRemoveOrder(lotId);
-
     buyOrderMutation.mutate(
       {
         order_id: lotId,
@@ -106,18 +73,17 @@ export const BuyOrderDrawer = ({
       },
       {
         onSuccess: () => {
-          dispatch({ type: 'reset' });
+          setRegularTonAmount('');
+          setInstantBpAmount('');
           onClose();
-        },
-        onError: () => {
-          marketWebSocketService.revertOrders(previousOrders);
         },
       }
     );
   };
 
   const handleClose = () => {
-    dispatch({ type: 'reset' });
+    setRegularTonAmount('');
+    setInstantBpAmount('');
     onClose();
   };
 

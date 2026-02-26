@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/shared/api';
 import type { BattlePassResponse, BattlePassReward } from './api.dto';
 
@@ -10,13 +10,22 @@ export const useBattlePass = () => {
   return useQuery({
     queryKey: QUERY_KEYS.battlePass,
     queryFn: async (): Promise<BattlePassResponse> => {
-      try {
-        const response = await api.get<BattlePassResponse>('/battle/me');
-        return response.data;
-      } catch (error) {
-        console.error('API Error useBattlePass:', error);
-        throw error;
-      }
+      const response = await api.get<BattlePassResponse>('/battle/me');
+      return response.data;
+    },
+    retry: false,
+  });
+};
+
+export const useActivateBattlePass = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: async (): Promise<void> => {
+      await api.post('/battle/activate', null);
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.battlePass });
     },
   });
 };

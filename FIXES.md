@@ -8,7 +8,6 @@
 
 ### bp
 
-выводить battle pass активировать
 claim/reward
 type image url
 

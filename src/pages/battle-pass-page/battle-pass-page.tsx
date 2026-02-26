@@ -5,6 +5,7 @@ import { BattlePassPromoCard } from '@/features/battle-pass-promo';
 import {
   useBattlePass,
   useClaimBattlePassReward,
+  useActivateBattlePass,
   mapBattlePassReward,
   type BattlePassRewardUI,
 } from '@/entities/battle-pass';
@@ -175,10 +176,13 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
 };
 
 export const BattlePassPage: FC = () => {
-  const { data, isLoading } = useBattlePass();
+  const { data, isLoading, isError } = useBattlePass();
   const claimReward = useClaimBattlePassReward();
+  const activateBattlePass = useActivateBattlePass();
   const { showToast } = useToast();
   const [claimedReward, setClaimedReward] = useState<BattlePassRewardUI | null>(null);
+
+  const isBpActive = !isLoading && !isError && !!data;
 
   const rewards = useMemo(() => {
     if (!data?.rewards) return [];
@@ -187,6 +191,17 @@ export const BattlePassPage: FC = () => {
 
   const nextLevel = (data?.level ?? 0) + 1;
   const progress = data?.progress ?? 0;
+
+  const handleActivate = () => {
+    activateBattlePass.mutate(undefined, {
+      onSuccess: () => {
+        showToast('Battle Pass активирован!', 'success');
+      },
+      onError: () => {
+        showToast('Не удалось активировать Battle Pass', 'error');
+      },
+    });
+  };
 
   const handleClaimReward = (rewardToClaim: BattlePassRewardUI) => {
     claimReward.mutate(rewardToClaim.id, {
@@ -216,7 +231,7 @@ export const BattlePassPage: FC = () => {
     <>
       <Page back>
         <div className="flex flex-col gap-[20px]">
-          <BattlePassPromoCard isActive={data?.is_active ?? false} />
+          <BattlePassPromoCard isActive={isBpActive} onActivate={handleActivate} />
 
           <BattlePassProgress
             currentLevel={data?.level ?? 1}

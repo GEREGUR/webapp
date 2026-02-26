@@ -1,7 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import type { Order } from '../api/api.dto';
 import TonIcon from '@/shared/assets/ton.svg?react';
+
+interface OrderTimerProps {
+  timestamp: number;
+}
 
 interface OrderItemProps {
   order: Order;
@@ -9,17 +13,42 @@ interface OrderItemProps {
   isBuying?: boolean;
 }
 
-const formatOrderTimestamp = (timestamp: number) => {
+const OrderTimer = ({ timestamp }: OrderTimerProps) => {
+  const [, setTick] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick((t) => t + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   const normalizedTimestamp = timestamp < 1_000_000_000_000 ? timestamp * 1000 : timestamp;
   const diff = Date.now() - normalizedTimestamp;
-  const minutes = Math.floor(diff / 60_000);
-  const hours = Math.floor(diff / 3_600_000);
-  const days = Math.floor(diff / 86_400_000);
+  const seconds = Math.floor(diff / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+  const days = Math.floor(hours / 24);
 
-  if (minutes < 1) return 'Только что';
-  if (minutes < 60) return `${minutes} мин`;
-  if (hours < 24) return `${hours} ч`;
-  return `${days} дн`;
+  let label: string;
+  if (seconds < 60) {
+    label = `${seconds} сек`;
+  } else if (minutes < 60) {
+    label = `${minutes} мин`;
+  } else if (hours < 5) {
+    const remainingMinutes = minutes % 60;
+    label = remainingMinutes > 0 ? `${hours} ч ${remainingMinutes} мин` : `${hours} ч`;
+  } else if (hours < 24) {
+    label = `${hours} ч`;
+  } else {
+    label = `${days} дн`;
+  }
+
+  if (seconds < 60) return <>{label}</>;
+  if (minutes < 60) return <>{label}</>;
+  if (hours < 24) return <>{label}</>;
+  return <>{label}</>;
 };
 
 const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
@@ -33,7 +62,9 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
 
       <div className="min-w-0">
         <p className="truncate text-base font-light text-white">{order.owner.username}</p>
-        <p className="text-xs text-white/60">{formatOrderTimestamp(order.create_date)}</p>
+        <p className="text-xs text-white/60">
+          <OrderTimer timestamp={order.create_date} />
+        </p>
       </div>
 
       <div className="flex items-center justify-start gap-1.5">

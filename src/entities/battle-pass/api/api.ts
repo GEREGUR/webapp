@@ -31,12 +31,14 @@ export const useActivateBattlePass = () => {
 };
 
 export const useClaimBattlePassReward = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (rewardId: number): Promise<void> => {
       await api.post(`/battle/claim/${rewardId}`, null);
     },
-    onSuccess: (_data, _variables, _onMutateResult, context) => {
-      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.battlePass });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.battlePass });
     },
   });
 };

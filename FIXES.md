@@ -3,8 +3,6 @@
 ## payment/
 
 скопировать стейт
-введите адрес только буквы и тоновский кошелек
-вывести кнопка hover анимация
 ton type not number, max button disabled
 
 ## /payment/transaction

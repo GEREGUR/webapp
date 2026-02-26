@@ -206,7 +206,7 @@ export const BuyOrderDrawer = ({
               </Button>
               <Button
                 type="button"
-                className="flex-1 bg-[#7a9be8] hover:bg-[#8facf2] disabled:bg-[#5F81D8]"
+                className="flex-1 bg-[#5F81D8] hover:bg-[#7a9be8] active:bg-[#4a6fc0] disabled:bg-[#5F81D8]"
                 onClick={handleSubmit}
                 disabled={!isValid || isSubmitting}
               >

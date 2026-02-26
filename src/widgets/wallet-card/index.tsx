@@ -240,7 +240,7 @@ export const WithdrawDrawer: WithdrawDrawer = ({ open, maxTon, onClose }) => {
             </Button>
             <Button
               type="button"
-              className="h-[46px] flex-1 rounded-[12px] bg-[#5F81D8] text-[15px] font-semibold text-white hover:brightness-110"
+              className="h-[46px] flex-1 rounded-[12px] bg-[#5F81D8] text-[15px] font-semibold text-white hover:bg-[#7a9be8] active:bg-[#4a6fc0]"
               onClick={handleSubmit}
             >
               Вывести

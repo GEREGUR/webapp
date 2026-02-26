@@ -37,7 +37,7 @@ export const Header: FC<HeaderProps> = ({
           <PlusIcon className="size-[17px] text-[#232027]" />
         </button>
         <div className="flex h-8 items-center gap-1.5 rounded-[10px] bg-[#232027] px-3">
-          <TonIcon className="size-3.5 text-white" />
+          <TonIcon className="size-2.5 text-white" />
           <span className="text-xs font-medium text-white">{tonBalance}</span>
         </div>
         <div className="flex h-8 items-center gap-1.5 rounded-[10px] bg-[#232027] px-3">

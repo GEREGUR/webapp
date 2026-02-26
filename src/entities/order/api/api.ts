@@ -44,6 +44,7 @@ export const useCreateOrder = () => {
       await api.post('/order/create', data);
     },
     onSuccess: (_data, _variables, _onMutateResult, context) => {
+      void context.client.invalidateQueries({ queryKey: ['user', 'profile'] });
       void context.client.invalidateQueries({ queryKey: QUERY_KEYS.orders });
       void context.client.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
     },
@@ -56,6 +57,7 @@ export const useBuyOrder = () => {
       await api.post('/order/buy', data);
     },
     onSuccess: (_data, _variables, _onMutateResult, context) => {
+      void context.client.invalidateQueries({ queryKey: ['user', 'profile'] });
       void context.client.invalidateQueries({ queryKey: QUERY_KEYS.orders });
       void context.client.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
     },

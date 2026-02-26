@@ -11,11 +11,6 @@
 claim/reward
 type image url
 
-###
-
-exp mix blend
-иконка тон кошелька
-
 claim/task на reward -> true / false
 set nick, bio, story
 

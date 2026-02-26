@@ -1,20 +1,6 @@
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useReducer,
-  useRef,
-  useState,
-  type ReactNode,
-} from 'react';
-import {
-  initialMarketState,
-  marketReducer,
-  mapDealToDropItem,
-  mapTransactionToDropItem,
-} from './model';
-import { getWsUrl, parseWsEvent } from './websocket';
-import { FALLBACK_TIMEOUT_MS, RECONNECT_DELAY_MS, MAX_RETRY_COUNT } from './config';
+import { type FC, type ReactNode, useEffect, useState } from 'react';
+import { createContext, useContext } from 'react';
+import { marketWsService } from './ws-service';
 import type { DropItem, WsOrder, WsStats } from './types';
 
 interface MarketContextValue {
@@ -38,116 +24,46 @@ interface MarketProviderProps {
   children: ReactNode;
 }
 
-export const MarketProvider = ({ children }: MarketProviderProps) => {
-  const [state, dispatch] = useReducer(marketReducer, initialMarketState);
-  const [isLoading, setIsLoading] = useState(true);
-  const wsInitialized = useRef(false);
+export const MarketProvider: FC<MarketProviderProps> = ({ children }) => {
+  const [contextValue, setContextValue] = useState<MarketContextValue>({
+    items: [],
+    orders: [],
+    stats: null,
+    isLoading: true,
+  });
 
   useEffect(() => {
-    const wsUrl = getWsUrl();
+    console.log('[MarketContext] useEffect running, connecting...');
+    marketWsService.connect();
 
-    const fallbackTimeout = setTimeout(() => {
-      dispatch({ type: 'set_fallback' });
-      setIsLoading(false);
-    }, FALLBACK_TIMEOUT_MS);
-
-    if (!wsUrl) {
-      return () => clearTimeout(fallbackTimeout);
-    }
-
-    let socket: WebSocket | null = null;
-    let reconnectTimeoutId: number | undefined;
-    let retryCount = 0;
-    let isUnmounted = false;
-
-    const connect = () => {
-      socket = new WebSocket(wsUrl);
-
-      socket.onopen = () => {};
-
-      socket.onerror = () => {};
-
-      socket.onmessage = (event) => {
-        if (isUnmounted) return;
-
-        if (typeof event.data !== 'string') {
-          return;
-        }
-
-        const message = parseWsEvent(event.data);
-        if (!message) {
-          return;
-        }
-
-        if (message.type === 'initial_state') {
-          const historyItems = (message.data.history ?? []).map((tx, i) =>
-            mapTransactionToDropItem(tx, i)
-          );
-          wsInitialized.current = true;
-          setIsLoading(false);
-          dispatch({
-            type: 'set_items',
-            payload: historyItems.length > 0 ? historyItems.slice(0, 15) : [],
-          });
-          if (message.data.orders) {
-            dispatch({ type: 'set_orders', payload: message.data.orders });
-          }
-          if (message.data.stats) {
-            dispatch({ type: 'set_stats', payload: message.data.stats });
-          }
-          return;
-        }
-
-        if (message.type === 'new_order') {
-          dispatch({ type: 'add_order', payload: message.data });
-          return;
-        }
-
-        if (message.type === 'order_update') {
-          dispatch({ type: 'update_order', payload: message.data });
-          return;
-        }
-
-        if (message.type === 'stats_update') {
-          dispatch({ type: 'set_stats', payload: message.data });
-          return;
-        }
-
-        if (message.type === 'new_deal') {
-          dispatch({ type: 'push_item', payload: mapDealToDropItem(message.data) });
-        }
-      };
-
-      socket.onclose = () => {
-        if (isUnmounted) return;
-
-        if (retryCount < MAX_RETRY_COUNT) {
-          retryCount++;
-          reconnectTimeoutId = window.setTimeout(connect, RECONNECT_DELAY_MS);
-        } else {
-          dispatch({ type: 'set_fallback' });
-        }
-      };
-    };
-
-    connect();
+    console.log('[MarketContext] Subscribing to observables...');
+    const subscriptions = [
+      marketWsService.getItems().subscribe((items) => {
+        console.log('[MarketContext] items subscription:', items.length);
+        setContextValue((prev) => ({ ...prev, items }));
+      }),
+      marketWsService.getOrders().subscribe((orders) => {
+        console.log('[MarketContext] orders subscription:', orders.length);
+        setContextValue((prev) => ({ ...prev, orders }));
+      }),
+      marketWsService.getStats().subscribe((stats) => {
+        console.log('[MarketContext] stats subscription:', stats);
+        setContextValue((prev) => ({ ...prev, stats }));
+      }),
+      marketWsService.getIsLoading().subscribe((isLoading) => {
+        console.log('[MarketContext] isLoading subscription:', isLoading);
+        setContextValue((prev) => ({ ...prev, isLoading }));
+      }),
+    ];
 
     return () => {
-      isUnmounted = true;
-      clearTimeout(fallbackTimeout);
-      if (reconnectTimeoutId) {
-        window.clearTimeout(reconnectTimeoutId);
-      }
-      if (socket && socket.readyState !== WebSocket.CLOSED) {
-        socket.close();
-      }
+      subscriptions.forEach((sub) => sub.unsubscribe());
+      marketWsService.disconnect();
     };
   }, []);
 
   return (
-    <MarketContext.Provider
-      value={{ items: state.items, orders: state.orders, stats: state.stats, isLoading }}
-    >
+    <MarketContext.Provider value={contextValue}>
       {children}
     </MarketContext.Provider>
   );

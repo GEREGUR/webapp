@@ -250,7 +250,7 @@ interface WalletHistoryDrawerProps {
 type WalletHistoryDrawer = (props: WalletHistoryDrawerProps) => React.ReactElement;
 
 export const WalletHistoryDrawer: WalletHistoryDrawer = ({ open, onClose }) => {
-  const { data: items, isLoading, error } = useWalletHistory();
+  const { data: items, isLoading, isError } = useWalletHistory();
 
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
@@ -277,9 +277,9 @@ export const WalletHistoryDrawer: WalletHistoryDrawer = ({ open, onClose }) => {
             <div className="flex justify-center py-8">
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
             </div>
-          ) : error ? (
+          ) : isError ? (
             <p className="py-8 text-center text-white/60">Не удалось загрузить историю</p>
-          ) : items?.length === 0 ? (
+          ) : !items || items.length === 0 ? (
             <p className="py-8 text-center text-white/60">История пуста</p>
           ) : (
             items?.map((item) => {

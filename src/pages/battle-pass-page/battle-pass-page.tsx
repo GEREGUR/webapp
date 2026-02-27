@@ -12,6 +12,7 @@ import {
 import BpPointsIcon from '@/shared/assets/bp-points.svg?react';
 import CheckmarkIcon from '@/shared/assets/checkmark.svg?react';
 import TomCatIcon from '@/shared/assets/tom-cat.png';
+import TonIcon from '@/shared/assets/ton.svg?react';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
 import PepeGiftIcon from '@/shared/assets/pepe-gift.png';
@@ -19,12 +20,23 @@ import { useToast } from '@/shared/ui/toast';
 import { Loader } from '@/shared/ui/spinner';
 import { X } from 'lucide-react';
 
-interface RewardCardProps {
-  reward: BattlePassRewardUI;
-  onClaim: (reward: BattlePassRewardUI) => void;
-}
+const RewardCard: FC<{ reward: BattlePassRewardUI; onClaim: (reward: BattlePassRewardUI) => void }> = ({ reward, onClaim }) => {
+  const getImage = () => {
+    if (reward.imageUrl) {
+      return <img src={reward.imageUrl} alt={reward.rewardType} className="h-[100px] w-[100px] object-contain" />;
+    }
+    
+    if (reward.rewardType === 'brick') {
+      return <img src={TomCatIcon} alt="Brick" className="h-[100px] w-[100px]" />;
+    }
+    
+    if (reward.rewardType === 'ton') {
+      return <TonIcon className="h-[100px] w-[100px]" />;
+    }
+    
+    return <BpPointsIcon className="text-secondary h-[100px] w-[100px]" />;
+  };
 
-const RewardCard: FC<RewardCardProps> = ({ reward, onClaim }) => {
   return (
     <div
       className={cn(
@@ -37,11 +49,7 @@ const RewardCard: FC<RewardCardProps> = ({ reward, onClaim }) => {
       </div>
 
       <div className="bg-ghost mt-[10px] flex h-[116px] w-[119px] items-center justify-center self-center rounded-[10px]">
-        {reward.rewardType === 'brick' ? (
-          <img src={TomCatIcon} alt="Brick" className="h-[100px] w-[100px]" />
-        ) : (
-          <BpPointsIcon className="text-secondary h-[100px] w-[100px]" />
-        )}
+        {getImage()}
       </div>
 
       <div className="mt-[10px] flex items-center justify-between px-5.5">
@@ -49,7 +57,7 @@ const RewardCard: FC<RewardCardProps> = ({ reward, onClaim }) => {
           x{reward.multiplier}
         </span>
         <span className="text-[14px] leading-[16.71px] font-medium text-white">
-          {reward.rewardType === 'brick' ? 'Brick' : 'BP'}
+          {reward.rewardType === 'brick' ? 'Brick' : reward.rewardType === 'ton' ? 'TON' : 'BP'}
         </span>
       </div>
 
@@ -155,8 +163,12 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
                 >
                   {isClaimedSlot ? (
                     <div className="flex h-full flex-col items-center justify-center">
-                      {reward.rewardType === 'brick' ? (
+                      {reward.imageUrl ? (
+                        <img src={reward.imageUrl} alt="Reward" className="h-[64px] w-[64px] object-contain" />
+                      ) : reward.rewardType === 'brick' ? (
                         <img src={TomCatIcon} alt="Brick reward" className="h-[64px] w-[64px]" />
+                      ) : reward.rewardType === 'ton' ? (
+                        <TonIcon className="h-[64px] w-[64px]" />
                       ) : (
                         <BpPointsIcon className="h-[31px] w-[62px]" />
                       )}

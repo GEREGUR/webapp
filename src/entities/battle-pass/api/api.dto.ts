@@ -8,6 +8,7 @@ export interface BattlePassReward {
   title: string;
   is_claimed: boolean;
   is_available: boolean;
+  type_image_url?: string;
 }
 
 export interface BattlePassResponse {

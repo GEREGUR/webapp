@@ -1,16 +1,11 @@
 # fixes list
 
-## payment/
-
-скопировать стейт
-
-## /payment/transaction
-
-### bp
+## bp
 
 claim/reward
 type image url
 
+TODO: спросить env на типы событий
 claim/task на reward -> true / false
 set nick, bio, story
 
@@ -21,10 +16,14 @@ set nick, bio, story
   start, check, reward
   start, reward
 
-## index page
+## запросы
 
-шрифты
-д.
-таймер на предложении
+bump orders
+memo
+settings
 
-self orders =
+## header
+
+сделать кнопку + и другие кнопки активными
+
+## faq and chat link

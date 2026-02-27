@@ -1,4 +1,4 @@
-export type BattlePassRewardType = 'STARS' | 'PREMIUM' | 'GIFT' | 'TON' | 'BP';
+export type BattlePassRewardType = 'STARS' | 'PREMIUM' | 'TON' | 'BP';
 
 export interface BattlePassReward {
   id: number;

@@ -1,5 +1,5 @@
 import { cn } from '@/shared/lib/utils';
-import { TonAmountButton } from '@/features/ton-amount-button';
+import { BumpOrdersButton } from '@/features/bump-orders-button';
 
 type AmountSliderProps = {
   value: number;
@@ -83,7 +83,7 @@ export const TonAmountCard = ({ value, onChange, tonAmount, orderId, className }
 
       <div className="mx-4 h-10 w-px bg-white/10" />
 
-      <TonAmountButton tonAmount={tonAmount} orderId={orderId} />
+      <BumpOrdersButton tonAmount={tonAmount} orderId={orderId} />
     </div>
   );
 };

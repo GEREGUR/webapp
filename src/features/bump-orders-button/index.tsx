@@ -4,13 +4,13 @@ import { useToast } from '@/shared/ui/toast';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import { cn } from '@/shared/lib/utils';
 
-interface TonAmountButtonProps {
+interface BumpOrdersButtonProps {
   tonAmount: string;
   orderId?: number;
   className?: string;
 }
 
-export const TonAmountButton: FC<TonAmountButtonProps> = ({ tonAmount, orderId, className }) => {
+export const BumpOrdersButton: FC<BumpOrdersButtonProps> = ({ tonAmount, orderId, className }) => {
   const bumpMutation = useBumpOrder();
   const { showToast } = useToast();
 

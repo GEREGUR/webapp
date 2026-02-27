@@ -1,4 +1,4 @@
-import { useLayoutEffect, type FC, type ReactNode } from 'react';
+import { useEffect, type FC, type ReactNode } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Header } from '@/widgets/header';
 import { closingBehavior, miniApp, swipeBehavior } from '@tma.js/sdk-react';
@@ -16,22 +16,27 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const tonBalance = profile?.ton_balance.toString() ?? '0';
   const bpBalance = profile?.internal_balance.toString() ?? '0';
 
-  useLayoutEffect(() => {
+  useEffect(() => {
+    closingBehavior.mount();
+    swipeBehavior.mount();
+
+    console.log(swipeBehavior.isMounted(), 'wtfd');
+
     try {
       if (miniApp.setHeaderColor.supports('rgb')) {
         miniApp.setHeaderColor('#000000');
         miniApp.headerColor();
       }
-    } catch {
-      // SDK not ready
+    } catch (e) {
+      console.log(e);
     }
 
     try {
-      if (closingBehavior.isConfirmationEnabled()) {
+      if (!closingBehavior.isConfirmationEnabled()) {
         closingBehavior.enableConfirmation();
       }
-    } catch {
-      // SDK not ready
+    } catch (e) {
+      console.log(e);
     }
 
     try {

@@ -23,13 +23,13 @@ export const routes: RouteObject[] = [
     ),
     title: 'Battle Pass',
   },
-  {
-    path: '/inventory',
-    Component: lazy(() =>
-      import('@/pages/inventory-page/inventory-page').then((m) => ({ default: m.InventoryPage }))
-    ),
-    title: 'Inventory',
-  },
+  // {
+  //   path: '/inventory',
+  //   Component: lazy(() =>
+  //     import('@/pages/inventory-page/inventory-page').then((m) => ({ default: m.InventoryPage }))
+  //   ),
+  //   title: 'Inventory',
+  // },
   {
     path: '/awards',
     Component: lazy(() =>

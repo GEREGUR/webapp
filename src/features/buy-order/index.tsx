@@ -10,8 +10,10 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { cn, parseNumberInput } from '@/shared/lib/utils';
-import { useBuyOrder } from '@/entities/order';
+import { useBuyOrder, type OrderSettings } from '@/entities/order';
 import TonIcon from '@/shared/assets/ton.svg?react';
+import ArrowIcon from '@/shared/assets/arrow.svg?react';
+import BpPointsIcon from '@/shared/assets/bp-points-sm.svg?react';
 
 interface BuyOrderDrawerProps {
   open: boolean;
@@ -19,7 +21,8 @@ interface BuyOrderDrawerProps {
   tonBalance: number;
   orderType: 'instant' | 'regular';
   defaultRegularTonAmount?: number;
-  defaultInstantBpAmount?: number;
+  rate: number;
+  settings?: OrderSettings;
   onClose: () => void;
 }
 
@@ -29,12 +32,14 @@ export const BuyOrderDrawer = ({
   tonBalance,
   orderType,
   defaultRegularTonAmount,
-  defaultInstantBpAmount,
+  settings,
   onClose,
 }: BuyOrderDrawerProps) => {
   const buyOrderMutation = useBuyOrder();
   const [regularTonAmount, setRegularTonAmount] = useState('');
   const [instantBpAmount, setInstantBpAmount] = useState('');
+
+  const instantRate = settings ? (100 - settings.fee_self_buy) / 100 : 0.85;
 
   useEffect(() => {
     if (!open) {
@@ -42,22 +47,19 @@ export const BuyOrderDrawer = ({
       setInstantBpAmount('');
       return;
     }
-
-    setRegularTonAmount(defaultRegularTonAmount?.toString() ?? '');
-    setInstantBpAmount(defaultInstantBpAmount?.toString() ?? '');
-  }, [open, defaultRegularTonAmount, defaultInstantBpAmount]);
+  }, [open]);
 
   const handleRegularTonChange = (value: string) => {
     const parsedValue = parseNumberInput(value);
     const ton = Number(parsedValue) || 0;
     setRegularTonAmount(parsedValue);
-    setInstantBpAmount(String(Math.floor(ton * 0.85)));
+    setInstantBpAmount(String(Math.floor(ton * instantRate)));
   };
 
   const handleMaxClick = () => {
     const maxTon = Math.min(tonBalance, defaultRegularTonAmount ?? 0);
     setRegularTonAmount(String(maxTon));
-    setInstantBpAmount(String(Math.floor(maxTon * 0.85)));
+    setInstantBpAmount(String(Math.floor(maxTon * instantRate)));
   };
 
   const handleSubmit = () => {
@@ -90,11 +92,17 @@ export const BuyOrderDrawer = ({
   const isValid = Number(regularTonAmount) > 0 && Number(regularTonAmount) <= tonBalance;
   const isSubmitting = buyOrderMutation.isPending;
 
-  const title = orderType === 'instant' ? `Мгновенный выкуп #${lotId}` : `Обычный выкуп #${lotId}`;
+  const title = orderType === 'instant' ? `Мгновенный выкуп #${lotId}` : `Покупка ордера #${lotId}`;
+  const feePercentage = settings?.fee_self_buy ?? 15;
   const description =
     orderType === 'instant'
-      ? 'После выкупа собственного предложения на ваш баланс будет зачислен TON с удержанием комиссии (15%) за мгновенную ликвидность.'
-      : 'После выкупа ордера вы получите TON по указанному курсу.';
+      ? `После выкупа собственного предложения на ваш баланс будет зачислен TON с удержанием комиссии (${feePercentage}%) за мгновенную ликвидность.`
+      : 'После покупки части или всего предложения на ваш баланс будет зачислена валюта BP с ее помощью вы можете создать собственное предложение.';
+
+  //TODO: refactor
+  if (!settings?.rate) {
+    return null;
+  }
 
   return (
     <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : handleClose())}>
@@ -107,7 +115,7 @@ export const BuyOrderDrawer = ({
             <Button
               type="button"
               variant="ghost"
-              className="flex h-8 w-8 items-center justify-center rounded-full p-0 text-white hover:bg-white/10"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent p-0 text-white"
               onClick={handleClose}
               aria-label="Закрыть"
             >
@@ -122,15 +130,19 @@ export const BuyOrderDrawer = ({
         <div className="space-y-4 px-4 pb-4">
           <div className="grid grid-cols-1 gap-3">
             <div className="relative">
-              <div className="mb-2 flex items-center justify-between">
-                <span className="font-sans text-[16.72px] leading-[18.39px] font-light text-white">
-                  {orderType === 'regular' ? 'Вы получите' : 'Получите обычным выкупом'}
-                </span>
-                {orderType === 'instant' && (
-                  <span className="text-xs text-white/60">
-                    Доступно: {tonBalance.toFixed(2)} TON
+              <div className="mb-0 flex items-center justify-between">
+                <div className="flex w-full items-center justify-between gap-2">
+                  <span className="font-sans text-[16.72px] leading-[18.39px] font-light text-white">
+                    {orderType === 'regular' ? 'Вы получите' : 'Получите обычным выкупом'}
                   </span>
-                )}
+                  <div className="flex items-center gap-1 px-2 py-0.5 font-sans">
+                    <TonIcon className="size-3.5 text-white" />
+                    <span className="text-[17px] font-[500] text-white">1</span>
+                    <span className="mx-1 text-[17px] text-white">=</span>
+                    <BpPointsIcon className="size-4" />
+                    <span className="text-[17px] font-[500] text-white">1</span>
+                  </div>
+                </div>
               </div>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -144,12 +156,12 @@ export const BuyOrderDrawer = ({
                       value={regularTonAmount}
                       onChange={(e) => handleRegularTonChange(e.target.value)}
                       placeholder={`Не более ${defaultRegularTonAmount}`}
-                      className="rounded-[10px] bg-[#232027] pr-10 pl-10 text-center text-[20px] text-white placeholder:text-white/40 focus:placeholder:text-transparent"
+                      className="h-[40px] rounded-[10px] bg-[#232027] pr-10 pl-12 text-center text-[20px] text-white placeholder:text-white/40 focus:placeholder:text-transparent"
                     />
                     <Button
                       type="button"
                       variant="ghost"
-                      className="absolute inset-y-1 right-1 rounded-[8px] px-2 text-xs font-medium text-white hover:bg-[#3a3a42] disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="absolute inset-y-1 right-1 rounded-[8px] px-2 text-xs font-medium text-white hover:bg-[#3a3a42] disabled:cursor-not-allowed disabled:opacity-50"
                       onClick={handleMaxClick}
                       disabled={tonBalance <= 0}
                     >
@@ -167,32 +179,48 @@ export const BuyOrderDrawer = ({
             </div>
 
             <div className="relative">
-              <div className="mb-2 flex items-center justify-between">
+              {orderType === 'regular' ? (
+                <ArrowIcon className="absolute left-[180px] rotate-180" />
+              ) : null}
+
+              <div className="mt-1 mb-1.5 flex items-center justify-between">
                 <span className="font-sans text-[16.72px] leading-[18.39px] font-light text-white">
-                  {orderType === 'regular' ? 'Вы получите сейчас' : 'Получите прямо сейчас'}
+                  {orderType === 'regular' ? 'Получите BP' : 'Получите прямо сейчас'}
                 </span>
               </div>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <TonIcon className="size-5" />
+                  {orderType === 'regular' ? (
+                    <BpPointsIcon className="size-5" />
+                  ) : (
+                    <TonIcon className="size-5" />
+                  )}
                 </div>
                 <div
                   className={cn(
-                    'flex h-14 items-center justify-center rounded-[10px] bg-[#232027] pr-10 pl-12',
+                    'flex h-[40px] items-center justify-center rounded-[10px] bg-[#232027] pr-10 pl-12',
                     orderType === 'instant' && 'pointer-events-none'
                   )}
                 >
                   <span className="text-center text-[20px] text-[#A6FF8B]">
-                    {orderType === 'regular' ? defaultInstantBpAmount : instantBpAmount || 0}
+                    {orderType === 'regular' ? Number(regularTonAmount) * settings.rate : 0}
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="pt-2">
+          <div className="pt-5">
             <p className="mb-3 text-center text-sm font-medium text-balance text-[#FFE88B]">
-              Подтвердите выкуп предложения, данное действие невозможно отменить.
+              {orderType === 'regular' ? (
+                <>
+                  Подтвердите выкуп предложения,
+                  <br />
+                  данное действие невозможно отменить.
+                </>
+              ) : (
+                <>Подтвердите покупку предложения, данное действие невозможно отменить.</>
+              )}
             </p>
 
             <div className="flex gap-2">

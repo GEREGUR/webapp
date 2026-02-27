@@ -14,9 +14,10 @@ import { useWalletHistory, useWithdraw } from '@/entities/user';
 import { parseNumberInput } from '@/shared/lib/utils';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points-sm.svg?react';
-import { Copy, X } from 'lucide-react';
+import { Copy, X, Check } from 'lucide-react';
 import Arrow from '@/shared/assets/arrow-sm.svg?react';
 import HistoryIcon from '@/shared/assets/history.svg?react';
+import WalletIcon from '@/shared/assets/wallet-icon.svg?react';
 
 interface DepositDrawerProps {
   open: boolean;
@@ -28,17 +29,23 @@ interface DepositDrawerProps {
 type DepositDrawer = (props: DepositDrawerProps) => React.ReactElement;
 
 export const DepositDrawer: DepositDrawer = ({ open, walletAddress, memo, onClose }) => {
-  const { showToast } = useToast();
+  const [addressCopied, setAddressCopied] = useState(false);
+  const [memoCopied, setMemoCopied] = useState(false);
 
-  const handleCopy = (value: string, label: string) => {
-    void navigator.clipboard
-      .writeText(value)
-      .then(() => {
-        showToast(`${label} скопирован`, 'success');
-      })
-      .catch(() => {
-        showToast('Не удалось скопировать', 'error');
-      });
+  const handleCopy = (value: string) => {
+    void navigator.clipboard.writeText(value);
+  };
+
+  const handleCopyAddress = () => {
+    handleCopy(walletAddress);
+    setAddressCopied(true);
+    setTimeout(() => setAddressCopied(false), 2000);
+  };
+
+  const handleCopyMemo = () => {
+    handleCopy(memo);
+    setMemoCopied(true);
+    setTimeout(() => setMemoCopied(false), 2000);
   };
 
   return (
@@ -74,10 +81,14 @@ export const DepositDrawer: DepositDrawer = ({ open, walletAddress, memo, onClos
               type="button"
               variant="secondary"
               className="inline-flex h-[40px] w-full items-center justify-center rounded-[12px] bg-[#45414F] text-[15px] font-semibold text-white hover:brightness-110"
-              onClick={() => handleCopy(walletAddress, 'Адрес')}
+              onClick={handleCopyAddress}
             >
-              <Copy className="mr-2 h-4 w-4 stroke-2" />
-              Скопировать адрес
+              {addressCopied ? (
+                <Check className="mr-2 h-4 w-4 stroke-2" />
+              ) : (
+                <Copy className="mr-2 h-4 w-4 stroke-2" />
+              )}
+              {addressCopied ? 'Скопировано' : 'Скопировать адрес'}
             </Button>
           </div>
 
@@ -90,10 +101,14 @@ export const DepositDrawer: DepositDrawer = ({ open, walletAddress, memo, onClos
               type="button"
               variant="secondary"
               className="inline-flex h-[40px] w-full items-center justify-center rounded-[12px] bg-[#45414F] text-[15px] font-semibold text-white hover:brightness-110"
-              onClick={() => handleCopy(memo, 'MEMO')}
+              onClick={handleCopyMemo}
             >
-              <Copy className="mr-2 h-4 w-4 stroke-2" />
-              Скопировать MEMO
+              {memoCopied ? (
+                <Check className="mr-2 h-4 w-4 stroke-2" />
+              ) : (
+                <Copy className="mr-2 h-4 w-4 stroke-2" />
+              )}
+              {memoCopied ? 'Скопировано' : 'Скопировать MEMO'}
             </Button>
           </div>
 
@@ -199,13 +214,15 @@ export const WithdrawDrawer: WithdrawDrawer = ({ open, maxTon, onClose }) => {
                 type="text"
                 inputMode="decimal"
                 value={amount}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAmount(parseNumberInput(event.target.value))}
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                  setAmount(parseNumberInput(event.target.value))
+                }
                 placeholder={`Не более ${maxTon}`}
                 className="h-[50px] rounded-[12px] border-none bg-[#232027] pr-14 pl-10 text-center text-[20px] font-medium text-white placeholder:text-white/40"
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-4 text-[14px] font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                className="absolute inset-y-0 right-4 text-[14px] font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
                 onClick={handleSetMax}
                 disabled={maxTon <= 0}
               >
@@ -353,15 +370,15 @@ export const WalletCard: FC<WalletCardProps> = ({
       <div className="rounded-[16px] border-[1.5px] border-[#272525] !bg-[#131214] p-2">
         <div className="flex items-center justify-between gap-1">
           <div className="flex min-w-[64px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">
-            <TonIcon className="h-4 w-4" />
-            <span className="text-[14px] leading-none font-normal text-white">
+            <TonIcon className="size-[13px]" />
+            <span className="pt-px text-[15px] leading-none font-normal text-white">
               {tonBalance.toLocaleString()}
             </span>
           </div>
-          <p className="text-center text-[14px] leading-none font-medium text-white">Баланс</p>
+          <p className="text-center text-[15px] leading-none font-medium text-white">Баланс</p>
           <div className="flex min-w-[64px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">
-            <BpPointsIcon className="h-4 w-4" />
-            <span className="text-[14px] leading-none font-normal text-white">
+            <BpPointsIcon className="size-[13px]" />
+            <span className="pt-px text-[15px] leading-none font-normal text-white">
               {internalBalance.toLocaleString()}
             </span>
           </div>
@@ -372,36 +389,35 @@ export const WalletCard: FC<WalletCardProps> = ({
         <Button
           type="button"
           variant="secondary"
-          className="inline-flex h-[41px] items-center justify-center rounded-[12px] bg-[#2F3033] text-[13px] font-semibold text-white hover:brightness-110"
+          className="inline-flex h-[41px] items-center justify-center rounded-[12px] bg-[#2F3033] text-[15px] font-[500] text-white hover:brightness-110"
           onClick={onDeposit}
         >
           <Arrow className="mr-1 size-3" />
-          Внести
+          <span className="pt-[2px]">Внести</span>
         </Button>
         <Button
           type="button"
           variant="secondary"
-          className="inline-flex h-[41px] items-center justify-center rounded-[12px] bg-[#2F3033] text-[13px] font-semibold text-white hover:brightness-110"
+          className="inline-flex h-[41px] items-center justify-center rounded-[12px] bg-[#2F3033] text-[15px] font-[500] text-white hover:brightness-110"
           onClick={onWithdraw}
         >
           <Arrow className="mr-1 size-3 rotate-180" />
-          Вывести
+          <span className="pt-[2px]">Вывести</span>
         </Button>
       </div>
 
       <div className="flex items-center gap-2">
         <Button
           type="button"
-          className="inline-flex h-[40px] flex-1 items-center justify-center gap-1 rounded-[12px] bg-white text-[13px] font-semibold text-black hover:bg-white/90"
+          className="inline-flex h-[40px] flex-1 items-center justify-center gap-1 rounded-[12px] bg-white text-[16px] font-[500] text-black hover:bg-white/90"
           onClick={onConnectWallet}
         >
-          <svg className="size-[14px]" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-            <circle cx="12" cy="12" r="4" />
-          </svg>
-          {isWalletConnected && walletAddress
-            ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
-            : 'Подключить кошелек'}
+          <WalletIcon />
+          <span className="pt-[3px]">
+            {isWalletConnected && walletAddress
+              ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
+              : 'Подключить кошелек'}
+          </span>
         </Button>
         <Button
           type="button"

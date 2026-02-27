@@ -15,7 +15,10 @@ interface BattlePassPromoCardProps {
   onActivate?: () => void;
 }
 
-export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({ isActive = false, onActivate }) => {
+export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({
+  isActive = false,
+  onActivate,
+}) => {
   return (
     <div className="relative h-[80px] w-full overflow-hidden rounded-[10px] bg-[#5F81D8]">
       <img
@@ -54,7 +57,7 @@ export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({ isActive = f
 
       <div className="absolute top-2.5 right-[14px] z-10 flex max-w-[125px] flex-col items-center">
         <p className="font-bebas-cyrillic ml-3 text-[38px] leading-8.5 font-semibold text-white uppercase">
-          батлпас
+          батлпасc
         </p>
         {isActive ? (
           <Button
@@ -65,7 +68,7 @@ export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({ isActive = f
           </Button>
         ) : (
           <Button
-            className="font-bebas-cyrillic bg-green-500 ml-3 h-[26px] w-full rounded-[6px] px-0 py-0 text-center text-[12.59px] leading-[13.85px] font-normal -tracking-tight text-white hover:bg-green-600"
+            className="font-bebas-cyrillic ml-3 h-[26px] w-full rounded-[6px] bg-green-500 px-0 py-0 text-center text-[12.59px] leading-[13.85px] font-normal -tracking-tight text-white hover:bg-green-600"
             variant="primary"
             onClick={onActivate}
           >

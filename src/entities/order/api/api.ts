@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/shared/api';
-import type { Order, CreateOrderRequest, BuyOrderRequest } from './api.dto';
+import type { Order, CreateOrderRequest, BuyOrderRequest, OrderSettings } from './api.dto';
 import { marketWsService } from '@/entities/market/ws-service';
 import { useProfile } from '@/entities/user';
 import type { WsOrder } from '@/entities/market';
@@ -9,6 +9,7 @@ const QUERY_KEYS = {
   orders: ['orders'] as const,
   marketOrders: ['market', 'orders'] as const,
   orderInfo: (orderId: number) => ['order', 'info', orderId] as const,
+  orderSettings: ['order', 'settings'] as const,
 };
 
 export const useMarketOrders = () => {
@@ -254,5 +255,21 @@ export const useBumpOrders = () => {
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
     },
+  });
+};
+
+export const useOrderSettings = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.orderSettings,
+    queryFn: async (): Promise<OrderSettings> => {
+      try {
+        const response = await api.get<OrderSettings>('/order/setting');
+        return response.data;
+      } catch (error) {
+        console.error('API Error useOrderSettings:', error);
+        throw error;
+      }
+    },
+    staleTime: 5 * 60 * 1000,
   });
 };

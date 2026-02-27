@@ -19,7 +19,7 @@ export const useBattlePass = () => {
 
 export const useActivateBattlePass = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: async (): Promise<void> => {
       await api.post('/battle/activate', null);
@@ -54,13 +54,13 @@ export interface BattlePassRewardUI {
 
 export const mapBattlePassReward = (reward: BattlePassReward): BattlePassRewardUI => {
   const isTon = reward.type === 'TON';
-  
+
   return {
     id: reward.id,
     level: reward.level,
     multiplier: reward.count,
     isCompleted: reward.is_claimed,
     rewardType: isTon ? 'ton' : 'bp',
-    imageUrl: reward.type_image_url,
+    imageUrl: reward.type_reward,
   };
 };

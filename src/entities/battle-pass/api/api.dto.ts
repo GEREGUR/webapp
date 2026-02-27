@@ -1,4 +1,4 @@
-export type BattlePassRewardType = 'STARS' | 'PREMIUM' | 'TON' | 'BP';
+export type BattlePassRewardType = 'STARS' | 'PREMIUM' | 'GIFT' | 'TON' | 'BP';
 
 export interface BattlePassReward {
   id: number;
@@ -8,7 +8,7 @@ export interface BattlePassReward {
   title: string;
   is_claimed: boolean;
   is_available: boolean;
-  type_image_url?: string;
+  type_reward: string;
 }
 
 export interface BattlePassResponse {

@@ -20,6 +20,7 @@ import Arrow from '@/shared/assets/arrow.svg?react';
 interface CreateOrderModalProps {
   open: boolean;
   bpBalance: number;
+  currentRate: number;
   onClose: () => void;
 }
 
@@ -121,7 +122,7 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
                 <Button
                   type="button"
                   variant="ghost"
-                  className="absolute inset-y-1 right-1 rounded-[8px] px-3 text-xs font-medium text-white hover:bg-[#3a3a42] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="absolute inset-y-1 right-1 rounded-[8px] px-3 text-xs font-medium text-white hover:bg-[#3a3a42] disabled:cursor-not-allowed disabled:opacity-50"
                   onClick={handleMaxClick}
                   disabled={bpBalance <= 0}
                 >
@@ -143,7 +144,7 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
                   <TonIcon className="size-5 text-white" />
                 </div>
                 <Input
-                  value={tonAmount}
+                  value={Number(tonAmount).toFixed(3)}
                   placeholder="0"
                   disabled
                   className="rounded-[10px] bg-[#232027] pr-10 pl-10 text-center text-white placeholder:text-white/40 focus:placeholder:text-transparent"
@@ -185,9 +186,10 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
 
 interface CreateOrderButtonProps {
   bpBalance: number;
+  currentRate: number;
 }
 
-export const CreateOrderButton = ({ bpBalance }: CreateOrderButtonProps) => {
+export const CreateOrderButton = ({ bpBalance, currentRate }: CreateOrderButtonProps) => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -225,7 +227,12 @@ export const CreateOrderButton = ({ bpBalance }: CreateOrderButtonProps) => {
           Создать предложение
         </Button>
       </m.div>
-      <CreateOrderModal open={open} bpBalance={bpBalance} onClose={() => setOpen(false)} />
+      <CreateOrderModal
+        open={open}
+        bpBalance={bpBalance}
+        currentRate={currentRate}
+        onClose={() => setOpen(false)}
+      />
     </LazyMotion>
   );
 };

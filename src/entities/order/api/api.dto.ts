@@ -25,3 +25,9 @@ export interface BuyOrderRequest {
   order_id: number;
   ton_amount: number;
 }
+
+export interface OrderSettings {
+  rate: number;
+  bonus_bp: number;
+  fee_self_buy: number;
+}

@@ -48,7 +48,7 @@ const RewardCard: FC<{
   return (
     <div
       className={cn(
-        'bg-card-dark relative flex h-[219px] w-[172px] flex-col rounded-[12px] border-[1px] p-[10px]',
+        'bg-card-dark relative flex h-[219px] w-[172px] flex-col rounded-[12px] border-[1px] p-[10px] min-[500px]:h-fit min-[500px]:w-full',
         reward.isCompleted ? 'border-green-bp' : 'border-blue-bp'
       )}
     >
@@ -60,7 +60,7 @@ const RewardCard: FC<{
         {getImage()}
       </div>
 
-      <div className="mt-[10px] flex items-center justify-between px-5.5">
+      <div className="mt-[10px] flex items-center justify-between px-5.5 max-[500px]:pb-2">
         <span className="text-[14px] leading-[16.71px] font-medium text-white">
           x{reward.multiplier}
         </span>
@@ -262,7 +262,7 @@ export const BattlePassPage: FC = () => {
             currentExp={data?.exp ?? 0}
           />
 
-          <div className="grid grid-cols-2 gap-[10px]">
+          <div className="grid grid-cols-2 place-items-center gap-[10px] min-[500px]:grid-cols-3">
             {rewards.map((reward) => (
               <RewardCard key={reward.id} reward={reward} onClaim={handleClaimReward} />
             ))}

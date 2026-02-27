@@ -103,7 +103,7 @@ export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
   });
 
   return (
-    <div ref={parentRef} className="h-full w-full overflow-auto">
+    <div ref={parentRef} className="h-fit w-full overflow-auto">
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,

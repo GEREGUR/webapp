@@ -38,6 +38,7 @@ export const getWsUrl = (): string | null => {
 
   try {
     const initData = retrieveLaunchParams();
+    console.log(initData, 'initData');
     if (initData?.tgWebAppData?.user?.id) {
       socketUrl.searchParams.set('auth', initData.tgWebAppData.user.id.toString());
     }

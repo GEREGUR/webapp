@@ -1,5 +1,5 @@
 import { cn } from '@/shared/lib/utils';
-import { BumpOrdersButton } from '@/features/bump-orders-button';
+import TonIcon from '@/shared/assets/ton.svg?react';
 
 type AmountSliderProps = {
   value: number;
@@ -82,7 +82,10 @@ export const TonAmountCard = ({ value, onChange, tonAmount, className }: TonAmou
 
       <div className="mx-4 h-10 w-px bg-white/10" />
 
-      <BumpOrdersButton tonAmount={tonAmount} />
+      <div className="flex items-center gap-2 pr-3">
+        <TonIcon className="size-4 pt-px" />
+        <span className="font-semibold text-white">{tonAmount}</span>
+      </div>
     </div>
   );
 };

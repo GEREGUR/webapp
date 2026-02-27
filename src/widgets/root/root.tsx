@@ -38,33 +38,40 @@ export const Root: FC<RootProps> = ({ routes }) => {
       <TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">
         <ToastProvider>
           <MarketProvider>
-            <div className="min-h-screen max-w-full overflow-x-hidden overscroll-none pb-16">
-              <AppRoot
-                appearance={'dark'}
-                platform={['macos', 'ios'].includes(platform as string) ? 'ios' : 'base'}
-              >
-                <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                  <NuqsAdapter>
-                    <Layout>
-                      <Routes>
-                        {routes.map((route) => (
-                          <Route key={route.path} path={route.path} Component={route.Component} />
-                        ))}
-                        <Route path="*" element={<Navigate to="/" />} />
-                      </Routes>
-                    </Layout>
-                  </NuqsAdapter>
-                  <MobileDock
-                    buttons={[
-                      { to: '/', icon: MarketIcon, label: 'Рынок' },
-                      { to: '/inventory', icon: InventoryIcon, label: 'Инвентарь', disabled: true },
-                      { to: '/battle-pass', icon: BattlePassIcon, label: 'БП' },
-                      { to: '/awards', icon: RewardsIcon, label: 'Награды' },
-                      { to: '/profile', icon: ProfileIcon, label: 'Профиль' },
-                    ]}
-                  />
-                </BrowserRouter>
-              </AppRoot>
+            <div className="flex min-h-screen justify-center bg-black">
+              <div className="relative w-full max-w-lg overflow-hidden overscroll-none">
+                <AppRoot
+                  appearance={'dark'}
+                  platform={['macos', 'ios'].includes(platform as string) ? 'ios' : 'base'}
+                >
+                  <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                    <NuqsAdapter>
+                      <Layout>
+                        <Routes>
+                          {routes.map((route) => (
+                            <Route key={route.path} path={route.path} Component={route.Component} />
+                          ))}
+                          <Route path="*" element={<Navigate to="/" />} />
+                        </Routes>
+                      </Layout>
+                      <MobileDock
+                        buttons={[
+                          { to: '/', icon: MarketIcon, label: 'Рынок' },
+                          {
+                            to: '/inventory',
+                            icon: InventoryIcon,
+                            label: 'Инвентарь',
+                            disabled: true,
+                          },
+                          { to: '/battle-pass', icon: BattlePassIcon, label: 'БП' },
+                          { to: '/awards', icon: RewardsIcon, label: 'Награды' },
+                          { to: '/profile', icon: ProfileIcon, label: 'Профиль' },
+                        ]}
+                      />
+                    </NuqsAdapter>
+                  </BrowserRouter>
+                </AppRoot>
+              </div>
             </div>
           </MarketProvider>
         </ToastProvider>

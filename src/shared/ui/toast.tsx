@@ -43,18 +43,18 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
   const typeStyles: Record<ToastType, string> = {
     success: 'bg-green-500',
     error: 'bg-red-500',
-    info: 'bg-primary',
+    info: 'bg-blue-dark',
   };
 
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <div className="pointer-events-none fixed top-4 right-4 left-4 z-50 flex flex-col gap-2">
+      <div className="fixed top-4 right-4 z-[10001] flex flex-col gap-2">
         {toasts.map((toast) => (
           <div
             key={toast.id}
             className={cn(
-              'pointer-events-auto rounded-lg px-4 py-3 text-sm font-medium text-white shadow-lg',
+              'pointer-events-auto w-full max-w-sm rounded-lg px-4 py-3 text-sm font-medium text-white shadow-lg',
               typeStyles[toast.type]
             )}
           >

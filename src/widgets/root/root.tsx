@@ -38,7 +38,7 @@ export const Root: FC<RootProps> = ({ routes }) => {
       <TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">
         <ToastProvider>
           <MarketProvider>
-            <div className="min-h-screen max-w-full overflow-x-hidden pb-16">
+            <div className="min-h-screen max-w-full overflow-x-hidden overscroll-none pb-16">
               <AppRoot
                 appearance={'dark'}
                 platform={['macos', 'ios'].includes(platform as string) ? 'ios' : 'base'}

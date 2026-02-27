@@ -74,10 +74,12 @@ body {
   background-color: black;
   position: relative;
   overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
 html {
   overflow-x: hidden;
+  overscroll-behavior: none;
 }
 
 body::before {

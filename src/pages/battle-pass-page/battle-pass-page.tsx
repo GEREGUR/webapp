@@ -19,9 +19,13 @@ import { useToast } from '@/shared/ui/toast';
 import { Loader } from '@/shared/ui/spinner';
 import { X } from 'lucide-react';
 
+const isValidUrl = (url: unknown): url is string => {
+  return typeof url === 'string' && url.length > 0;
+};
+
 const RewardCard: FC<{ reward: BattlePassRewardUI; onClaim: (reward: BattlePassRewardUI) => void }> = ({ reward, onClaim }) => {
   const getImage = () => {
-    if (reward.imageUrl) {
+    if (isValidUrl(reward.imageUrl)) {
       return <img src={reward.imageUrl} alt={reward.rewardType} className="h-[100px] w-[100px] object-contain" />;
     }
     
@@ -158,7 +162,7 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
                 >
                   {isClaimedSlot ? (
                     <div className="flex h-full flex-col items-center justify-center">
-                      {reward.imageUrl ? (
+                      {isValidUrl(reward.imageUrl) ? (
                         <img src={reward.imageUrl} alt="Reward" className="h-[64px] w-[64px] object-contain" />
                       ) : reward.rewardType === 'ton' ? (
                         <TonIcon className="h-[64px] w-[64px]" />

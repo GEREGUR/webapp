@@ -211,3 +211,48 @@ export const useBumpOrder = () => {
     },
   });
 };
+
+export const useBumpOrders = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (): Promise<void> => {
+      await api.post('/order/mass_bump', null);
+    },
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.orders });
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.marketOrders });
+
+      const previousOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.orders);
+      const previousMarketOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.marketOrders);
+
+      const updateOrdersList = (orders: Order[] | undefined) => {
+        if (!orders || orders.length === 0) return orders;
+        const sortedOrders = [...orders].sort((a, b) => b.create_date - a.create_date);
+        return sortedOrders;
+      };
+
+      queryClient.setQueryData<Order[]>(QUERY_KEYS.orders, updateOrdersList);
+      queryClient.setQueryData<Order[]>(QUERY_KEYS.marketOrders, updateOrdersList);
+
+      return { previousOrders, previousMarketOrders };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousOrders) {
+        queryClient.setQueryData(QUERY_KEYS.orders, context.previousOrders);
+      }
+      if (context?.previousMarketOrders) {
+        queryClient.setQueryData(QUERY_KEYS.marketOrders, context.previousMarketOrders);
+      }
+
+      void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
+    },
+  });
+};

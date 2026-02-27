@@ -50,14 +50,16 @@ export const IndexPage = () => {
         </MaxWidthWrapper>
         <div className="px-4 md:px-12">
           <div className="my-2">
-            <MarketStatsBar tonAmount={stats?.total_ton ?? 0} orderCount={stats?.total_orders ?? 0} />
+            <MarketStatsBar
+              tonAmount={stats?.total_ton ?? 0}
+              orderCount={stats?.total_orders ?? 0}
+            />
           </div>
           <div className="mb-3 flex items-center justify-between gap-2.5">
             <TonAmountCard
               value={sliderValue}
               onChange={setSliderValue}
               tonAmount={String(sliderValue * 10)}
-              orderId={marketOrders?.[0]?.id}
               className="flex-1"
             />
 
@@ -92,7 +94,6 @@ export const IndexPage = () => {
               value={sliderValue}
               onChange={setSliderValue}
               tonAmount={String(sliderValue * 10)}
-              orderId={orders?.[0]?.id}
               className="flex-1"
             />
 

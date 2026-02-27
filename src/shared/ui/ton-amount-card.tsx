@@ -65,11 +65,10 @@ type TonAmountCardProps = {
   value: number;
   onChange: (value: number) => void;
   tonAmount: string;
-  orderId?: number;
   className?: string;
 };
 
-export const TonAmountCard = ({ value, onChange, tonAmount, orderId, className }: TonAmountCardProps) => {
+export const TonAmountCard = ({ value, onChange, tonAmount, className }: TonAmountCardProps) => {
   return (
     <div
       className={cn(
@@ -83,7 +82,7 @@ export const TonAmountCard = ({ value, onChange, tonAmount, orderId, className }
 
       <div className="mx-4 h-10 w-px bg-white/10" />
 
-      <BumpOrdersButton tonAmount={tonAmount} orderId={orderId} />
+      <BumpOrdersButton tonAmount={tonAmount} />
     </div>
   );
 };

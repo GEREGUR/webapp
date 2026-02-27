@@ -1,28 +1,25 @@
 import { type FC } from 'react';
-import { useBumpOrder } from '@/entities/order';
+import { useBumpOrders } from '@/entities/order';
 import { useToast } from '@/shared/ui/toast';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import { cn } from '@/shared/lib/utils';
 
 interface BumpOrdersButtonProps {
   tonAmount: string;
-  orderId?: number;
   className?: string;
 }
 
-export const BumpOrdersButton: FC<BumpOrdersButtonProps> = ({ tonAmount, orderId, className }) => {
-  const bumpMutation = useBumpOrder();
+export const BumpOrdersButton: FC<BumpOrdersButtonProps> = ({ tonAmount, className }) => {
+  const bumpMutation = useBumpOrders();
   const { showToast } = useToast();
 
   const handleClick = () => {
-    if (!orderId) return;
-
-    bumpMutation.mutate(orderId, {
+    bumpMutation.mutate(undefined, {
       onSuccess: () => {
-        showToast('Ордер поднят!', 'success');
+        showToast('Ордера подняты!', 'success');
       },
       onError: () => {
-        showToast('Не удалось поднять ордер', 'error');
+        showToast('Не удалось поднять ордера', 'error');
       },
     });
   };
@@ -31,13 +28,8 @@ export const BumpOrdersButton: FC<BumpOrdersButtonProps> = ({ tonAmount, orderId
     <button
       type="button"
       onClick={handleClick}
-      disabled={!orderId || bumpMutation.isPending}
-      className={cn(
-        'flex items-center justify-center gap-2 pr-3',
-        orderId && 'cursor-pointer',
-        !orderId && 'cursor-default',
-        className
-      )}
+      disabled={bumpMutation.isPending}
+      className={cn('flex cursor-pointer items-center justify-center gap-2 pr-3', className)}
     >
       <TonIcon className="size-4 pt-px" />
       <span

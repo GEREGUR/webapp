@@ -3,7 +3,7 @@ import { Page } from '@/pages/page';
 import { Avatar } from '@/shared/ui/avatar';
 import { Loader } from '@/shared/ui/spinner';
 import { useToast } from '@/shared/ui/toast';
-import { useProfile } from '@/entities/user';
+import { useProfile, usePaymentData } from '@/entities/user';
 import { useTonConnect } from '@/shared/hooks/use-ton-connect';
 import { useSetWallet } from '@/entities/user';
 import { BattlePassPromoCard } from '@/features/battle-pass-promo';
@@ -18,6 +18,7 @@ import { ReferralCard } from '@/widgets/referral-card';
 export const ProfilePage: FC = () => {
   const { showToast } = useToast();
   const { data: profile, isLoading } = useProfile();
+  const { data: paymentData } = usePaymentData();
   const { isConnected, connect, walletAddress } = useTonConnect();
   const setWalletMutation = useSetWallet();
   const [isDepositOpen, setIsDepositOpen] = useState(false);
@@ -36,9 +37,8 @@ export const ProfilePage: FC = () => {
     setWalletMutation.mutate({ address: walletAddress });
   }
 
-  const walletAddressForDeposit =
-    profile?.wallet_address ?? 'UQBZKlyfMpa5IVenwd2v-2bcoWgmxhHLo4B_G8zKOe2lXuby';
-  const depositMemo = `ID-${profile?.id ?? 7}`;
+  const walletAddressForDeposit = paymentData?.address ?? profile?.wallet_address ?? '';
+  const depositMemo = paymentData?.memo ?? '';
 
   const handleConnectWallet = () => {
     if (isConnected && walletAddress) {

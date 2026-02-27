@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, getTelegramUserData } from '@/shared/api';
 import type { UserProfile } from './api.dto';
 
@@ -31,9 +31,16 @@ interface SetWalletRequest {
   address: string;
 }
 
+interface PaymentData {
+  address: string;
+  memo: string;
+  min_ton_amount: number;
+}
+
 const QUERY_KEYS = {
   profile: ['user', 'profile'] as const,
   walletHistory: ['user', 'wallet', 'history'] as const,
+  paymentData: ['user', 'wallet', 'payment'] as const,
 };
 
 export const useProfile = () => {
@@ -73,36 +80,53 @@ export const useWalletHistory = () => {
   });
 };
 
+export const usePaymentData = () => {
+  return useQuery({
+    queryKey: QUERY_KEYS.paymentData,
+    queryFn: async (): Promise<PaymentData> => {
+      const response = await api.get<PaymentData>('/wallet/payment/data');
+      return response.data;
+    },
+    staleTime: Infinity,
+  });
+};
+
 export const useWithdraw = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (data: WithdrawRequest): Promise<void> => {
       await api.post('/wallet/withdrawal', data);
     },
-    onSuccess: (_data, _variables, _onMutateResult, context) => {
-      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.profile });
-      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.walletHistory });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.profile });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.walletHistory });
     },
   });
 };
 
 export const useSetWallet = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (data: SetWalletRequest): Promise<void> => {
       await api.post(`/user/wallet/${data.address}`, null);
     },
-    onSuccess: (_data, _variables, _onMutateResult, context) => {
-      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.profile });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.profile });
     },
   });
 };
 
 export const useClearWallet = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (): Promise<void> => {
       await api.post('/user/wallet/clear', null);
     },
-    onSuccess: (_data, _variables, _onMutateResult, context) => {
-      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.profile });
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.profile });
     },
   });
 };

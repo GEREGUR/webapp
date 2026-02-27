@@ -16,8 +16,6 @@ claim/reward
 
 ## запросы
 
-bump orders
-memo
 settings
 
 ## header

@@ -158,3 +158,56 @@ export const useBuyOrder = () => {
     },
   });
 };
+
+export const useBumpOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (orderId: number): Promise<void> => {
+      await api.post(`/order/bump/${orderId}`, null);
+    },
+    onMutate: async (orderId) => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.orders });
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.marketOrders });
+
+      marketWsService.bumpOrder(orderId);
+
+      const previousOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.orders);
+      const previousMarketOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.marketOrders);
+
+      const updateOrdersList = (orders: Order[] | undefined) => {
+        if (!orders) return orders;
+        const orderIndex = orders.findIndex((o) => o.id === orderId);
+        if (orderIndex > 0) {
+          const updatedOrders = [...orders];
+          const [order] = updatedOrders.splice(orderIndex, 1);
+          updatedOrders.unshift(order);
+          return updatedOrders;
+        }
+        return orders;
+      };
+
+      queryClient.setQueryData<Order[]>(QUERY_KEYS.orders, updateOrdersList);
+      queryClient.setQueryData<Order[]>(QUERY_KEYS.marketOrders, updateOrdersList);
+
+      return { previousOrders, previousMarketOrders };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousOrders) {
+        queryClient.setQueryData(QUERY_KEYS.orders, context.previousOrders);
+      }
+      if (context?.previousMarketOrders) {
+        queryClient.setQueryData(QUERY_KEYS.marketOrders, context.previousMarketOrders);
+      }
+
+      void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
+    },
+  });
+};

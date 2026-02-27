@@ -1,5 +1,5 @@
 import { cn } from '@/shared/lib/utils';
-import TonIcon from '@/shared/assets/ton.svg?react';
+import { TonAmountButton } from '@/features/ton-amount-button';
 
 type AmountSliderProps = {
   value: number;
@@ -65,10 +65,11 @@ type TonAmountCardProps = {
   value: number;
   onChange: (value: number) => void;
   tonAmount: string;
+  orderId?: number;
   className?: string;
 };
 
-export const TonAmountCard = ({ value, onChange, tonAmount, className }: TonAmountCardProps) => {
+export const TonAmountCard = ({ value, onChange, tonAmount, orderId, className }: TonAmountCardProps) => {
   return (
     <div
       className={cn(
@@ -82,17 +83,7 @@ export const TonAmountCard = ({ value, onChange, tonAmount, className }: TonAmou
 
       <div className="mx-4 h-10 w-px bg-white/10" />
 
-      <div className="flex items-center justify-center gap-2 pr-3">
-        <TonIcon className="size-4 pt-px" />
-        <span
-          className={cn(
-            'font-semibold text-white',
-            Number(tonAmount) * 10 > 100 ? 'text-[10px]' : 'text-base'
-          )}
-        >
-          {tonAmount}
-        </span>
-      </div>
+      <TonAmountButton tonAmount={tonAmount} orderId={orderId} />
     </div>
   );
 };

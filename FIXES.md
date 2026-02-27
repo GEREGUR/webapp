@@ -2,13 +2,11 @@
 
 ## bp
 
-claim/reward
-type image url
-
 TODO: спросить env на типы событий
 claim/task на reward -> true / false
 set nick, bio, story
 
+claim/reward
 когда пользователь публикует историю (пример)
 
 - быстрая публикация история с телефона

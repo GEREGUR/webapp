@@ -317,6 +317,17 @@ class MarketWebSocketService {
     }
   }
 
+  bumpOrder(orderId: number): void {
+    const currentState = this.state$.value;
+    const orderIndex = currentState.orders.findIndex((o) => o.id === orderId);
+    if (orderIndex > 0) {
+      const updatedOrders = [...currentState.orders];
+      const [order] = updatedOrders.splice(orderIndex, 1);
+      updatedOrders.unshift(order);
+      this.updateState({ orders: updatedOrders });
+    }
+  }
+
   disconnect(): void {
     if (this.socket$) {
       this.socket$.complete();

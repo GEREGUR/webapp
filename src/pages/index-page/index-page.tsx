@@ -57,6 +57,7 @@ export const IndexPage = () => {
               value={sliderValue}
               onChange={setSliderValue}
               tonAmount={String(sliderValue * 10)}
+              orderId={marketOrders?.[0]?.id}
               className="flex-1"
             />
 
@@ -91,6 +92,7 @@ export const IndexPage = () => {
               value={sliderValue}
               onChange={setSliderValue}
               tonAmount={String(sliderValue * 10)}
+              orderId={orders?.[0]?.id}
               className="flex-1"
             />
 

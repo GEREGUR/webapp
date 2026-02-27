@@ -23,16 +23,25 @@ const isValidUrl = (url: unknown): url is string => {
   return typeof url === 'string' && url.length > 0;
 };
 
-const RewardCard: FC<{ reward: BattlePassRewardUI; onClaim: (reward: BattlePassRewardUI) => void }> = ({ reward, onClaim }) => {
+const RewardCard: FC<{
+  reward: BattlePassRewardUI;
+  onClaim: (reward: BattlePassRewardUI) => void;
+}> = ({ reward, onClaim }) => {
   const getImage = () => {
     if (isValidUrl(reward.imageUrl)) {
-      return <img src={reward.imageUrl} alt={reward.rewardType} className="h-[100px] w-[100px] object-contain" />;
+      return (
+        <img
+          src={reward.imageUrl}
+          alt={reward.rewardType}
+          className="h-[100px] w-[100px] object-contain"
+        />
+      );
     }
-    
+
     if (reward.rewardType === 'ton') {
       return <TonIcon className="h-[100px] w-[100px]" />;
     }
-    
+
     return <BpPointsIcon className="text-secondary h-[100px] w-[100px]" />;
   };
 
@@ -163,7 +172,11 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
                   {isClaimedSlot ? (
                     <div className="flex h-full flex-col items-center justify-center">
                       {isValidUrl(reward.imageUrl) ? (
-                        <img src={reward.imageUrl} alt="Reward" className="h-[64px] w-[64px] object-contain" />
+                        <img
+                          src={reward.imageUrl}
+                          alt="Reward"
+                          className="h-[64px] w-[64px] object-contain"
+                        />
                       ) : reward.rewardType === 'ton' ? (
                         <TonIcon className="h-[64px] w-[64px]" />
                       ) : (

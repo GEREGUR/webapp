@@ -76,6 +76,10 @@ body {
   overflow-x: hidden;
 }
 
+html {
+  overflow-x: hidden;
+}
+
 body::before {
   content: '';
   position: fixed;

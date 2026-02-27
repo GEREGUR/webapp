@@ -48,24 +48,19 @@ export interface BattlePassRewardUI {
   level: number;
   multiplier: number;
   isCompleted: boolean;
-  rewardType: 'brick' | 'bp' | 'ton';
+  rewardType: 'bp' | 'ton';
   imageUrl?: string;
 }
 
 export const mapBattlePassReward = (reward: BattlePassReward): BattlePassRewardUI => {
-  const isBrick = reward.type === 'GIFT' || reward.type === 'STARS';
   const isTon = reward.type === 'TON';
   
-  let rewardType: 'brick' | 'bp' | 'ton' = 'bp';
-  if (isBrick) rewardType = 'brick';
-  else if (isTon) rewardType = 'ton';
-
   return {
     id: reward.id,
     level: reward.level,
     multiplier: reward.count,
     isCompleted: reward.is_claimed,
-    rewardType,
+    rewardType: isTon ? 'ton' : 'bp',
     imageUrl: reward.type_image_url,
   };
 };

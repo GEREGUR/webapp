@@ -11,7 +11,6 @@ import {
 } from '@/entities/battle-pass';
 import BpPointsIcon from '@/shared/assets/bp-points.svg?react';
 import CheckmarkIcon from '@/shared/assets/checkmark.svg?react';
-import TomCatIcon from '@/shared/assets/tom-cat.png';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/button';
@@ -24,10 +23,6 @@ const RewardCard: FC<{ reward: BattlePassRewardUI; onClaim: (reward: BattlePassR
   const getImage = () => {
     if (reward.imageUrl) {
       return <img src={reward.imageUrl} alt={reward.rewardType} className="h-[100px] w-[100px] object-contain" />;
-    }
-    
-    if (reward.rewardType === 'brick') {
-      return <img src={TomCatIcon} alt="Brick" className="h-[100px] w-[100px]" />;
     }
     
     if (reward.rewardType === 'ton') {
@@ -57,7 +52,7 @@ const RewardCard: FC<{ reward: BattlePassRewardUI; onClaim: (reward: BattlePassR
           x{reward.multiplier}
         </span>
         <span className="text-[14px] leading-[16.71px] font-medium text-white">
-          {reward.rewardType === 'brick' ? 'Brick' : reward.rewardType === 'ton' ? 'TON' : 'BP'}
+          {reward.rewardType === 'ton' ? 'TON' : 'BP'}
         </span>
       </div>
 
@@ -165,8 +160,6 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
                     <div className="flex h-full flex-col items-center justify-center">
                       {reward.imageUrl ? (
                         <img src={reward.imageUrl} alt="Reward" className="h-[64px] w-[64px] object-contain" />
-                      ) : reward.rewardType === 'brick' ? (
-                        <img src={TomCatIcon} alt="Brick reward" className="h-[64px] w-[64px]" />
                       ) : reward.rewardType === 'ton' ? (
                         <TonIcon className="h-[64px] w-[64px]" />
                       ) : (

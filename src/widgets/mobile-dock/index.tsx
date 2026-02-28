@@ -17,6 +17,7 @@ interface MobileDockProps {
 export const MobileDock: FC<MobileDockProps> = ({ buttons }) => {
   const [visible, setVisible] = useState(true);
   const location = useLocation();
+  const isFaqPage = location.pathname === '/faq';
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -33,6 +34,10 @@ export const MobileDock: FC<MobileDockProps> = ({ buttons }) => {
       handleBlur();
     };
   }, []);
+
+  if (isFaqPage) {
+    return null;
+  }
 
   return (
     <div

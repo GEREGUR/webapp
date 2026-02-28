@@ -37,13 +37,6 @@ export const BuyOrderDrawer = ({
   const buyOrderMutation = useBuyOrder();
   const [regularTonAmount, setRegularTonAmount] = useState('');
 
-  useEffect(() => {
-    if (!open) {
-      setRegularTonAmount('');
-      return;
-    }
-  }, [open]);
-
   const handleRegularTonChange = (value: string) => {
     const parsedValue = parseNumberInput(value);
     setRegularTonAmount(parsedValue);
@@ -79,7 +72,13 @@ export const BuyOrderDrawer = ({
     onClose();
   };
 
-  const isValid = Number(regularTonAmount) > 0 && Number(regularTonAmount) <= tonBalance;
+  const isValid =
+    orderType === 'instant'
+      ? false
+      : Number(regularTonAmount) > 0 &&
+        Number(regularTonAmount) <= tonBalance &&
+        Number(regularTonAmount) <= Number(defaultRegularTonAmount);
+
   const isSubmitting = buyOrderMutation.isPending;
 
   const title = orderType === 'instant' ? `Мгновенный выкуп #${lotId}` : `Покупка ордера #${lotId}`;
@@ -88,6 +87,13 @@ export const BuyOrderDrawer = ({
     orderType === 'instant'
       ? `После выкупа собственного предложения на ваш баланс будет зачислен TON с удержанием комиссии (${feePercentage}%) за мгновенную ликвидность.`
       : 'После покупки части или всего предложения на ваш баланс будет зачислена валюта BP с ее помощью вы можете создать собственное предложение.';
+
+  useEffect(() => {
+    if (!open) {
+      setRegularTonAmount('');
+      return;
+    }
+  }, [open]);
 
   //TODO: refactor
   if (!settings?.rate) {
@@ -128,7 +134,7 @@ export const BuyOrderDrawer = ({
                   <div className="flex items-center gap-1 px-2 py-0.5 font-sans">
                     <TonIcon className="size-3.5 text-white" />
                     <span className="text-[17px] font-[500] text-white">1</span>
-                    <span className="mx-1 text-[17px] text-white">=</span>
+                    <span className="mx-3 text-[17px] text-white">=</span>
                     <BpPointsIcon className="size-4" />
                     <span className="text-[17px] font-[500] text-white">1</span>
                   </div>
@@ -193,7 +199,10 @@ export const BuyOrderDrawer = ({
                   )}
                 >
                   <span className="text-center text-[20px] text-[#A6FF8B]">
-                    {orderType === 'regular' ? Number(regularTonAmount) * settings.rate : 0}
+                    {orderType === 'regular'
+                      ? Number(regularTonAmount) * settings.rate
+                      : Number(defaultRegularTonAmount) -
+                        Number(defaultRegularTonAmount) * settings?.fee_self_buy}
                   </span>
                 </div>
               </div>

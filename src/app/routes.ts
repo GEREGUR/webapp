@@ -44,4 +44,9 @@ export const routes: RouteObject[] = [
     ),
     title: 'Profile',
   },
+  {
+    path: '/faq',
+    Component: lazy(() => import('@/pages/faq-page/faq-page').then((m) => ({ default: m.FaqPage }))),
+    title: 'FAQ',
+  },
 ];

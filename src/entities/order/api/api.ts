@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/shared/api';
 import type { Order, CreateOrderRequest, BuyOrderRequest, OrderSettings } from './api.dto';
 import { marketWsService } from '@/entities/market/ws-service';
-import { useProfile } from '@/entities/user';
+import type { UserProfile } from '@/entities/user';
 import type { WsOrder } from '@/entities/market';
 
 const QUERY_KEYS = {
@@ -44,7 +44,6 @@ export const useOrders = () => {
 
 export const useCreateOrder = () => {
   const queryClient = useQueryClient();
-  const { data: profile } = useProfile();
 
   return useMutation({
     mutationFn: async (data: CreateOrderRequest): Promise<void> => {
@@ -53,6 +52,7 @@ export const useCreateOrder = () => {
     onMutate: async (data) => {
       await queryClient.cancelQueries({ queryKey: QUERY_KEYS.orders });
       await queryClient.cancelQueries({ queryKey: QUERY_KEYS.marketOrders });
+      const profile = queryClient.getQueryData<UserProfile>(['user', 'profile']);
 
       const optimisticOrder: Order = {
         id: Date.now() * -1,

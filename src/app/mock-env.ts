@@ -23,7 +23,7 @@ if (import.meta.env.DEV) {
     const noInsets = { left: 0, top: 0, bottom: 0, right: 0 } as const;
 
     mockTelegramEnv({
-      onEvent(e) {
+      onEvent(e, next) {
         // Here you can write your own handlers for all known Telegram Mini Apps methods:
         // https://docs.telegram-mini-apps.com/platform/methods
         if (e.name === 'web_app_request_theme') {
@@ -43,6 +43,8 @@ if (import.meta.env.DEV) {
         if (e.name === 'web_app_request_safe_area') {
           return emitEvent('safe_area_changed', noInsets);
         }
+
+        next();
       },
       launchParams: new URLSearchParams([
         ['tgWebAppThemeParams', JSON.stringify(themeParams)],

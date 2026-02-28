@@ -1,7 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'purple';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'purple' | 'accent';
   size?: 'sm' | 'md' | 'lg';
 }
 
@@ -25,6 +25,8 @@ export const Button = ({
           'bg-[#232027] text-white hover:brightness-125 active:scale-[0.98]': variant === 'ghost',
           'bg-[#9b4dca] text-white hover:brightness-110 active:scale-[0.98] disabled:bg-[#2F3033]':
             variant === 'purple',
+          'bg-[#237BFF] text-white hover:brightness-110 active:scale-[0.98] disabled:bg-[#237BFF]/80':
+            variant === 'accent',
         },
         {
           'px-3 py-1.5 text-sm': size === 'sm',

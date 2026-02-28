@@ -4,6 +4,7 @@ import BpIcon from '@/shared/assets/bp-points-sm.svg?react';
 import PlusIcon from '@/shared/assets/plus.svg?react';
 import { ChatButton } from '@/features/chat-button';
 import { FaqButton } from '@/features/faq-button';
+import { viewport } from '@tma.js/sdk-react';
 
 interface HeaderProps {
   tonBalance?: string;
@@ -18,8 +19,8 @@ export const Header: FC<HeaderProps> = ({
 }) => {
   return (
     <header
-      className={`fixed top-0 right-0 left-0 z-50 mt-4 flex h-10 items-center justify-center bg-transparent ${
-        hideLeftSide ? '' : ''
+      className={`fixed right-0 left-0 z-50 mt-4 flex h-10 items-center justify-center bg-transparent ${
+        viewport.isMounted() && viewport.isFullscreen() ? 'top-20' : 'top-0'
       }`}
     >
       <div
@@ -35,12 +36,12 @@ export const Header: FC<HeaderProps> = ({
         )}
 
         <div className="flex h-10 items-center gap-2 rounded-[12px] border border-[#272525] bg-[#131214] px-2">
-          <button
-            type="button"
+          <a
+            href="/profile"
             className="flex size-6 items-center justify-center rounded-full bg-white"
           >
             <PlusIcon className="size-[17px] text-[#232027]" />
-          </button>
+          </a>
           <div className="flex h-8 items-center gap-1.5 rounded-[10px] bg-[#232027] px-3">
             <TonIcon className="size-2.5 text-white" />
             <span className="text-xs font-medium text-white">{tonBalance}</span>

@@ -53,28 +53,34 @@ const OrderTimer = ({ timestamp }: OrderTimerProps) => {
 
 const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
   return (
-    <div className="grid h-[66px] grid-cols-[42px_1fr_80px_auto] items-center gap-3 rounded-lg border border-[#5F81D8]/25 bg-[#131214] pr-4 pl-2">
-      <img
-        src={order.owner.avatar}
-        alt={order.owner.name}
-        className="size-[42px] rounded-full object-cover"
-      />
+    <div className="relative h-[66px] rounded-lg border border-[#5F81D8]/25 bg-[#131214] px-2">
+      <div className="absolute inset-y-0 left-2 flex max-w-[calc(100%-200px)] items-center gap-3">
+        <img
+          src={order.owner.avatar}
+          alt={order.owner.name}
+          className="size-[42px] shrink-0 rounded-full object-cover"
+        />
 
-      <div className="min-w-0">
-        <p className="truncate text-base font-light text-white">{order.owner.username}</p>
-        <p className="text-xs text-white/60">
-          <OrderTimer timestamp={order.create_date} />
-        </p>
+        <div className="min-w-0">
+          <p className="truncate text-base font-light text-white">{order.owner.username}</p>
+          <p className="truncate text-xs text-white/60">
+            <OrderTimer timestamp={order.create_date} />
+          </p>
+        </div>
       </div>
 
-      <div className="flex items-center justify-start gap-1.5">
-        <TonIcon className="size-4 text-white" />
-        <span className="text-xl font-normal text-white">{order.current_ton_amount}</span>
+      <div className="flex h-full items-center justify-center px-[132px]">
+        <div className="flex max-w-full items-center justify-center gap-1.5">
+          <TonIcon className="size-4 shrink-0 text-white" />
+          <span className="truncate text-center text-xl font-normal text-white">
+            {order.current_ton_amount}
+          </span>
+        </div>
       </div>
 
       <button
         type="button"
-        className="w-[83px] justify-self-end rounded-[6px] bg-[#237BFF] px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="absolute top-1/2 right-4 w-[83px] -translate-y-1/2 rounded-[6px] bg-[#237BFF] px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         onClick={() => onBuy?.(order)}
         disabled={isBuying}
       >

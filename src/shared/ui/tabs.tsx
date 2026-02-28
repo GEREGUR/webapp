@@ -47,13 +47,16 @@ export const Tabs = ({
 
   useEffect(() => {
     if (!onBack) return;
+    if (!backButton.show.isAvailable()) return;
 
     backButton.show();
     const offClick = backButton.onClick(onBack);
 
     return () => {
       offClick();
-      backButton.hide();
+      if (backButton.hide.isAvailable()) {
+        backButton.hide();
+      }
     };
   }, [onBack]);
 

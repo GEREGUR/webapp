@@ -33,7 +33,7 @@ export const ReferralCard: FC<ReferralCardProps> = ({ referralEarn, referralCoun
   };
 
   return (
-    <Card className="relative z-10 mx-auto mt-3 flex h-[194px] w-full flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
+    <Card className="relative z-10 mx-auto flex h-[194px] w-full flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
       <h2 className="max-w-[300px] text-[15px] leading-[1.25] font-[400] text-balance text-white">
         Приглашайте друзей и зарабатывайте 10% от их сделок
       </h2>

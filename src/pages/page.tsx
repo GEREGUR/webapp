@@ -31,5 +31,5 @@ export const Page: FC<PageProps> = ({ children, back = false }) => {
     };
   }, [back, navigate]);
 
-  return <div className="min-h-screen bg-black p-4">{children}</div>;
+  return <div className="min-h-screen p-4">{children}</div>;
 };

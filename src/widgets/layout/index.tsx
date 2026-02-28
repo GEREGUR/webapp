@@ -159,7 +159,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             ? 'h-[100dvh] overflow-hidden'
             : viewport.isMounted() && viewport.isFullscreen()
               ? 'pt-32'
-              : 'pt-10'
+              : 'pt-16'
         )}
       >
         {children}

@@ -113,28 +113,28 @@ export const ProfilePage: FC = () => {
 
   return (
     <Page back>
-      <div className="mb-6 flex flex-col items-center">
-        <Avatar src={profile.avatar} alt={profile.name} size="xl" className="mb-3" />
-        <h1 className="text-xl text-[20px] font-[500] text-white">{profile.name}</h1>
-        <p className="text-[15px] font-[500] text-white/60">ID: #{profile.id}</p>
-      </div>
+      <div className="flex flex-col items-center gap-6">
+        <div className="flex flex-col items-center gap-3">
+          <Avatar src={profile.avatar} alt={profile.name} size="xl" />
+          <h1 className="text-xl text-[20px] font-[500] text-white">{profile.name}</h1>
+          <p className="text-[15px] font-[500] text-white/60">ID: #{profile.id}</p>
+        </div>
 
-      <WalletCard
-        tonBalance={profile.ton_balance}
-        internalBalance={profile.internal_balance}
-        onDeposit={() => setIsDepositOpen(true)}
-        onWithdraw={() => setIsWithdrawOpen(true)}
-        onHistory={() => setIsHistoryOpen(true)}
-        onWalletClick={handleWalletButtonClick}
-        isWalletConnected={isConnected}
-        walletAddress={walletAddress}
-      />
+        <WalletCard
+          tonBalance={profile.ton_balance}
+          internalBalance={profile.internal_balance}
+          onDeposit={() => setIsDepositOpen(true)}
+          onWithdraw={() => setIsWithdrawOpen(true)}
+          onHistory={() => setIsHistoryOpen(true)}
+          onWalletClick={handleWalletButtonClick}
+          isWalletConnected={isConnected}
+          walletAddress={walletAddress}
+        />
 
-      <div className="mx-auto max-w-[370px] pt-6 pb-3">
         <BattlePassPromoCard isActive={isBpActive} onActivate={handleBattlePassPromoClick} />
-      </div>
 
-      <ReferralCard referralEarn={profile.referral_earn} referralCount={0} userId={profile.id} />
+        <ReferralCard referralEarn={profile.referral_earn} referralCount={0} userId={profile.id} />
+      </div>
 
       <DepositDrawer
         open={isDepositOpen}

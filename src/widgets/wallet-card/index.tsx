@@ -429,7 +429,7 @@ export const WalletCard: FC<WalletCardProps> = ({
       : 'Подключить кошелек';
 
   return (
-    <Card className="relative z-10 mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
+    <Card className="relative z-10 flex h-[195px] w-full flex-col justify-between rounded-[10px] border border-[#272525] bg-[#131214] p-4 opacity-100">
       <div className="rounded-[16px] border-[1.5px] border-[#272525] !bg-[#131214] p-2">
         <div className="flex items-center justify-between gap-1">
           <div className="flex min-w-[64px] items-center justify-center gap-1 rounded-[12px] bg-[#232027] px-2.5 py-2">

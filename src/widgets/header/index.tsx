@@ -24,7 +24,7 @@ export const Header: FC<HeaderProps> = ({
       }`}
     >
       <div
-        className={`flex w-full max-w-lg items-center justify-between px-3 ${
+        className={`flex w-full max-w-lg items-center justify-between px-4 ${
           hideLeftSide ? 'justify-end' : ''
         }`}
       >

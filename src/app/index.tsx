@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom/client';
 import { StrictMode } from 'react';
 import { retrieveLaunchParams } from '@tma.js/sdk-react';
 
-import { Root } from '@/app/Root';
+import { Root } from '@/app/root';
 import { EnvUnsupported } from '@/widgets/env-unsupported';
 import { init } from '@/app/init';
 import { routes } from '@/app/routes';

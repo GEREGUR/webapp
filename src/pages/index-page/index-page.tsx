@@ -34,17 +34,17 @@ export const IndexPage = () => {
     setShowAllOrders(window.scrollY > 10);
   }, []);
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
-
   const displayedOrders =
     orders?.slice(0, showAllOrders ? orders.length : INITIAL_ORDERS_COUNT) ?? [];
 
   const handleOrderBuy = (order: Order, type: 'regular' | 'instant') => {
     setSelectedOrder({ ...order, type });
   };
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [handleScroll]);
 
   return (
     <Tabs defaultTab="market" onTabChange={() => setShowAllOrders(false)}>
@@ -65,6 +65,7 @@ export const IndexPage = () => {
         <MaxWidthWrapper disableRightPadding>
           <LiveCarousel>{(item) => <LiveWinCard {...item} />}</LiveCarousel>
         </MaxWidthWrapper>
+
         <div className="px-4 md:px-12">
           <div className="my-2">
             <MarketStatsBar
@@ -172,9 +173,8 @@ export const IndexPage = () => {
       {selectedOrder && (
         <BuyOrderDrawer
           open={Boolean(selectedOrder)}
-          lotId={selectedOrder.id}
           tonBalance={profile?.ton_balance ?? 0}
-          rate={orderSettings?.rate ?? 1}
+          lotId={selectedOrder.id}
           orderType={selectedOrder.type}
           defaultRegularTonAmount={selectedOrder.current_ton_amount}
           settings={orderSettings}

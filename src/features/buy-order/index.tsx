@@ -21,7 +21,6 @@ interface BuyOrderDrawerProps {
   tonBalance: number;
   orderType: 'instant' | 'regular';
   defaultRegularTonAmount?: number;
-  rate: number;
   settings?: OrderSettings;
   onClose: () => void;
 }
@@ -37,29 +36,22 @@ export const BuyOrderDrawer = ({
 }: BuyOrderDrawerProps) => {
   const buyOrderMutation = useBuyOrder();
   const [regularTonAmount, setRegularTonAmount] = useState('');
-  const [instantBpAmount, setInstantBpAmount] = useState('');
-
-  const instantRate = settings ? (100 - settings.fee_self_buy) / 100 : 0.85;
 
   useEffect(() => {
     if (!open) {
       setRegularTonAmount('');
-      setInstantBpAmount('');
       return;
     }
   }, [open]);
 
   const handleRegularTonChange = (value: string) => {
     const parsedValue = parseNumberInput(value);
-    const ton = Number(parsedValue) || 0;
     setRegularTonAmount(parsedValue);
-    setInstantBpAmount(String(Math.floor(ton * instantRate)));
   };
 
   const handleMaxClick = () => {
     const maxTon = Math.min(tonBalance, defaultRegularTonAmount ?? 0);
     setRegularTonAmount(String(maxTon));
-    setInstantBpAmount(String(Math.floor(maxTon * instantRate)));
   };
 
   const handleSubmit = () => {
@@ -76,7 +68,6 @@ export const BuyOrderDrawer = ({
       {
         onSuccess: () => {
           setRegularTonAmount('');
-          setInstantBpAmount('');
           onClose();
         },
       }
@@ -85,7 +76,6 @@ export const BuyOrderDrawer = ({
 
   const handleClose = () => {
     setRegularTonAmount('');
-    setInstantBpAmount('');
     onClose();
   };
 
@@ -128,8 +118,8 @@ export const BuyOrderDrawer = ({
         </DrawerHeader>
 
         <div className="space-y-4 px-4 pb-4">
-          <div className="grid grid-cols-1 gap-3">
-            <div className="relative">
+          <div className="relative">
+            <div>
               <div className="mb-0 flex items-center justify-between">
                 <div className="flex w-full items-center justify-between gap-2">
                   <span className="font-sans text-[16.72px] leading-[18.39px] font-light text-white">
@@ -178,11 +168,11 @@ export const BuyOrderDrawer = ({
               </div>
             </div>
 
-            <div className="relative">
-              {orderType === 'regular' ? (
-                <ArrowIcon className="absolute left-[180px] rotate-180" />
-              ) : null}
+            {orderType === 'regular' && (
+              <ArrowIcon className="absolute top-[calc(50%+15px)] left-[calc(50%+3px)] -translate-x-1/2 -translate-y-1/2 rotate-180" />
+            )}
 
+            <div className="mt-4">
               <div className="mt-1 mb-1.5 flex items-center justify-between">
                 <span className="font-sans text-[16.72px] leading-[18.39px] font-light text-white">
                   {orderType === 'regular' ? 'Получите BP' : 'Получите прямо сейчас'}

@@ -39,7 +39,7 @@ export const Root: FC<RootProps> = ({ routes }) => {
         <ToastProvider>
           <MarketProvider>
             <div className="flex min-h-screen justify-center bg-black">
-              <div className="relative w-full max-w-lg overflow-hidden overscroll-none">
+              <div className="relative w-full max-w-lg">
                 <AppRoot
                   appearance={'dark'}
                   platform={['macos', 'ios'].includes(platform as string) ? 'ios' : 'base'}

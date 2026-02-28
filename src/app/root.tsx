@@ -32,10 +32,12 @@ interface RootProps {
 export const Root: FC<RootProps> = ({ routes }) => {
   const lp = useLaunchParams();
   const platform = lp.platform || 'unknown';
+  const manifestPath = `${import.meta.env.BASE_URL}tonconnect-manifest.json`;
+  const manifestUrl = new URL(manifestPath, window.location.origin).toString();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TonConnectUIProvider manifestUrl="/tonconnect-manifest.json">
+      <TonConnectUIProvider manifestUrl={manifestUrl}>
         <ToastProvider>
           <MarketProvider>
             <div className="flex min-h-screen justify-center bg-black">

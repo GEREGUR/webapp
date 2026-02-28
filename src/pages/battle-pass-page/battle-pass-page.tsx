@@ -90,7 +90,7 @@ const RewardCard: FC<{
 
 interface ClaimOverlayProps {
   open: boolean;
-  reward: BattlePassRewardUI | null;
+  reward?: BattlePassRewardUI | null;
   onClose: () => void;
 }
 
@@ -124,7 +124,7 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
     };
   }, [open]);
 
-  if (!open || !reward) {
+  if (!open) {
     return null;
   }
 
@@ -171,19 +171,19 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, reward, onClose }) => {
                 >
                   {isClaimedSlot ? (
                     <div className="flex h-full flex-col items-center justify-center">
-                      {isValidUrl(reward.imageUrl) ? (
+                      {reward && isValidUrl(reward.imageUrl) ? (
                         <img
                           src={reward.imageUrl}
                           alt="Reward"
                           className="h-[64px] w-[64px] object-contain"
                         />
-                      ) : reward.rewardType === 'ton' ? (
+                      ) : reward?.rewardType === 'ton' ? (
                         <TonIcon className="h-[64px] w-[64px]" />
                       ) : (
                         <BpPointsIcon className="h-[31px] w-[62px]" />
                       )}
                       <span className="text-[32px] leading-none font-bold text-white">
-                        x{reward.multiplier}
+                        x{reward?.multiplier ?? 1}
                       </span>
                     </div>
                   ) : null}
@@ -203,6 +203,7 @@ export const BattlePassPage: FC = () => {
   const activateBattlePass = useActivateBattlePass();
   const { showToast } = useToast();
   const [claimedReward, setClaimedReward] = useState<BattlePassRewardUI | null>(null);
+  const [isPromoOverlayOpen, setIsPromoOverlayOpen] = useState(false);
 
   const isBpActive = !isLoading && !isError && !!data;
 
@@ -239,6 +240,11 @@ export const BattlePassPage: FC = () => {
 
   const handleCloseOverlay = () => {
     setClaimedReward(null);
+    setIsPromoOverlayOpen(false);
+  };
+
+  const handleOpenPromoOverlay = () => {
+    setIsPromoOverlayOpen(true);
   };
 
   if (isLoading) {
@@ -253,7 +259,12 @@ export const BattlePassPage: FC = () => {
     <>
       <Page back>
         <div className="flex flex-col gap-[20px]">
-          <BattlePassPromoCard isActive={isBpActive} onActivate={handleActivate} />
+          <BattlePassPromoCard
+            isActive={isBpActive}
+            onActivate={handleActivate}
+            onBattlePassPage
+            onOpenOverlay={handleOpenPromoOverlay}
+          />
 
           <BattlePassProgress
             currentLevel={data?.level ?? 1}
@@ -270,7 +281,7 @@ export const BattlePassPage: FC = () => {
         </div>
       </Page>
       <ClaimOverlay
-        open={Boolean(claimedReward)}
+        open={Boolean(claimedReward) || isPromoOverlayOpen}
         reward={claimedReward}
         onClose={handleCloseOverlay}
       />

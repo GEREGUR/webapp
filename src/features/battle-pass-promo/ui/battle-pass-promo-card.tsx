@@ -13,12 +13,25 @@ import LightFour from '@/shared/assets/light-4.svg';
 interface BattlePassPromoCardProps {
   isActive?: boolean;
   onActivate?: () => void;
+  onBattlePassPage?: boolean;
+  onOpenOverlay?: () => void;
 }
 
 export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({
   isActive = false,
   onActivate,
+  onBattlePassPage = false,
+  onOpenOverlay,
 }) => {
+  const handleButtonClick = () => {
+    if (onBattlePassPage && isActive) {
+      onOpenOverlay?.();
+      return;
+    }
+
+    onActivate?.();
+  };
+
   return (
     <div className="relative h-[80px] w-full overflow-hidden rounded-[10px] bg-[#5F81D8]">
       <img
@@ -63,6 +76,7 @@ export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({
           <Button
             className="font-bebas-cyrillic bg-button-bp-dark ml-3 h-[26px] w-full rounded-[6px] px-0 py-0 text-center text-[12.59px] leading-[13.85px] font-normal -tracking-tight text-white"
             variant="primary"
+            onClick={handleButtonClick}
           >
             ПОЛУЧИТЬ
           </Button>
@@ -70,7 +84,7 @@ export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({
           <Button
             className="font-bebas-cyrillic ml-3 h-[26px] w-full rounded-[6px] bg-green-500 px-0 py-0 text-center text-[12.59px] leading-[13.85px] font-normal -tracking-tight text-white hover:bg-green-600"
             variant="primary"
-            onClick={onActivate}
+            onClick={handleButtonClick}
           >
             АКТИВИРОВАТЬ
           </Button>

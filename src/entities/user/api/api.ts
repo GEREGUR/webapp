@@ -22,25 +22,13 @@ interface GetWalletHistoryResponse {
   history: WalletHistoryItem[];
 }
 
-interface WithdrawRequest {
-  amount: number;
-  address: string;
-}
-
 interface SetWalletRequest {
   address: string;
-}
-
-interface PaymentData {
-  address: string;
-  memo: string;
-  min_ton_amount: number;
 }
 
 const QUERY_KEYS = {
   profile: ['user', 'profile'] as const,
   walletHistory: ['user', 'wallet', 'history'] as const,
-  paymentData: ['user', 'wallet', 'payment'] as const,
 };
 
 export const useProfile = () => {
@@ -58,6 +46,16 @@ export const useProfile = () => {
           avatar: telegramUser?.photo_url || '',
         };
       } catch (error) {
+        return {
+          id: 0,
+          name: '',
+          username: '',
+          avatar: '',
+          internal_balance: 0,
+          ton_balance: 0,
+          wallet_address: null,
+          referral_earn: 0,
+        };
         console.error('API Error useProfile:', error);
         throw error;
       }
@@ -82,31 +80,6 @@ export const useWalletHistory = () => {
   });
 };
 
-export const usePaymentData = () => {
-  return useQuery({
-    queryKey: QUERY_KEYS.paymentData,
-    queryFn: async (): Promise<PaymentData> => {
-      const response = await api.get<PaymentData>('/wallet/payment/data');
-      return response.data;
-    },
-    staleTime: Infinity,
-  });
-};
-
-export const useWithdraw = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (data: WithdrawRequest): Promise<void> => {
-      await api.post('/wallet/withdrawal', data);
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.profile });
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.walletHistory });
-    },
-  });
-};
-
 export const useSetWallet = () => {
   const queryClient = useQueryClient();
 
@@ -125,7 +98,7 @@ export const useClearWallet = () => {
 
   return useMutation({
     mutationFn: async (): Promise<void> => {
-      await api.post('/user/wallet/clear', null);
+      await api.post('/wallet/clear', null);
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.profile });

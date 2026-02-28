@@ -10,7 +10,8 @@ import {
 } from '@/shared/ui/drawer';
 import { Input } from '@/shared/ui/input';
 import { useToast } from '@/shared/ui/toast';
-import { useWalletHistory, useWithdraw } from '@/entities/user';
+import { useWalletHistory } from '@/entities/user';
+import { useCreateTransaction, useWithdraw } from '@/entities/wallet';
 import { parseNumberInput } from '@/shared/lib/utils';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points-sm.svg?react';
@@ -18,6 +19,7 @@ import { Copy, X, Check } from 'lucide-react';
 import Arrow from '@/shared/assets/arrow-sm.svg?react';
 import HistoryIcon from '@/shared/assets/history.svg?react';
 import WalletIcon from '@/shared/assets/wallet-icon.svg?react';
+import LogoutIcon from '@/shared/assets/logout.svg?react';
 
 interface DepositDrawerProps {
   open: boolean;
@@ -31,6 +33,7 @@ type DepositDrawer = (props: DepositDrawerProps) => React.ReactElement;
 export const DepositDrawer: DepositDrawer = ({ open, walletAddress, memo, onClose }) => {
   const [addressCopied, setAddressCopied] = useState(false);
   const [memoCopied, setMemoCopied] = useState(false);
+  const createTransaction = useCreateTransaction();
 
   const handleCopy = (value: string) => {
     void navigator.clipboard.writeText(value);
@@ -46,6 +49,7 @@ export const DepositDrawer: DepositDrawer = ({ open, walletAddress, memo, onClos
     handleCopy(memo);
     setMemoCopied(true);
     setTimeout(() => setMemoCopied(false), 2000);
+    createTransaction.mutate({ memo });
   };
 
   return (
@@ -74,7 +78,7 @@ export const DepositDrawer: DepositDrawer = ({ open, walletAddress, memo, onClos
         <div className="space-y-3.5 px-4 pb-5">
           <div>
             <p className="mb-2 text-[12px] font-semibold text-white">Адрес кошелька</p>
-            <div className="mb-2 flex h-[40px] items-center rounded-[12px] bg-[#232027] px-4 text-[12px] font-medium text-white">
+            <div className="mb-2 flex h-[40px] items-center rounded-[12px] bg-[#232027] px-4 text-center text-[12px] font-medium text-white">
               <span className="w-full truncate">{walletAddress}</span>
             </div>
             <Button
@@ -140,7 +144,7 @@ export const WithdrawDrawer: WithdrawDrawer = ({ open, maxTon, onClose }) => {
   const [address, setAddress] = useState('');
 
   const isValidTonAddress = (addr: string): boolean => {
-    const tonAddressRegex = /^(U|EQ)[A-Za-z0-9_-]{46}$/;
+    const tonAddressRegex = /^(?:UQ|EQ)[A-Za-z0-9_-]{46}$/;
     return tonAddressRegex.test(addr.trim());
   };
 
@@ -344,13 +348,67 @@ export const WalletHistoryDrawer: WalletHistoryDrawer = ({ open, onClose }) => {
   );
 };
 
+interface DisconnectWalletDrawerProps {
+  open: boolean;
+  onClose: () => void;
+  onDisconnect: () => void;
+}
+
+type DisconnectWalletDrawer = (props: DisconnectWalletDrawerProps) => React.ReactElement;
+
+export const DisconnectWalletDrawer: DisconnectWalletDrawer = ({ open, onClose, onDisconnect }) => {
+  return (
+    <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
+      <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
+        <DrawerHeader className="gap-2.5 pb-2">
+          <div className="flex items-center justify-between">
+            <DrawerTitle className="font-sans text-2xl leading-[22.32px] font-medium text-white">
+              Отключить кошелек
+            </DrawerTitle>
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent p-0 text-white"
+              onClick={onClose}
+              aria-label="Закрыть"
+            >
+              <X className="h-6 w-6 stroke-2" />
+            </Button>
+          </div>
+          <DrawerDescription className="font-sans text-[13px] leading-[18.4px] font-light text-balance text-white/60">
+            Подтвердите отключение TON-кошелька от аккаунта.
+          </DrawerDescription>
+        </DrawerHeader>
+
+        <div className="flex gap-[22px] px-4 pb-5">
+          <Button
+            type="button"
+            variant="secondary"
+            className="h-[46px] flex-1 rounded-[12px] bg-[#2F3033] text-[15px] font-semibold text-white"
+            onClick={onClose}
+          >
+            Отмена
+          </Button>
+          <Button
+            type="button"
+            className="h-[46px] flex-1 rounded-[12px] bg-[#5F81D8] text-[15px] font-semibold text-white hover:bg-[#7a9be8] active:bg-[#4a6fc0]"
+            onClick={onDisconnect}
+          >
+            Отключить
+          </Button>
+        </div>
+      </DrawerContent>
+    </Drawer>
+  );
+};
+
 interface WalletCardProps {
   tonBalance: number;
   internalBalance: number;
   onDeposit: () => void;
   onWithdraw: () => void;
   onHistory: () => void;
-  onConnectWallet: () => void;
+  onWalletClick: () => void;
   isWalletConnected: boolean;
   walletAddress: string | null;
 }
@@ -361,10 +419,15 @@ export const WalletCard: FC<WalletCardProps> = ({
   onDeposit,
   onWithdraw,
   onHistory,
-  onConnectWallet,
+  onWalletClick,
   isWalletConnected,
   walletAddress,
 }) => {
+  const walletLabel =
+    isWalletConnected && walletAddress
+      ? `${walletAddress.slice(0, 3)}...${walletAddress.slice(-4)}`
+      : 'Подключить кошелек';
+
   return (
     <Card className="relative z-10 mx-auto flex h-[195px] w-full max-w-[370px] flex-col justify-between rounded-[10px] border border-[#272525] !bg-[#131214] p-4 opacity-100">
       <div className="rounded-[16px] border-[1.5px] border-[#272525] !bg-[#131214] p-2">
@@ -409,15 +472,22 @@ export const WalletCard: FC<WalletCardProps> = ({
       <div className="flex items-center gap-2">
         <Button
           type="button"
-          className="inline-flex h-[40px] flex-1 items-center justify-center gap-1 rounded-[12px] bg-white text-[16px] font-[500] text-black hover:bg-white/90"
-          onClick={onConnectWallet}
+          variant="secondary"
+          className="relative inline-flex h-[40px] flex-1 items-center justify-center rounded-[12px] text-[16px] font-[500] transition-all"
+          onClick={onWalletClick}
+          style={{ background: isWalletConnected ? '#2F2F30' : '#FFFFFF' }}
         >
-          <WalletIcon />
-          <span className="pt-[3px]">
-            {isWalletConnected && walletAddress
-              ? `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
-              : 'Подключить кошелек'}
+          <span className="flex items-center justify-center gap-1">
+            <WalletIcon className={isWalletConnected ? 'text-white' : 'text-black'} />
+            <span className={isWalletConnected ? 'pt-[3px] text-white' : 'pt-[3px] text-black'}>
+              {walletLabel}
+            </span>
           </span>
+          {isWalletConnected && (
+            <span className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2">
+              <LogoutIcon className="h-4 w-4 shrink-0 text-white" />
+            </span>
+          )}
         </Button>
         <Button
           type="button"

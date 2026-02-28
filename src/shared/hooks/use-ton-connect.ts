@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useState } from 'react';
 import { useTonConnectUI, useTonWallet, useTonAddress } from '@tonconnect/ui-react';
 import { useSetWallet, useClearWallet } from '@/entities/user';
+import { useToast } from '@/shared/ui/toast';
 
 interface TonConnectHookReturn {
   walletAddress: string | null;
@@ -8,7 +9,7 @@ interface TonConnectHookReturn {
   isConnecting: boolean;
   isSyncing: boolean;
   connect: () => Promise<void>;
-  disconnect: () => Promise<void>;
+  disconnect: () => Promise<boolean>;
   sendTransaction: (transaction: {
     to: string;
     amount: string;
@@ -21,6 +22,7 @@ export const useTonConnect = (): TonConnectHookReturn => {
   const wallet = useTonWallet();
   const rawAddress = useTonAddress(false);
   const userFriendlyAddress = useTonAddress();
+  const { showToast } = useToast();
 
   const setWalletMutation = useSetWallet();
   const clearWalletMutation = useClearWallet();
@@ -29,6 +31,17 @@ export const useTonConnect = (): TonConnectHookReturn => {
   const [isConnecting, setIsConnecting] = useState(false);
 
   const isConnected = !!wallet?.account.address;
+
+  useEffect(() => {
+    if (!wallet) {
+      return;
+    }
+
+    if (wallet.account.chain !== '-239') {
+      showToast('Выберите mainnet в кошельке и подключитесь снова', 'error');
+      void tonConnectUI?.disconnect();
+    }
+  }, [showToast, tonConnectUI, wallet]);
 
   useEffect(() => {
     if (!wallet || !rawAddress) {
@@ -57,21 +70,23 @@ export const useTonConnect = (): TonConnectHookReturn => {
     try {
       setIsConnecting(true);
       await tonConnectUI?.openModal();
-    } catch (error) {
-      console.error('Failed to open connect modal:', error);
+    } catch {
+      showToast('Не удалось открыть подключение кошелька', 'error');
     } finally {
       setIsConnecting(false);
     }
-  }, [tonConnectUI]);
+  }, [showToast, tonConnectUI]);
 
-  const disconnect = useCallback(async () => {
+  const disconnect = useCallback(async (): Promise<boolean> => {
     try {
       await tonConnectUI?.disconnect();
       await clearWalletMutation.mutateAsync();
-    } catch (error) {
-      console.error('Failed to disconnect wallet:', error);
+      return true;
+    } catch {
+      showToast('Не удалось отключить кошелёк', 'error');
+      return false;
     }
-  }, [tonConnectUI, clearWalletMutation]);
+  }, [showToast, tonConnectUI, clearWalletMutation]);
 
   const sendTransaction = useCallback(
     async (transaction: {
@@ -80,7 +95,12 @@ export const useTonConnect = (): TonConnectHookReturn => {
       payload?: string;
     }): Promise<string | null> => {
       if (!wallet) {
-        console.error('Wallet not connected');
+        showToast('Сначала подключите кошелёк', 'error');
+        return null;
+      }
+
+      if (wallet.account.chain !== '-239') {
+        showToast('Поддерживается только mainnet-кошелёк', 'error');
         return null;
       }
 
@@ -100,12 +120,12 @@ export const useTonConnect = (): TonConnectHookReturn => {
           return result.boc;
         }
         return null;
-      } catch (error) {
-        console.error('Transaction failed:', error);
+      } catch {
+        showToast('Не удалось отправить транзакцию', 'error');
         return null;
       }
     },
-    [wallet, tonConnectUI]
+    [showToast, wallet, tonConnectUI]
   );
 
   return {

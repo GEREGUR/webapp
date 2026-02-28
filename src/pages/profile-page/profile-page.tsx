@@ -1,9 +1,12 @@
-import { type FC, useState, useRef } from 'react';
+import { type FC, useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Page } from '@/pages/page';
 import { Avatar } from '@/shared/ui/avatar';
 import { Loader } from '@/shared/ui/spinner';
 import { useToast } from '@/shared/ui/toast';
-import { useProfile, usePaymentData } from '@/entities/user';
+import { useProfile } from '@/entities/user';
+import { usePaymentData } from '@/entities/wallet';
+import { useActivateBattlePass, useBattlePass } from '@/entities/battle-pass';
 import { useTonConnect } from '@/shared/hooks/use-ton-connect';
 import { useSetWallet } from '@/entities/user';
 import { BattlePassPromoCard } from '@/features/battle-pass-promo';
@@ -12,19 +15,32 @@ import {
   DepositDrawer,
   WithdrawDrawer,
   WalletHistoryDrawer,
+  DisconnectWalletDrawer,
 } from '@/widgets/wallet-card';
 import { ReferralCard } from '@/widgets/referral-card';
 
 export const ProfilePage: FC = () => {
+  const navigate = useNavigate();
   const { showToast } = useToast();
   const { data: profile, isLoading } = useProfile();
-  const { data: paymentData } = usePaymentData();
-  const { isConnected, connect, walletAddress } = useTonConnect();
+  const { data: battlePassData } = useBattlePass();
+  const activateBattlePass = useActivateBattlePass();
+  const { data: paymentData, refetch: refetchPaymentData } = usePaymentData({ enabled: false });
+  const { isConnected, connect, disconnect, walletAddress } = useTonConnect();
   const setWalletMutation = useSetWallet();
   const [isDepositOpen, setIsDepositOpen] = useState(false);
   const [isWithdrawOpen, setIsWithdrawOpen] = useState(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [isDisconnectOpen, setIsDisconnectOpen] = useState(false);
   const syncedRef = useRef(false);
+
+  useEffect(() => {
+    if (!isDepositOpen) {
+      return;
+    }
+
+    void refetchPaymentData();
+  }, [isDepositOpen, refetchPaymentData]);
 
   if (
     !syncedRef.current &&
@@ -39,16 +55,42 @@ export const ProfilePage: FC = () => {
 
   const walletAddressForDeposit = paymentData?.address ?? profile?.wallet_address ?? '';
   const depositMemo = paymentData?.memo ?? '';
+  const isBpActive = Boolean(battlePassData);
 
-  const handleConnectWallet = () => {
-    if (isConnected && walletAddress) {
-      showToast(
-        `Кошелек подключен: ${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
-        'success'
-      );
-    } else {
-      void connect();
+  const handleWalletButtonClick = () => {
+    if (isConnected) {
+      setIsDisconnectOpen(true);
+      return;
     }
+
+    void connect();
+  };
+
+  const handleDisconnectWallet = async () => {
+    const disconnected = await disconnect();
+    if (!disconnected) {
+      return;
+    }
+
+    setIsDisconnectOpen(false);
+    showToast('Кошелек отключен', 'success');
+  };
+
+  const handleBattlePassPromoClick = () => {
+    if (isBpActive) {
+      void navigate('/battle-pass');
+      return;
+    }
+
+    activateBattlePass.mutate(undefined, {
+      onSuccess: () => {
+        showToast('Battle Pass активирован!', 'success');
+        void navigate('/battle-pass');
+      },
+      onError: () => {
+        showToast('Не удалось активировать Battle Pass', 'error');
+      },
+    });
   };
 
   if (isLoading) {
@@ -74,7 +116,7 @@ export const ProfilePage: FC = () => {
       <div className="mb-6 flex flex-col items-center">
         <Avatar src={profile.avatar} alt={profile.name} size="xl" className="mb-3" />
         <h1 className="text-xl text-[20px] font-[500] text-white">{profile.name}</h1>
-        <p className="text-[15px] font-[500] text-white/60">ID: #{profile.username}</p>
+        <p className="text-[15px] font-[500] text-white/60">ID: #{profile.id}</p>
       </div>
 
       <WalletCard
@@ -83,13 +125,13 @@ export const ProfilePage: FC = () => {
         onDeposit={() => setIsDepositOpen(true)}
         onWithdraw={() => setIsWithdrawOpen(true)}
         onHistory={() => setIsHistoryOpen(true)}
-        onConnectWallet={handleConnectWallet}
+        onWalletClick={handleWalletButtonClick}
         isWalletConnected={isConnected}
         walletAddress={walletAddress}
       />
 
-      <div className="px-1.5 pt-6 pb-3">
-        <BattlePassPromoCard />
+      <div className="mx-auto max-w-[370px] pt-6 pb-3">
+        <BattlePassPromoCard isActive={isBpActive} onActivate={handleBattlePassPromoClick} />
       </div>
 
       <ReferralCard referralEarn={profile.referral_earn} referralCount={0} userId={profile.id} />
@@ -108,6 +150,11 @@ export const ProfilePage: FC = () => {
       />
 
       <WalletHistoryDrawer open={isHistoryOpen} onClose={() => setIsHistoryOpen(false)} />
+      <DisconnectWalletDrawer
+        open={isDisconnectOpen}
+        onClose={() => setIsDisconnectOpen(false)}
+        onDisconnect={() => void handleDisconnectWallet()}
+      />
     </Page>
   );
 };

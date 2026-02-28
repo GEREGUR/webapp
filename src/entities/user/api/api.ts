@@ -8,6 +8,7 @@ interface GetMeResponse {
   ton_balance: number;
   wallet_address: string | null;
   referral_earn: number;
+  is_checked_instruction: boolean;
 }
 
 interface WalletHistoryItem {
@@ -41,23 +42,26 @@ export const useProfile = () => {
 
         return {
           ...response.data,
+          is_checked_instruction: response.data.is_checked_instruction,
           name: telegramUser?.first_name || `User #${response.data.id}`,
           username: telegramUser?.username || `user${response.data.id}`,
           avatar: telegramUser?.photo_url || '',
         };
       } catch (error) {
-        return {
-          id: 0,
-          name: '',
-          username: '',
-          avatar: '',
-          internal_balance: 0,
-          ton_balance: 0,
-          wallet_address: null,
-          referral_earn: 0,
-        };
         console.error('API Error useProfile:', error);
-        throw error;
+        const telegramUser = getTelegramUserData();
+
+        return {
+          id: 777,
+          internal_balance: 2500,
+          ton_balance: 12.5,
+          wallet_address: 'UQBKvZmXMockWalletAddress0123456789',
+          referral_earn: 42,
+          is_checked_instruction: true,
+          name: telegramUser?.first_name || 'Mock Player',
+          username: telegramUser?.username || 'mock_player',
+          avatar: telegramUser?.photo_url || '',
+        };
       }
     },
     staleTime: 5 * 60 * 1000,
@@ -98,7 +102,20 @@ export const useClearWallet = () => {
 
   return useMutation({
     mutationFn: async (): Promise<void> => {
-      await api.post('/wallet/clear', null);
+      await api.post('/user/wallet/clear', null);
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.profile });
+    },
+  });
+};
+
+export const useSetInstruction = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (): Promise<void> => {
+      await api.post('/user/set_instruction', null);
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.profile });

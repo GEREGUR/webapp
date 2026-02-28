@@ -1,14 +1,16 @@
-import { useActivateTask, useClaimTaskReward } from '../api';
+import { useActivateTask, useClaimTaskReward, useCompleteTask } from '../api';
 import { useToast } from '@/shared/ui/toast';
 
 interface UseTaskActionsResult {
   activateTask: (taskId: number) => void;
+  completeTask: (taskId: number) => void;
   claimReward: (taskId: number) => void;
   isPending: boolean;
 }
 
 export const useTaskActions = (): UseTaskActionsResult => {
   const activateTaskMutation = useActivateTask();
+  const completeTaskMutation = useCompleteTask();
   const claimRewardMutation = useClaimTaskReward();
   const { showToast } = useToast();
 
@@ -16,6 +18,13 @@ export const useTaskActions = (): UseTaskActionsResult => {
     activateTaskMutation.mutate(taskId, {
       onSuccess: () => showToast('Задание активировано', 'success'),
       onError: () => showToast('Не удалось активировать задание', 'error'),
+    });
+  };
+
+  const completeTask = (taskId: number) => {
+    completeTaskMutation.mutate(taskId, {
+      onSuccess: () => showToast('Задание отправлено на проверку', 'success'),
+      onError: () => showToast('Не удалось проверить задание', 'error'),
     });
   };
 
@@ -28,7 +37,9 @@ export const useTaskActions = (): UseTaskActionsResult => {
 
   return {
     activateTask,
+    completeTask,
     claimReward,
-    isPending: activateTaskMutation.isPending || claimRewardMutation.isPending,
+    isPending:
+      activateTaskMutation.isPending || completeTaskMutation.isPending || claimRewardMutation.isPending,
   };
 };

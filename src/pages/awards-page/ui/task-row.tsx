@@ -1,4 +1,5 @@
 import { type FC } from 'react';
+import { shareStory } from '@tma.js/sdk-react';
 import BpIcon from '@/shared/assets/bp-white-sm.svg?react';
 import { Card } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
@@ -10,13 +11,33 @@ interface TaskRowProps {
   isLast: boolean;
   isPending: boolean;
   onStart: (taskId: number) => void;
+  onCheck: (taskId: number) => void;
   onClaim: (taskId: number) => void;
 }
 
-const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }) => {
+const storyImageUrl = import.meta.env.VITE_STORY_IMG_URL as string | undefined;
+const url = import.meta.env.VITE_TG_BOT_URL as string | undefined;
+const name = import.meta.env.APP_NAME as string | undefined;
+
+const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onCheck, onClaim }) => {
   const action = getTaskAction(task);
   const currentCount = task.progress?.current_count ?? 0;
   const rewards = formatReward(task);
+
+  const handleStart = () => {
+    if (task.type === 'STORY' && storyImageUrl && shareStory.isAvailable()) {
+      const options =
+        url && name
+          ? {
+              widgetLink: { url, name },
+            }
+          : undefined;
+
+      shareStory(storyImageUrl, options);
+    }
+
+    onStart(task.id);
+  };
 
   return (
     <div
@@ -33,7 +54,7 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
         <div className="text-accent mt-1 flex flex-wrap items-center gap-1.5 text-xs leading-none">
           <span className="text-[#FFAA00]">Награда:</span>
           {rewards.map((reward, rewardIndex) => (
-            <span key={`${task.id}-${reward.value}`} className="text-[#C37CE2]">
+            <span key={`${task.id}-${reward.value}`} className={reward.className}>
               {reward.value}
               {rewardIndex !== rewards.length - 1 && (
                 <span className="text-accent">
@@ -46,45 +67,58 @@ const TaskRow: FC<TaskRowProps> = ({ task, isLast, isPending, onStart, onClaim }
         </div>
       </div>
 
-      {action === 'start' && (
-        <Button
-          size="sm"
-          disabled={isPending}
-          onClick={() => onStart(task.id)}
-          className="rounded-md bg-white px-[10px] text-[10px] font-normal text-black hover:bg-white/90"
-        >
-          Начать
-        </Button>
-      )}
-      {action === 'claim' && (
-        <Button
-          size="sm"
-          disabled={isPending}
-          onClick={() => onClaim(task.id)}
-          className="roundend-md bg-[#AA55D0] px-[10px] text-[10px] font-normal text-white hover:brightness-110"
-        >
-          Забрать
-        </Button>
-      )}
-      {action === 'claim-disabled' && (
-        <Button
-          size="sm"
-          disabled
-          className="rounded-md bg-white/12 px-[10px] text-[10px] font-normal text-white/45"
-        >
-          Забрать
-        </Button>
-      )}
-      {action === 'claimed' && (
-        <Button
-          size="sm"
-          disabled
-          variant="purple"
-          className="rounded-md px-[10px] text-[10px] font-normal text-white/45"
-        >
-          Забрано
-        </Button>
-      )}
+      <div className="w-[75px] [&>button]:w-full">
+        {action === 'start' && (
+          <Button
+            size="sm"
+            disabled={isPending}
+            onClick={handleStart}
+            className="rounded-md bg-white px-[10px] text-[10px] font-normal text-black hover:bg-white/90"
+          >
+            Начать
+          </Button>
+        )}
+        {action === 'claim' && (
+          <Button
+            size="sm"
+            disabled={isPending}
+            onClick={() => onClaim(task.id)}
+            className="roundend-md bg-[#AA55D0] px-[10px] text-[10px] font-normal text-white hover:brightness-110"
+          >
+            Забрать
+          </Button>
+        )}
+        {action === 'check' && (
+          <Button
+            size="sm"
+            disabled={isPending}
+            onClick={() => onCheck(task.id)}
+            className="rounded-md bg-white px-[10px] text-[10px] font-normal text-black hover:bg-white/90"
+          >
+            Проверить
+          </Button>
+        )}
+        {action === 'claim-disabled' && (
+          <Button
+            size="sm"
+            disabled
+            variant="secondary"
+            className="rounded-md bg-white/12 px-[10px] text-[10px] font-normal text-white/45"
+          >
+            Забрать
+          </Button>
+        )}
+        {action === 'claimed' && (
+          <Button
+            size="sm"
+            disabled
+            variant="purple"
+            className="rounded-md px-[10px] text-[10px] font-normal"
+          >
+            Получено
+          </Button>
+        )}
+      </div>
     </div>
   );
 };
@@ -93,10 +127,11 @@ interface TaskListProps {
   tasks: Task[];
   isPending: boolean;
   onStart: (taskId: number) => void;
+  onCheck: (taskId: number) => void;
   onClaim: (taskId: number) => void;
 }
 
-export const TaskList: FC<TaskListProps> = ({ tasks, isPending, onStart, onClaim }) => {
+export const TaskList: FC<TaskListProps> = ({ tasks, isPending, onStart, onCheck, onClaim }) => {
   if (tasks.length === 0) {
     return (
       <Card>
@@ -114,6 +149,7 @@ export const TaskList: FC<TaskListProps> = ({ tasks, isPending, onStart, onClaim
           isLast={index === tasks.length - 1}
           isPending={isPending}
           onStart={onStart}
+          onCheck={onCheck}
           onClaim={onClaim}
         />
       ))}

@@ -5,8 +5,15 @@ import { useTasksPage } from '@/entities/tasks/model/use-tasks-page';
 import { TaskList } from './ui/task-row';
 
 export const AwardsPage: FC = () => {
-  const { baseTasks, bonusTasks, isLoading, isActionPending, onActivateTask, onClaimReward } =
-    useTasksPage();
+  const {
+    baseTasks,
+    bonusTasks,
+    isLoading,
+    isActionPending,
+    onActivateTask,
+    onCompleteTask,
+    onClaimReward,
+  } = useTasksPage();
 
   const taskSection = baseTasks.length > 0 ? baseTasks : bonusTasks;
 
@@ -27,6 +34,7 @@ export const AwardsPage: FC = () => {
             tasks={taskSection}
             isPending={isActionPending}
             onStart={onActivateTask}
+            onCheck={onCompleteTask}
             onClaim={onClaimReward}
           />
         </section>
@@ -38,6 +46,7 @@ export const AwardsPage: FC = () => {
               tasks={bonusTasks}
               isPending={isActionPending}
               onStart={onActivateTask}
+              onCheck={onCompleteTask}
               onClaim={onClaimReward}
             />
           </section>

@@ -56,9 +56,10 @@ export const ProfilePage: FC = () => {
   const walletAddressForDeposit = paymentData?.address ?? profile?.wallet_address ?? '';
   const depositMemo = paymentData?.memo ?? '';
   const isBpActive = Boolean(battlePassData);
+  const hasProfileWallet = Boolean(profile?.wallet_address);
 
   const handleWalletButtonClick = () => {
-    if (isConnected) {
+    if (hasProfileWallet) {
       setIsDisconnectOpen(true);
       return;
     }
@@ -113,7 +114,7 @@ export const ProfilePage: FC = () => {
 
   return (
     <Page back>
-      <div className="flex flex-col items-center gap-6">
+      <div className="flex flex-col items-center gap-6 pb-20">
         <div className="flex flex-col items-center gap-3">
           <Avatar src={profile.avatar} alt={profile.name} size="xl" />
           <h1 className="text-xl text-[20px] font-[500] text-white">{profile.name}</h1>
@@ -127,8 +128,8 @@ export const ProfilePage: FC = () => {
           onWithdraw={() => setIsWithdrawOpen(true)}
           onHistory={() => setIsHistoryOpen(true)}
           onWalletClick={handleWalletButtonClick}
-          isWalletConnected={isConnected}
-          walletAddress={walletAddress}
+          isWalletConnected={hasProfileWallet}
+          walletAddress={profile.wallet_address}
         />
 
         <BattlePassPromoCard isActive={isBpActive} onActivate={handleBattlePassPromoClick} />

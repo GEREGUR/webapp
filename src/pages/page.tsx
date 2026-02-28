@@ -11,25 +11,29 @@ export const Page: FC<PageProps> = ({ children, back = false }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!back) {
-      return;
-    }
     if (!backButton.show.isAvailable()) {
       return;
     }
 
-    backButton.show();
-    const offClick = backButton.onClick(() => {
-      navigate(-1);
-    });
+    if (back) {
+      backButton.show();
+      return backButton.onClick(() => {
+        navigate(-1);
+      });
+    }
 
+    if (backButton.hide.isAvailable()) {
+      backButton.hide();
+    }
+  }, [back, navigate]);
+
+  useEffect(() => {
     return () => {
-      offClick();
       if (backButton.hide.isAvailable()) {
         backButton.hide();
       }
     };
-  }, [back, navigate]);
+  }, []);
 
-  return <div className="min-h-screen p-4">{children}</div>;
+  return <div className="min-h-[calc(100dvh-76px)] p-4">{children}</div>;
 };

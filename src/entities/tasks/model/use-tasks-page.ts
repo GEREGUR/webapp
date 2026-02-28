@@ -11,6 +11,7 @@ interface UseTasksPageResult {
   isLoading: boolean;
   isActionPending: boolean;
   onActivateTask: (taskId: number) => void;
+  onCompleteTask: (taskId: number) => void;
   onClaimReward: (taskId: number) => void;
 }
 
@@ -18,6 +19,7 @@ export const useTasksPage = (): UseTasksPageResult => {
   const { data, isLoading } = useTasks();
   const {
     activateTask: activateServerTask,
+    completeTask: completeServerTask,
     claimReward: claimServerTask,
     isPending,
   } = useTaskActions();
@@ -44,6 +46,13 @@ export const useTasksPage = (): UseTasksPageResult => {
     [claimServerTask, showToast]
   );
 
+  const handleCompleteTask = useCallback(
+    (taskId: number) => {
+      completeServerTask(taskId);
+    },
+    [completeServerTask]
+  );
+
   return {
     tasks,
     baseTasks,
@@ -51,6 +60,7 @@ export const useTasksPage = (): UseTasksPageResult => {
     isLoading,
     isActionPending: isPending,
     onActivateTask: handleActivateTask,
+    onCompleteTask: handleCompleteTask,
     onClaimReward: handleClaimReward,
   };
 };

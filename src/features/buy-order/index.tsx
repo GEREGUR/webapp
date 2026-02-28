@@ -20,7 +20,7 @@ interface BuyOrderDrawerProps {
   lotId: number;
   tonBalance: number;
   orderType: 'instant' | 'regular';
-  defaultRegularTonAmount?: number;
+  currentTonAmount: number;
   settings?: OrderSettings;
   onClose: () => void;
 }
@@ -30,7 +30,7 @@ export const BuyOrderDrawer = ({
   lotId,
   tonBalance,
   orderType,
-  defaultRegularTonAmount,
+  currentTonAmount,
   settings,
   onClose,
 }: BuyOrderDrawerProps) => {
@@ -43,7 +43,7 @@ export const BuyOrderDrawer = ({
   };
 
   const handleMaxClick = () => {
-    const maxTon = Math.min(tonBalance, defaultRegularTonAmount ?? 0);
+    const maxTon = Math.min(tonBalance, currentTonAmount ?? 0);
     setRegularTonAmount(String(maxTon));
   };
 
@@ -74,10 +74,10 @@ export const BuyOrderDrawer = ({
 
   const isValid =
     orderType === 'instant'
-      ? false
+      ? Number(regularTonAmount) > 0 && Number(currentTonAmount) <= tonBalance
       : Number(regularTonAmount) > 0 &&
         Number(regularTonAmount) <= tonBalance &&
-        Number(regularTonAmount) <= Number(defaultRegularTonAmount);
+        Number(regularTonAmount) <= Number(currentTonAmount);
 
   const isSubmitting = buyOrderMutation.isPending;
 
@@ -128,16 +128,24 @@ export const BuyOrderDrawer = ({
             <div>
               <div className="mb-0 flex items-center justify-between">
                 <div className="flex w-full items-center justify-between gap-2">
-                  <span className="font-sans text-[16.72px] leading-[18.39px] font-light text-white">
+                  {/*TODO: refactor */}
+                  <span
+                    className={cn(
+                      'font-sans text-[16.72px] leading-[18.39px] font-light text-white',
+                      { 'my-1': orderType === 'instant' }
+                    )}
+                  >
                     {orderType === 'regular' ? 'Вы получите' : 'Получите обычным выкупом'}
                   </span>
-                  <div className="flex items-center gap-1 px-2 py-0.5 font-sans">
-                    <TonIcon className="size-3.5 text-white" />
-                    <span className="text-[17px] font-[500] text-white">1</span>
-                    <span className="mx-3 text-[17px] text-white">=</span>
-                    <BpPointsIcon className="size-4" />
-                    <span className="text-[17px] font-[500] text-white">1</span>
-                  </div>
+                  {orderType === 'regular' && (
+                    <div className="flex items-center gap-1 px-2 py-0.5 font-sans">
+                      <TonIcon className="size-3.5 text-white" />
+                      <span className="text-[17px] font-[500] text-white">1</span>
+                      <span className="mx-3 text-[17px] text-white">=</span>
+                      <BpPointsIcon className="size-4" />
+                      <span className="text-[17px] font-[500] text-white">1</span>
+                    </div>
+                  )}
                 </div>
               </div>
               <div className="relative">
@@ -151,7 +159,7 @@ export const BuyOrderDrawer = ({
                       inputMode="decimal"
                       value={regularTonAmount}
                       onChange={(e) => handleRegularTonChange(e.target.value)}
-                      placeholder={`Не более ${defaultRegularTonAmount}`}
+                      placeholder={`Не более ${currentTonAmount}`}
                       className="h-[40px] rounded-[10px] bg-[#232027] pr-10 pl-12 text-center text-[20px] text-white placeholder:text-white/40 focus:placeholder:text-transparent"
                     />
                     <Button
@@ -165,9 +173,14 @@ export const BuyOrderDrawer = ({
                     </Button>
                   </>
                 ) : (
-                  <div className="flex h-14 items-center justify-center rounded-[10px] bg-[#232027] pr-4 pl-12">
+                  <div
+                    className={cn(
+                      'flex h-[40px] items-center justify-center rounded-[10px] bg-[#232027] pr-10 pl-12',
+                      orderType === 'instant' && 'pointer-events-none'
+                    )}
+                  >
                     <span className="text-center text-[20px] text-white">
-                      {defaultRegularTonAmount}
+                      {currentTonAmount}
                     </span>
                   </div>
                 )}
@@ -201,8 +214,8 @@ export const BuyOrderDrawer = ({
                   <span className="text-center text-[20px] text-[#A6FF8B]">
                     {orderType === 'regular'
                       ? Number(regularTonAmount) * settings.rate
-                      : Number(defaultRegularTonAmount) -
-                        Number(defaultRegularTonAmount) * settings?.fee_self_buy}
+                      : Number(currentTonAmount) -
+                        Number(currentTonAmount) * (settings?.fee_self_buy / 100)}
                   </span>
                 </div>
               </div>

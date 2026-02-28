@@ -2,12 +2,33 @@ import { Button } from '@/shared/ui/button';
 import { type FC } from 'react';
 import { Page } from '../page';
 import { useNavigate } from 'react-router-dom';
+import { useProfile, useSetInstruction } from '@/entities/user';
+import { useToast } from '@/shared/ui/toast';
 
 export const FaqPage: FC = () => {
   const navigate = useNavigate();
+  const { data: profile } = useProfile();
+  const setInstruction = useSetInstruction();
+  const { showToast } = useToast();
+  const hasCheckedInstruction = Boolean(profile?.is_checked_instruction);
+  const isSubmitting = setInstruction.isPending;
+
+  const handleContinue = async () => {
+    if (hasCheckedInstruction) {
+      void navigate('/');
+      return;
+    }
+
+    try {
+      await setInstruction.mutateAsync();
+      void navigate('/');
+    } catch {
+      showToast('Не удалось обновить инструкцию', 'error');
+    }
+  };
 
   return (
-    <Page back>
+    <Page back={hasCheckedInstruction}>
       <section className="app-dots-background flex h-[100dvh] w-full flex-col items-start justify-between overflow-hidden bg-black px-6">
         <div className="relative z-10 w-full max-w-lg py-20">
           <h1 className="font-sf-pro-display text-left text-[32px] leading-[36px] font-[510] text-white">
@@ -29,7 +50,8 @@ export const FaqPage: FC = () => {
         <Button
           className="relative z-10 mb-24 h-[50px] w-[214px] self-center"
           variant="accent"
-          onClick={() => navigate('/')}
+          disabled={isSubmitting}
+          onClick={() => void handleContinue()}
         >
           Далее
         </Button>

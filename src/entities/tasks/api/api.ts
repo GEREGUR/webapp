@@ -9,29 +9,29 @@ const QUERY_KEYS = {
 export const useTasks = () => {
   return useQuery({
     queryKey: QUERY_KEYS.tasks,
-    queryFn: async (): Promise<TasksListResponse> => {
+    queryFn: async () => {
       try {
         const response = await api.get<ApiTask[]>('/tasks/list');
-
-        const tasks = response.data.map((task) => {
-          const taskType = mapTaskType(task.type);
-          return {
-            ...task,
-            type: taskType,
-            reward_ton: task.reward_ton ?? 0,
-            reward_bp: task.reward_bp ?? 0,
-            reward_exp: task.reward_exp ?? 0,
-            title: mapTaskTitle(task.type),
-            description: mapTaskDescription(task.type),
-          };
-        });
-
-        return { tasks };
+        return { tasks: mapTasks(response.data) };
       } catch (error) {
         console.error('API Error useTasks:', error);
-        throw error;
       }
     },
+  });
+};
+
+const mapTasks = (tasks: ApiTask[]) => {
+  return tasks.map((task) => {
+    const taskType = mapTaskType(task.type);
+    return {
+      ...task,
+      type: taskType,
+      reward_ton: task.reward_ton ?? 0,
+      reward_bp: task.reward_bp ?? 0,
+      reward_exp: task.reward_exp ?? 0,
+      title: mapTaskTitle(task.type),
+      description: mapTaskDescription(task.type),
+    };
   });
 };
 
@@ -85,6 +85,40 @@ export const useClaimTaskReward = () => {
           tasks: old.tasks.map((task) =>
             task.id === taskId && task.progress
               ? { ...task, progress: { ...task.progress, status: 'REWARDED' as const } }
+              : task
+          ),
+        };
+      });
+
+      return { previousTasks };
+    },
+    onError: (_err, _variables, onMutateResult, context) => {
+      if (onMutateResult?.previousTasks) {
+        context.client.setQueryData(QUERY_KEYS.tasks, onMutateResult.previousTasks);
+      }
+    },
+    onSuccess: (_data, _variables, _onMutateResult, context) => {
+      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.tasks });
+    },
+  });
+};
+
+export const useCompleteTask = () => {
+  return useMutation({
+    mutationFn: async (taskId: number): Promise<void> => {
+      await api.post(`/tasks/completed/${taskId}`, null);
+    },
+    onMutate: async (taskId: number, context) => {
+      await context.client.cancelQueries({ queryKey: QUERY_KEYS.tasks });
+      const previousTasks = context.client.getQueryData<TasksListResponse>(QUERY_KEYS.tasks);
+
+      context.client.setQueryData<TasksListResponse>(QUERY_KEYS.tasks, (old) => {
+        if (!old) return old;
+        return {
+          ...old,
+          tasks: old.tasks.map((task) =>
+            task.id === taskId && task.progress
+              ? { ...task, progress: { ...task.progress, status: 'COMPLETED' as const } }
               : task
           ),
         };

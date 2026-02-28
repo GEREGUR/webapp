@@ -13,18 +13,16 @@ import LightFour from '@/shared/assets/light-4.svg';
 interface BattlePassPromoCardProps {
   isActive?: boolean;
   onActivate?: () => void;
-  onBattlePassPage?: boolean;
   onOpenOverlay?: () => void;
 }
 
 export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({
   isActive = false,
   onActivate,
-  onBattlePassPage = false,
   onOpenOverlay,
 }) => {
   const handleButtonClick = () => {
-    if (onBattlePassPage && isActive) {
+    if (isActive && onOpenOverlay) {
       onOpenOverlay?.();
       return;
     }

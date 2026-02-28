@@ -21,11 +21,23 @@ export const BattlePassProgress: FC<BattlePassProgressProps> = ({
   currentExp,
   className,
 }) => {
+  const hasReachedFirstLevel = currentLevel > 0;
+
   return (
     <div className={cn('flex flex-col gap-px', className)}>
       <div className="flex justify-between">
-        <span className={cn(LEVEL_STYLES, 'text-blue-bp')}>LVL {currentLevel}</span>
-        <span className={cn(LEVEL_STYLES, 'text-blue-bp')}>LVL {nextLevel}</span>
+        <span
+          className={cn(
+            LEVEL_STYLES,
+            'text-blue-bp',
+            hasReachedFirstLevel ? 'opacity-100' : 'opacity-0'
+          )}
+        >
+          LVL {hasReachedFirstLevel ? currentLevel : 1}
+        </span>
+        <span className={cn(LEVEL_STYLES, 'text-blue-bp')}>
+          LVL {hasReachedFirstLevel ? nextLevel : 1}
+        </span>
       </div>
 
       <div className="relative">

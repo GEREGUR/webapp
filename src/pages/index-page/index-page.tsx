@@ -13,6 +13,7 @@ import { BumpOrdersButton } from '@/features/bump-orders-button';
 import { useMarket } from '@/entities/market';
 import { useProfile } from '@/entities/user';
 import { Loader } from '@/shared/ui/spinner';
+import { Navigate } from 'react-router-dom';
 
 const INITIAL_ORDERS_COUNT = 4;
 
@@ -23,8 +24,8 @@ export const IndexPage = () => {
   const [sliderValue, setSliderValue] = useState(1);
   const [showAllOrders, setShowAllOrders] = useState(false);
   const { data: orders, isLoading: ordersLoading } = useOrders();
-  const { orders: marketOrders, stats, isLoading: marketLoading } = useMarket();
-  const { data: profile } = useProfile();
+  const { orders: marketOrders, stats, isLoading: marketLoading, setMinTonFilter } = useMarket();
+  const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: orderSettings } = useOrderSettings();
 
   const bpBalance = profile?.internal_balance ?? 0;
@@ -46,6 +47,21 @@ export const IndexPage = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [handleScroll]);
 
+  //TODO: remove
+  if (profileLoading && import.meta.env.DEV) {
+    return (
+      <div className="px-4 py-8">
+        <Card>
+          <Loader size="sm" />
+        </Card>
+      </div>
+    );
+  }
+
+  if (profile && !profile.is_checked_instruction && !import.meta.env.DEV) {
+    return <Navigate to="/faq" replace />;
+  }
+
   return (
     <Tabs defaultTab="market" onTabChange={() => setShowAllOrders(false)}>
       <div className="pt-6">
@@ -66,7 +82,7 @@ export const IndexPage = () => {
           <LiveCarousel>{(item) => <LiveWinCard {...item} />}</LiveCarousel>
         </MaxWidthWrapper>
 
-        <div className="px-4 md:px-12">
+        <div className="px-4">
           <div className="my-2">
             <MarketStatsBar
               tonAmount={stats?.total_ton ?? 0}
@@ -77,7 +93,8 @@ export const IndexPage = () => {
             <TonAmountCard
               value={sliderValue}
               onChange={setSliderValue}
-              tonAmount={String(sliderValue * 10)}
+              tonAmount={sliderValue}
+              onFilterChange={setMinTonFilter}
               className="flex-1"
             />
           </div>
@@ -140,7 +157,7 @@ export const IndexPage = () => {
             <TonAmountCard
               value={sliderValue}
               onChange={setSliderValue}
-              tonAmount={String(sliderValue * 10)}
+              tonAmount={sliderValue}
               className="flex-1"
             />
 
@@ -176,7 +193,7 @@ export const IndexPage = () => {
           tonBalance={profile?.ton_balance ?? 0}
           lotId={selectedOrder.id}
           orderType={selectedOrder.type}
-          defaultRegularTonAmount={selectedOrder.current_ton_amount}
+          currentTonAmount={selectedOrder.current_ton_amount}
           settings={orderSettings}
           onClose={() => setSelectedOrder(null)}
         />

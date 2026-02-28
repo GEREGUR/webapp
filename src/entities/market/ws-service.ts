@@ -35,6 +35,7 @@ class MarketWebSocketService {
   private reconnectAttempts = 0;
   private wsUrl: string | null = null;
   private isReconnecting = false;
+  private minTonFilter = 0;
 
   private orders$ = this.state$.pipe(
     map((state) => state.orders),
@@ -132,6 +133,7 @@ class MarketWebSocketService {
           console.log('[MarketWsService] WebSocket connected!');
           this.reconnectAttempts = 0;
           this.updateState({ isConnected: true });
+          this.sendFilterUpdate(this.minTonFilter);
         },
       },
       closeObserver: {
@@ -267,6 +269,25 @@ class MarketWebSocketService {
       isLoading: false,
       isConnected: false,
     });
+  }
+
+  setMinTonFilter(minTon: number): void {
+    const normalizedMinTon = Number.isFinite(minTon) ? Math.max(0, minTon) : 0;
+    this.minTonFilter = normalizedMinTon;
+    this.sendFilterUpdate(normalizedMinTon);
+  }
+
+  private sendFilterUpdate(minTon: number): void {
+    if (!this.socket$ || !this.state$.value.isConnected) {
+      return;
+    }
+
+    this.socket$.next(
+      JSON.stringify({
+        type: 'update_filter',
+        min_ton: minTon,
+      })
+    );
   }
 
   private updateState(partial: Partial<MarketState>): void {

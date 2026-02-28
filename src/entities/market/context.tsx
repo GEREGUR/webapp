@@ -8,6 +8,7 @@ interface MarketContextValue {
   orders: WsOrder[];
   stats: WsStats | null;
   isLoading: boolean;
+  setMinTonFilter: (minTon: number) => void;
 }
 
 const MarketContext = createContext<MarketContextValue | null>(null);
@@ -30,6 +31,7 @@ export const MarketProvider: FC<MarketProviderProps> = ({ children }) => {
     orders: [],
     stats: null,
     isLoading: true,
+    setMinTonFilter: marketWsService.setMinTonFilter.bind(marketWsService),
   });
 
   useEffect(() => {

@@ -25,8 +25,8 @@ const OrderTimer = ({ timestamp }: OrderTimerProps) => {
   }, []);
 
   const normalizedTimestamp = timestamp < 1_000_000_000_000 ? timestamp * 1000 : timestamp;
-  const diff = Date.now() - normalizedTimestamp;
-  const seconds = Math.floor(diff / 1000);
+  const elapsedMs = Math.max(0, Date.now() - normalizedTimestamp);
+  const seconds = Math.floor(elapsedMs / 1000);
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(minutes / 60);
   const days = Math.floor(hours / 24);
@@ -92,24 +92,27 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
 
 interface OrderListProps {
   orders: Order[];
+  listRef?: React.RefObject<HTMLDivElement | null>;
   onBuy?: (order: Order) => void;
   isBuying?: boolean;
 }
 
-export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
-  const parentRef = useRef<HTMLDivElement>(null);
+export const OrderList = ({ orders, onBuy, isBuying, listRef }: OrderListProps) => {
   const rowHeight = 66;
   const rowGap = 10;
+  const localRef = useRef<HTMLDivElement>(null);
+
+  console.log(localRef.current, listRef?.current, 'why');
 
   const virtualizer = useVirtualizer({
     count: orders.length,
-    getScrollElement: () => parentRef.current,
+    getScrollElement: () => listRef?.current ?? localRef.current,
     estimateSize: () => rowHeight + rowGap,
     overscan: 5,
   });
 
   return (
-    <div ref={parentRef} className="h-fit w-full overflow-auto">
+    <div ref={listRef ?? localRef} className="h-fit w-full overflow-auto">
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,

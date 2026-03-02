@@ -15,28 +15,40 @@ import { useProfile } from '@/entities/user';
 import { Loader } from '@/shared/ui/spinner';
 import { Navigate } from 'react-router-dom';
 
-const INITIAL_ORDERS_COUNT = 4;
-
 export const IndexPage = () => {
   const [selectedOrder, setSelectedOrder] = useState<
     (Order & { type: 'regular' | 'instant' }) | null
   >(null);
-  const [sliderValue, setSliderValue] = useState(1);
+  const [marketSliderValue, setMarketSliderValue] = useState(1);
+  const [ordersSliderValue, setOrdersSliderValue] = useState(1);
   const [showAllOrders, setShowAllOrders] = useState(false);
   const { data: orders, isLoading: ordersLoading } = useOrders();
   const { orders: marketOrders, stats, isLoading: marketLoading, setMinTonFilter } = useMarket();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: orderSettings } = useOrderSettings();
 
+  const [initialOrdersCount] = useState(() => {
+    const viewportHeight = window.innerHeight;
+
+    if (viewportHeight < 700) return 2;
+    if (viewportHeight < 900) return 3;
+    return 7;
+  });
+
   const bpBalance = profile?.internal_balance ?? 0;
-  const currentRate = orderSettings ? (100 - orderSettings.fee_self_buy) / 100 : 0.85;
 
   const handleScroll = useCallback(() => {
+    const active = document.activeElement;
+
+    const isInputFocused = active instanceof HTMLInputElement;
+
+    if (isInputFocused) return;
+
     setShowAllOrders(window.scrollY > 10);
   }, []);
 
   const displayedOrders =
-    orders?.slice(0, showAllOrders ? orders.length : INITIAL_ORDERS_COUNT) ?? [];
+    orders?.slice(0, showAllOrders ? orders.length : initialOrdersCount) ?? [];
 
   const handleOrderBuy = (order: Order, type: 'regular' | 'instant') => {
     setSelectedOrder({ ...order, type });
@@ -91,9 +103,9 @@ export const IndexPage = () => {
           </div>
           <div className="mb-3 flex items-center justify-between gap-2.5">
             <TonAmountCard
-              value={sliderValue}
-              onChange={setSliderValue}
-              tonAmount={sliderValue}
+              value={marketSliderValue}
+              onChange={setMarketSliderValue}
+              tonAmount={marketSliderValue}
               onFilterChange={setMinTonFilter}
               className="flex-1"
             />
@@ -106,25 +118,26 @@ export const IndexPage = () => {
         ) : marketOrders && marketOrders.length > 0 ? (
           <>
             <OrderList
-              orders={marketOrders.slice(0, INITIAL_ORDERS_COUNT)}
+              orders={marketOrders.slice(0, initialOrdersCount)}
               onBuy={(order) => handleOrderBuy(order, 'regular')}
             />
             <AnimatePresence>
-              {showAllOrders && marketOrders.length > INITIAL_ORDERS_COUNT && (
+              {showAllOrders && marketOrders.length > initialOrdersCount && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
                   transition={{ duration: 0.3 }}
+                  className="pb-13"
                 >
                   <OrderList
-                    orders={marketOrders.slice(INITIAL_ORDERS_COUNT)}
+                    orders={marketOrders.slice(4)}
                     onBuy={(order) => handleOrderBuy(order, 'regular')}
                   />
                 </motion.div>
               )}
             </AnimatePresence>
-            {marketOrders.length > INITIAL_ORDERS_COUNT && (
+            {marketOrders.length > initialOrdersCount && (
               <AnimatePresence>
                 {!showAllOrders && (
                   <motion.div
@@ -132,9 +145,9 @@ export const IndexPage = () => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 20 }}
                     transition={{ duration: 0.3 }}
-                    className="px-4 pb-4"
+                    className="px-4 pb-14"
                   >
-                    <CreateOrderButton bpBalance={bpBalance} currentRate={currentRate} />
+                    <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -146,7 +159,7 @@ export const IndexPage = () => {
             <Card className="mx-4">
               <p className="text-center text-white/60">Нет ордеров</p>
             </Card>
-            <CreateOrderButton bpBalance={bpBalance} currentRate={currentRate} />
+            <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
           </>
         )}
       </TabPanel>
@@ -155,9 +168,9 @@ export const IndexPage = () => {
         <div className="px-4 md:px-12">
           <div className="mt-2 mb-3 flex items-center justify-between gap-4">
             <TonAmountCard
-              value={sliderValue}
-              onChange={setSliderValue}
-              tonAmount={sliderValue}
+              value={ordersSliderValue}
+              onChange={setOrdersSliderValue}
+              tonAmount={ordersSliderValue}
               className="flex-1"
             />
 
@@ -174,11 +187,6 @@ export const IndexPage = () => {
               orders={displayedOrders}
               onBuy={(order) => handleOrderBuy(order, 'instant')}
             />
-            {!showAllOrders && orders.length > INITIAL_ORDERS_COUNT && (
-              <div className="px-4 pb-4">
-                <CreateOrderButton bpBalance={bpBalance} currentRate={currentRate} />
-              </div>
-            )}
           </div>
         ) : (
           <Card className="mx-4">

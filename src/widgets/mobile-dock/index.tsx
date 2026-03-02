@@ -41,7 +41,7 @@ export const MobileDock: FC<MobileDockProps> = ({ buttons }) => {
 
   return (
     <div
-      className={`fixed right-0 bottom-0 left-0 z-[9999] flex justify-center border-t border-white/20 bg-black/80 backdrop-blur-lg transition-transform duration-300 ${
+      className={`fixed right-0 bottom-0 left-0 z-[9999] flex justify-center border-t border-white/20 bg-black transition-transform duration-300 ${
         visible ? 'translate-y-0' : 'translate-y-full'
       }`}
     >

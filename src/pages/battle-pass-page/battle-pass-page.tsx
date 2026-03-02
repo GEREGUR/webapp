@@ -9,7 +9,6 @@ import {
   mapBattlePassReward,
   type BattlePassRewardUI,
 } from '@/entities/battle-pass';
-import type { BattlePassResponse } from '@/entities/battle-pass/api/api.dto';
 import BpPointsIcon from '@/shared/assets/bp-points.svg?react';
 import CheckmarkIcon from '@/shared/assets/checkmark.svg?react';
 import TonIcon from '@/shared/assets/ton.svg?react';
@@ -19,89 +18,7 @@ import PepeGiftIcon from '@/shared/assets/pepe-gift.png';
 import { useToast } from '@/shared/ui/toast';
 import { Loader } from '@/shared/ui/spinner';
 import { X } from 'lucide-react';
-import { useProfile, type UserProfile } from '@/entities/user';
-
-const MOCK_BATTLE_PASS_DATA: BattlePassResponse = {
-  level: 4,
-  exp: 420,
-  progress: 84,
-  is_active: true,
-  rewards: [
-    {
-      id: 101,
-      level: 1,
-      type: 'BP',
-      count: 100,
-      title: 'BP Points',
-      is_claimed: true,
-      is_available: true,
-      type_reward: '',
-    },
-    {
-      id: 102,
-      level: 2,
-      type: 'TON',
-      count: 1,
-      title: 'TON Reward',
-      is_claimed: true,
-      is_available: true,
-      type_reward: '',
-    },
-    {
-      id: 103,
-      level: 3,
-      type: 'BP',
-      count: 250,
-      title: 'BP Points',
-      is_claimed: false,
-      is_available: true,
-      type_reward: '',
-    },
-    {
-      id: 104,
-      level: 4,
-      type: 'TON',
-      count: 3,
-      title: 'TON Reward',
-      is_claimed: false,
-      is_available: true,
-      type_reward: '',
-    },
-    {
-      id: 105,
-      level: 5,
-      type: 'BP',
-      count: 500,
-      title: 'BP Points',
-      is_claimed: false,
-      is_available: false,
-      type_reward: '',
-    },
-    {
-      id: 106,
-      level: 6,
-      type: 'TON',
-      count: 5,
-      title: 'TON Reward',
-      is_claimed: false,
-      is_available: false,
-      type_reward: '',
-    },
-  ],
-};
-
-const MOCK_USER_PROFILE: UserProfile = {
-  id: 777,
-  internal_balance: 2500,
-  ton_balance: 12.5,
-  wallet_address: 'UQBKvZmXMockWalletAddress0123456789',
-  referral_earn: 42,
-  is_checked_instruction: true,
-  name: 'Mock Player',
-  username: 'mock_player',
-  avatar: '',
-};
-
+import { useProfile } from '@/entities/user';
 const isValidUrl = (url: unknown): url is string => {
   return typeof url === 'string' && url.length > 0;
 };
@@ -124,24 +41,22 @@ const RewardCard: FC<{
       );
     }
 
-    if (reward.rewardType === 'ton') {
+    if (reward.rewardType === 'TON') {
       return <TonIcon className="h-[100px] w-[100px]" />;
     }
 
     return <BpPointsIcon className="text-secondary h-[100px] w-[100px]" />;
   };
 
-  console.log(index, currentLevel);
-
   return (
     <div
       className={cn(
-        'bg-card-dark relative flex min-h-[219px] w-full flex-col rounded-[12px] border-[1px] p-[10px]',
+        'bg-card-dark relative flex min-h-[219px] w-full flex-col rounded-[12px] border-[1.4px] p-[10px]',
         { 'border-green-bp': reward.isCompleted },
         index + 1 <= currentLevel ? 'border-blue-bp' : 'border-white/20'
       )}
     >
-      <div className="bg-blue-bp absolute top-0 left-0 flex h-[38px] w-[38px] items-center justify-center rounded-[12px] p-[8px]">
+      <div className="bg-blue-bp absolute -top-[0.3px] -left-[0.3px] flex h-[38px] w-[38px] items-center justify-center rounded-[12px] p-[8px]">
         <span className="text-[29px] leading-[16.71px] font-normal text-white">{index + 1}</span>
       </div>
 
@@ -152,10 +67,12 @@ const RewardCard: FC<{
 
         <div className="mt-[10px] flex items-center justify-between">
           <span className="text-[14px] leading-[16.71px] font-medium text-white">
-            LVL {reward.level}
+            X{reward.level}
           </span>
-          <span className="text-[14px] leading-[16.71px] font-medium text-white">
-            {reward.rewardType === 'ton' ? 'TON' : 'BP'}
+          <span
+            className={`text-[14px] leading-[16.71px] font-medium text-white ${reward.rewardType === 'TON' || reward.rewardType === 'BP' ? 'uppercase' : 'capitalize'}`}
+          >
+            {reward.rewardType}
           </span>
         </div>
 
@@ -268,7 +185,7 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, rewards, onClose }) => {
                         alt="Reward"
                         className="h-[34px] w-[34px] object-contain"
                       />
-                    ) : reward.rewardType === 'ton' ? (
+                    ) : reward.rewardType === 'TON' ? (
                       <TonIcon className="h-[34px] w-[34px]" />
                     ) : (
                       <BpPointsIcon className="h-[34px] w-[34px]" />
@@ -297,17 +214,14 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, rewards, onClose }) => {
 };
 
 export const BattlePassPage: FC = () => {
-  const { data, isLoading, isError } = useBattlePass();
-  const { data: profileData } = useProfile();
+  const { data: battlePassData, isLoading, isError } = useBattlePass();
+  const { data: profile } = useProfile();
   const claimReward = useClaimBattlePassReward();
   const activateBattlePass = useActivateBattlePass();
   const { showToast } = useToast();
   const [claimedRewardIds, setClaimedRewardIds] = useState<number[]>([]);
   const [isPromoOverlayOpen, setIsPromoOverlayOpen] = useState(false);
-  const shouldUseMocks = import.meta.env.DEV;
 
-  const battlePassData = shouldUseMocks ? MOCK_BATTLE_PASS_DATA : data;
-  const profile = shouldUseMocks ? MOCK_USER_PROFILE : profileData;
   const isBpActive = !isError && Boolean(battlePassData?.is_active);
 
   const rewards = useMemo(() => {

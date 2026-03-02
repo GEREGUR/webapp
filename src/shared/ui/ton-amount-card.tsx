@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { cn } from '@/shared/lib/utils';
 import TonIcon from '@/shared/assets/ton.svg?react';
 
@@ -10,8 +10,8 @@ type AmountSliderProps = {
   className?: string;
 };
 
-const STEPS = [1, 150, 350, 500, 650, 850, 1000];
-const MIN = 1;
+const STEPS = [0, 150, 350, 500, 650, 850, 1000];
+const MIN = 0;
 const MAX = 1000;
 
 const AmountSlider = ({ value, onChange, className }: AmountSliderProps) => {
@@ -87,9 +87,15 @@ export const TonAmountCard = ({
   filterDebounceMs = 300,
 }: TonAmountCardProps) => {
   const sliderValue = Math.max(1, Math.min(1000, value));
+  const isFirstRender = useRef(true);
 
   useEffect(() => {
     if (!onFilterChange) {
+      return;
+    }
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
       return;
     }
 

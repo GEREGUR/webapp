@@ -25,6 +25,7 @@ dist-ssr
 
 *.pem
 .env
+.env.production
 
 swagger.json
 .vercel

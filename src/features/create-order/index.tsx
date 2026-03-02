@@ -11,7 +11,7 @@ import {
 } from '@/shared/ui/drawer';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
-import { useCreateOrder } from '@/entities/order';
+import { OrderSettings, useCreateOrder } from '@/entities/order';
 import { parseNumberInput } from '@/shared/lib/utils';
 import BpIcon from '@/shared/assets/bp.svg?react';
 import TonIcon from '@/shared/assets/ton.svg?react';
@@ -20,32 +20,27 @@ import Arrow from '@/shared/assets/arrow.svg?react';
 interface CreateOrderModalProps {
   open: boolean;
   bpBalance: number;
-  currentRate: number;
+  settings: OrderSettings;
   onClose: () => void;
 }
 
-const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) => {
+const CreateOrderModal = ({ open, bpBalance, onClose, settings }: CreateOrderModalProps) => {
   const createOrderMutation = useCreateOrder();
   const [bpAmount, setBpAmount] = useState('');
-  const [tonAmount, setTonAmount] = useState('');
 
   useEffect(() => {
     if (!open) {
       setBpAmount('');
-      setTonAmount('');
     }
   }, [open]);
 
   const handleBpAmountChange = (value: string) => {
     const parsedValue = parseNumberInput(value);
-    const numValue = Number(parsedValue) || 0;
     setBpAmount(parsedValue);
-    setTonAmount(String(numValue * 0.2));
   };
 
   const handleMaxClick = () => {
     setBpAmount(String(Math.floor(bpBalance)));
-    setTonAmount(String(Math.floor(bpBalance) * 0.2));
   };
 
   const handleSubmit = () => {
@@ -58,7 +53,6 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
       {
         onSuccess: () => {
           setBpAmount('');
-          setTonAmount('');
           onClose();
         },
       }
@@ -67,7 +61,6 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
 
   const handleClose = () => {
     setBpAmount('');
-    setTonAmount('');
     onClose();
   };
 
@@ -99,13 +92,19 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
         </DrawerHeader>
 
         <div className="space-y-4 px-[20px] pb-[35px]">
-          <div className="grid grid-cols-1 gap-1">
-            <div className="relative">
+          <div className="relative">
+            <div>
               <div className="mb-2 flex items-center justify-between">
                 <span className="font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
                   Введите количество BP
                 </span>
-                <span className="text-xs text-white/60">Доступно: {bpBalance} BP</span>
+                <div className="flex items-center gap-1 px-2 py-0.5 font-sans">
+                  <TonIcon className="size-3.5 text-white" />
+                  <span className="text-[17px] font-[500] text-white">1</span>
+                  <span className="mx-3 text-[17px] text-white">=</span>
+                  <BpIcon className="size-4 text-[#C37CE2]" />
+                  <span className="text-[17px] font-[500] text-white">{settings.rate}</span>
+                </div>
               </div>
               <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -131,11 +130,9 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
               </div>
             </div>
 
-            <div className="mt-2 flex items-center justify-center pr-1">
-              <Arrow className="rotate-180" />
-            </div>
+            <Arrow className="absolute top-[calc(50%+20px)] left-[calc(50%-5px)] -translate-x-1/2 -translate-y-1/2 rotate-180" />
 
-            <div className="relative">
+            <div className="mt-4">
               <span className="mb-2 block font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
                 Получите TON
               </span>
@@ -143,12 +140,11 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <TonIcon className="size-5 text-white" />
                 </div>
-                <Input
-                  value={Number(tonAmount).toFixed(3)}
-                  placeholder="0"
-                  disabled
-                  className="rounded-[10px] bg-[#232027] pr-10 pl-10 text-center text-white placeholder:text-white/40 focus:placeholder:text-transparent"
-                />
+                <div className="flex h-[40px] items-center justify-center rounded-[10px] bg-[#232027] pr-10 pl-10">
+                  <span className="text-center text-[20px] text-[#A6FF8B]">
+                    {(Number(bpAmount) / settings.rate).toFixed(3)}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -186,10 +182,10 @@ const CreateOrderModal = ({ open, bpBalance, onClose }: CreateOrderModalProps) =
 
 interface CreateOrderButtonProps {
   bpBalance: number;
-  currentRate: number;
+  settings: OrderSettings | undefined;
 }
 
-export const CreateOrderButton = ({ bpBalance, currentRate }: CreateOrderButtonProps) => {
+export const CreateOrderButton = ({ bpBalance, settings }: CreateOrderButtonProps) => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -212,6 +208,10 @@ export const CreateOrderButton = ({ bpBalance, currentRate }: CreateOrderButtonP
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  if (!settings) {
+    return null;
+  }
+
   return (
     <LazyMotion features={domAnimation}>
       <m.div
@@ -230,7 +230,7 @@ export const CreateOrderButton = ({ bpBalance, currentRate }: CreateOrderButtonP
       <CreateOrderModal
         open={open}
         bpBalance={bpBalance}
-        currentRate={currentRate}
+        settings={settings}
         onClose={() => setOpen(false)}
       />
     </LazyMotion>

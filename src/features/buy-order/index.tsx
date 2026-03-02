@@ -135,7 +135,9 @@ export const BuyOrderDrawer = ({
                       { 'my-1': orderType === 'instant' }
                     )}
                   >
-                    {orderType === 'regular' ? 'Вы получите' : 'Получите обычным выкупом'}
+                    {orderType === 'regular'
+                      ? 'Введите количество TON'
+                      : 'Получите обычным выкупом'}
                   </span>
                   {orderType === 'regular' && (
                     <div className="flex items-center gap-1 px-2 py-0.5 font-sans">
@@ -143,7 +145,7 @@ export const BuyOrderDrawer = ({
                       <span className="text-[17px] font-[500] text-white">1</span>
                       <span className="mx-3 text-[17px] text-white">=</span>
                       <BpPointsIcon className="size-4" />
-                      <span className="text-[17px] font-[500] text-white">1</span>
+                      <span className="text-[17px] font-[500] text-white">{settings.rate}</span>
                     </div>
                   )}
                 </div>
@@ -179,9 +181,7 @@ export const BuyOrderDrawer = ({
                       orderType === 'instant' && 'pointer-events-none'
                     )}
                   >
-                    <span className="text-center text-[20px] text-white">
-                      {currentTonAmount}
-                    </span>
+                    <span className="text-center text-[20px] text-white">{currentTonAmount}</span>
                   </div>
                 )}
               </div>

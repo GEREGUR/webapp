@@ -2,6 +2,7 @@ import { type FC, type ReactNode, useEffect, useState } from 'react';
 import { createContext, useContext } from 'react';
 import { marketWsService } from './ws-service';
 import type { DropItem, WsOrder, WsStats } from './types';
+import { useToast } from '@/shared/ui/toast';
 
 interface MarketContextValue {
   items: DropItem[];
@@ -26,6 +27,7 @@ interface MarketProviderProps {
 }
 
 export const MarketProvider: FC<MarketProviderProps> = ({ children }) => {
+  const { showToast } = useToast();
   const [contextValue, setContextValue] = useState<MarketContextValue>({
     items: [],
     orders: [],
@@ -56,13 +58,22 @@ export const MarketProvider: FC<MarketProviderProps> = ({ children }) => {
         console.log('[MarketContext] isLoading subscription:', isLoading);
         setContextValue((prev) => ({ ...prev, isLoading }));
       }),
+      marketWsService.getEvents().subscribe((event) => {
+        if (event.type === 'success_payment') {
+          showToast(`Пополнение успешно: +${event.data.amount} TON`, 'success');
+        }
+
+        if (event.type === 'success_withdrawal') {
+          showToast(`Вывод успешно обработан: ${event.data.amount} TON`, 'success');
+        }
+      }),
     ];
 
     return () => {
       subscriptions.forEach((sub) => sub.unsubscribe());
       marketWsService.disconnect();
     };
-  }, []);
+  }, [showToast]);
 
   return (
     <MarketContext.Provider value={contextValue}>

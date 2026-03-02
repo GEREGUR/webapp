@@ -26,16 +26,20 @@ const initialState: MarketState = {
   isConnected: false,
   isLoading: true,
 };
+const MAX_LOCAL_ORDERS = 50;
 
 class MarketWebSocketService {
   private state$ = new BehaviorSubject<MarketState>(initialState);
   private destroy$ = new Subject<void>();
-  private socket$: WebSocketSubject<string> | null = null;
+  private socket$: WebSocketSubject<unknown> | null = null;
   private optimisticOrders: OptimisticOrder[] = [];
   private reconnectAttempts = 0;
   private wsUrl: string | null = null;
   private isReconnecting = false;
+  private isManualDisconnect = false;
   private minTonFilter = 0;
+  private connectionId = 0;
+  private allOrders: WsOrder[] = [];
 
   private orders$ = this.state$.pipe(
     map((state) => state.orders),
@@ -94,6 +98,7 @@ class MarketWebSocketService {
 
   connect(): void {
     console.log('[MarketWsService] connect() called');
+    this.isManualDisconnect = false;
     if (this.wsUrl || this.state$.value.isConnected) {
       console.log('[MarketWsService] Already connected/connecting, skipping');
       return;
@@ -125,11 +130,15 @@ class MarketWebSocketService {
     if (!this.wsUrl) return;
 
     console.log('[MarketWsService] Initializing WebSocket...');
+    const currentConnectionId = ++this.connectionId;
 
-    this.socket$ = webSocket<string>({
+    this.socket$ = webSocket<unknown>({
       url: this.wsUrl,
       openObserver: {
         next: () => {
+          if (currentConnectionId !== this.connectionId) {
+            return;
+          }
           console.log('[MarketWsService] WebSocket connected!');
           this.reconnectAttempts = 0;
           this.updateState({ isConnected: true });
@@ -138,8 +147,14 @@ class MarketWebSocketService {
       },
       closeObserver: {
         next: () => {
+          if (currentConnectionId !== this.connectionId) {
+            return;
+          }
           console.log('[MarketWsService] WebSocket closed');
           this.updateState({ isConnected: false });
+          if (this.isManualDisconnect) {
+            return;
+          }
           this.handleReconnect();
         },
       },
@@ -180,8 +195,8 @@ class MarketWebSocketService {
         const historyItems = (event.data.history ?? []).map((tx, i) =>
           this.mapTransactionToDropItem(tx, i)
         );
+        this.applyOrders(event.data.orders ?? []);
         this.updateState({
-          orders: event.data.orders ?? [],
           stats: event.data.stats ?? null,
           items: historyItems.slice(0, 5),
           isLoading: false,
@@ -190,19 +205,19 @@ class MarketWebSocketService {
       }
 
       case 'new_order': {
-        const existingOrder = currentState.orders.find((o) => o.id === event.data.id);
+        const existingOrder = this.allOrders.find((o) => o.id === event.data.id);
         if (!existingOrder) {
           const optimisticOrder = this.findOptimisticOrder(event.data.id);
           if (optimisticOrder) {
             this.removeOptimisticOrder(optimisticOrder.tempId);
           }
-          this.updateState({ orders: [event.data, ...currentState.orders] });
+          this.applyOrders([event.data, ...this.allOrders]);
         }
         break;
       }
 
       case 'order_update': {
-        const updatedOrders = currentState.orders.map((order) => {
+        const updatedOrders = this.allOrders.map((order) => {
           if (order.id === event.data.id) {
             return {
               ...order,
@@ -212,11 +227,22 @@ class MarketWebSocketService {
           }
           return order;
         });
-        this.updateState({ orders: updatedOrders });
+
+        this.applyOrders(
+          updatedOrders.filter((order) => {
+            if (order.id !== event.data.id) {
+              return true;
+            }
+            return order.status !== 'CLOSED';
+          })
+        );
         break;
       }
 
       case 'stats_update': {
+        if (event.data.total_orders < this.allOrders.length) {
+          this.applyOrders(this.allOrders.slice(0, event.data.total_orders));
+        }
         this.updateState({ stats: event.data });
         break;
       }
@@ -228,7 +254,11 @@ class MarketWebSocketService {
       }
 
       case 'orders_bump': {
-        this.updateState({ orders: event.data.orders });
+        const bumpedOrders = event.data.orders;
+        const bumpedOrderIds = new Set(bumpedOrders.map((order) => order.id));
+        const remainingOrders = this.allOrders.filter((order) => !bumpedOrderIds.has(order.id));
+
+        this.applyOrders([...bumpedOrders, ...remainingOrders]);
         break;
       }
 
@@ -274,6 +304,7 @@ class MarketWebSocketService {
   setMinTonFilter(minTon: number): void {
     const normalizedMinTon = Number.isFinite(minTon) ? Math.max(0, minTon) : 0;
     this.minTonFilter = normalizedMinTon;
+    this.updateState({ orders: this.filterOrders(this.allOrders) });
     this.sendFilterUpdate(normalizedMinTon);
   }
 
@@ -282,12 +313,10 @@ class MarketWebSocketService {
       return;
     }
 
-    this.socket$.next(
-      JSON.stringify({
-        type: 'update_filter',
-        min_ton: minTon,
-      })
-    );
+    this.socket$.next({
+      type: 'update_filter',
+      min_ton: minTon,
+    });
   }
 
   private updateState(partial: Partial<MarketState>): void {
@@ -299,6 +328,19 @@ class MarketWebSocketService {
       items: this.state$.value.items.length,
       isLoading: this.state$.value.isLoading,
     });
+  }
+
+  private applyOrders(orders: WsOrder[]): void {
+    this.allOrders = orders.slice(0, MAX_LOCAL_ORDERS);
+    this.updateState({ orders: this.filterOrders(this.allOrders) });
+  }
+
+  private filterOrders(orders: WsOrder[]): WsOrder[] {
+    if (this.minTonFilter <= 0) {
+      return orders;
+    }
+
+    return orders.filter((order) => order.current_ton_amount >= this.minTonFilter);
   }
 
   private findOptimisticOrder(orderId: number): OptimisticOrder | undefined {
@@ -350,15 +392,18 @@ class MarketWebSocketService {
   }
 
   disconnect(): void {
+    this.isManualDisconnect = true;
+    this.connectionId++;
     if (this.socket$) {
       this.socket$.complete();
       this.socket$ = null;
     }
     this.destroy$.next();
-    this.destroy$.complete();
     this.wsUrl = null;
     this.reconnectAttempts = 0;
+    this.isReconnecting = false;
     this.optimisticOrders = [];
+    this.allOrders = [];
     this.state$.next(initialState);
   }
 

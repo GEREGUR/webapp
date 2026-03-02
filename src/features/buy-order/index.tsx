@@ -10,7 +10,7 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { cn, parseNumberInput } from '@/shared/lib/utils';
-import { useBuyOrder, type OrderSettings } from '@/entities/order';
+import { useBuyOrder, useSelfBuyOrder, type OrderSettings } from '@/entities/order';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import ArrowIcon from '@/shared/assets/arrow.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points-sm.svg?react';
@@ -35,7 +35,11 @@ export const BuyOrderDrawer = ({
   onClose,
 }: BuyOrderDrawerProps) => {
   const buyOrderMutation = useBuyOrder();
+  const selfBuyOrderMutation = useSelfBuyOrder();
   const [regularTonAmount, setRegularTonAmount] = useState('');
+
+  const isInstant = orderType === 'instant';
+  const currentMutation = isInstant ? selfBuyOrderMutation : buyOrderMutation;
 
   const handleRegularTonChange = (value: string) => {
     const parsedValue = parseNumberInput(value);
@@ -48,6 +52,15 @@ export const BuyOrderDrawer = ({
   };
 
   const handleSubmit = () => {
+    if (isInstant) {
+      selfBuyOrderMutation.mutate(lotId, {
+        onSuccess: () => {
+          onClose();
+        },
+      });
+      return;
+    }
+
     const ton = Number(regularTonAmount);
     if (isNaN(ton) || ton <= 0 || ton > tonBalance) {
       return;
@@ -72,21 +85,19 @@ export const BuyOrderDrawer = ({
     onClose();
   };
 
-  const isValid =
-    orderType === 'instant'
-      ? Number(regularTonAmount) > 0 && Number(currentTonAmount) <= tonBalance
-      : Number(regularTonAmount) > 0 &&
-        Number(regularTonAmount) <= tonBalance &&
-        Number(regularTonAmount) <= Number(currentTonAmount);
+  const isValid = isInstant
+    ? Number(currentTonAmount) <= tonBalance
+    : Number(regularTonAmount) > 0 &&
+      Number(regularTonAmount) <= tonBalance &&
+      Number(regularTonAmount) <= Number(currentTonAmount);
 
-  const isSubmitting = buyOrderMutation.isPending;
+  const isSubmitting = currentMutation.isPending;
 
-  const title = orderType === 'instant' ? `Мгновенный выкуп #${lotId}` : `Покупка ордера #${lotId}`;
+  const title = isInstant ? `Мгновенный выкуп #${lotId}` : `Покупка ордера #${lotId}`;
   const feePercentage = settings?.fee_self_buy ?? 15;
-  const description =
-    orderType === 'instant'
-      ? `После выкупа собственного предложения на ваш баланс будет зачислен TON с удержанием комиссии (${feePercentage}%) за мгновенную ликвидность.`
-      : 'После покупки части или всего предложения на ваш баланс будет зачислена валюта BP с ее помощью вы можете создать собственное предложение.';
+  const description = isInstant
+    ? `После выкупа собственного предложения на ваш баланс будет зачислен TON с удержанием комиссии (${feePercentage}%) за мгновенную ликвидность.`
+    : 'После покупки части или всего предложения на ваш баланс будет зачислена валюта BP с ее помощью вы можете создать собственное предложение.';
 
   useEffect(() => {
     if (!open) {

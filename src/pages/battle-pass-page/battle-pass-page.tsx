@@ -19,6 +19,7 @@ import { useToast } from '@/shared/ui/toast';
 import { Loader } from '@/shared/ui/spinner';
 import { X } from 'lucide-react';
 import { useProfile } from '@/entities/user';
+import { mapRewards } from './lib/utils';
 const isValidUrl = (url: unknown): url is string => {
   return typeof url === 'string' && url.length > 0;
 };
@@ -169,7 +170,7 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, rewards, onClose }) => {
 
           <p className="mt-5 mb-3 text-center text-[26px] font-medium text-white/95">Награды</p>
           <div className="grid grid-cols-3 gap-2.5">
-            {rewards.map((reward) => (
+            {mapRewards(rewards).map((reward) => (
               <div
                 key={reward.id}
                 className={cn(

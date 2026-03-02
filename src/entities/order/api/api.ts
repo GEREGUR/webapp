@@ -96,6 +96,48 @@ export const useBuyOrder = () => {
   });
 };
 
+export const useSelfBuyOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (orderId: number): Promise<void> => {
+      await api.post(`/order/self_buy/${orderId}`, null);
+    },
+    onMutate: async (orderId) => {
+      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.orders });
+
+      const previousOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.orders);
+
+      queryClient.setQueryData<Order[]>(QUERY_KEYS.orders, (old) => {
+        return old?.map((order) => {
+          if (order.id === orderId) {
+            return {
+              ...order,
+              status: 'CLOSED' as const,
+              current_ton_amount: 0,
+            };
+          }
+          return order;
+        });
+      });
+
+      return { previousOrders };
+    },
+    onError: (_err, _variables, context) => {
+      if (context?.previousOrders) {
+        queryClient.setQueryData(QUERY_KEYS.orders, context.previousOrders);
+      }
+
+      void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
+      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
+    },
+  });
+};
+
 export const useBumpOrder = () => {
   const queryClient = useQueryClient();
 
@@ -146,7 +188,7 @@ export const useBumpOrders = () => {
 
   return useMutation({
     mutationFn: async (): Promise<void> => {
-      await api.post('/order/mass_bump', null);
+      await api.post('/order/mass_bump');
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: QUERY_KEYS.orders });

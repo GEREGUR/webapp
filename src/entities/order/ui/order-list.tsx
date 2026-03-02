@@ -11,6 +11,7 @@ interface OrderItemProps {
   order: Order;
   onBuy?: (order: Order) => void;
   isBuying?: boolean;
+  showRatio?: boolean;
 }
 
 const OrderTimer = ({ timestamp }: OrderTimerProps) => {
@@ -51,7 +52,7 @@ const OrderTimer = ({ timestamp }: OrderTimerProps) => {
   return <>{label}</>;
 };
 
-const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
+const OrderItem = ({ order, onBuy, isBuying, showRatio }: OrderItemProps) => {
   return (
     <div className="relative h-[66px] rounded-lg border border-[#5F81D8]/25 bg-[#131214] px-2">
       <div className="absolute inset-y-0 left-2 flex max-w-[calc(100%-200px)] items-center gap-3">
@@ -73,7 +74,7 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
         <div className="flex max-w-full items-center justify-center gap-1.5">
           <TonIcon className="size-4 shrink-0 text-white" />
           <span className="truncate text-center text-xl font-normal text-white">
-            {order.status === 'PARTIAL'
+            {showRatio || order.status === 'PARTIAL'
               ? `${order.current_ton_amount}/${order.initial_ton_amount}`
               : order.current_ton_amount}
           </span>
@@ -96,9 +97,10 @@ interface OrderListProps {
   orders: Order[];
   onBuy?: (order: Order) => void;
   isBuying?: boolean;
+  showRatio?: boolean;
 }
 
-export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
+export const OrderList = ({ orders, onBuy, isBuying, showRatio }: OrderListProps) => {
   const rowHeight = 66;
   const rowGap = 10;
   const localRef = useRef<HTMLDivElement>(null);
@@ -135,7 +137,7 @@ export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
               }}
               className="px-4 pb-2"
             >
-              <OrderItem order={order} onBuy={onBuy} isBuying={isBuying} />
+              <OrderItem order={order} onBuy={onBuy} isBuying={isBuying} showRatio={showRatio} />
             </div>
           );
         })}

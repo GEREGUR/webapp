@@ -26,7 +26,7 @@ export const useActivateBattlePass = () => {
 
   return useMutation({
     mutationFn: async (): Promise<void> => {
-      await api.post('/battle/activate', null);
+      await api.post('/battle/me', null);
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.battlePass });

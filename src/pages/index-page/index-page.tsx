@@ -1,4 +1,5 @@
-//TODO: вот эта я тут насрал...
+//TODO: вот эта я тут насрал... зарефакторить
+import { Navigate } from 'react-router-dom';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Tabs, TabList, Tab, TabPanel } from '@/shared/ui/tabs';
@@ -14,7 +15,6 @@ import { BumpOrdersButton } from '@/features/bump-orders-button';
 import { useMarket } from '@/entities/market';
 import { useProfile } from '@/entities/user';
 import { Loader } from '@/shared/ui/spinner';
-import { Navigate } from 'react-router-dom';
 
 const ORDER_CARD_ESTIMATED_HEIGHT = 76;
 const MARKET_STATIC_CONTENT_HEIGHT = 360;
@@ -260,7 +260,11 @@ export const IndexPage = () => {
           </Card>
         ) : orders && orders.length > 0 ? (
           <div className="flex flex-col justify-center pb-20">
-            <OrderList orders={orders} onBuy={(order) => handleOrderBuy(order, 'instant')} />
+            <OrderList
+              orders={orders}
+              onBuy={(order) => handleOrderBuy(order, 'instant')}
+              showRatio
+            />
             {isFetchingNextPage ? <Loader size="sm" className="animate-spin text-white" /> : null}
             <div ref={loadMoreRef} className="h-10" />
           </div>

@@ -94,6 +94,10 @@ export const ProfilePage: FC = () => {
     });
   };
 
+  const handleOpenBattlePassOverlay = () => {
+    void navigate('/battle-pass');
+  };
+
   if (isLoading) {
     return (
       <Page back>
@@ -132,7 +136,11 @@ export const ProfilePage: FC = () => {
           walletAddress={profile.wallet_address}
         />
 
-        <BattlePassPromoCard isActive={isBpActive} onActivate={handleBattlePassPromoClick} />
+        <BattlePassPromoCard
+          isActive={isBpActive}
+          onActivate={handleBattlePassPromoClick}
+          onOpenOverlay={handleOpenBattlePassOverlay}
+        />
 
         <ReferralCard referralEarn={profile.referral_earn} referralCount={0} userId={profile.id} />
       </div>
@@ -146,6 +154,7 @@ export const ProfilePage: FC = () => {
 
       <WithdrawDrawer
         open={isWithdrawOpen}
+        wallet={profile.wallet_address}
         maxTon={profile.ton_balance}
         onClose={() => setIsWithdrawOpen(false)}
       />

@@ -133,15 +133,14 @@ interface WithdrawDrawerProps {
   open: boolean;
   maxTon: number;
   onClose: () => void;
+  wallet: string | null;
 }
 
-type WithdrawDrawer = (props: WithdrawDrawerProps) => React.ReactElement;
-
-export const WithdrawDrawer: WithdrawDrawer = ({ open, maxTon, onClose }) => {
+export const WithdrawDrawer = ({ open, maxTon, onClose, wallet }: WithdrawDrawerProps) => {
   const { showToast } = useToast();
   const withdrawMutation = useWithdraw();
   const [amount, setAmount] = useState('');
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState(wallet ?? '');
 
   const isValidTonAddress = (addr: string): boolean => {
     const tonAddressRegex = /^(?:UQ|EQ)[A-Za-z0-9_-]{46}$/;

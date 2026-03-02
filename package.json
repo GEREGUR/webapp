@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "dev:https": "cross-env HTTPS=true vite",
-    "dev:host": "concurrently \"vite --host localhost\" \"tuna http http://tma.internal:5173\"",
+    "dev:host": "concurrently \"vite\" \"tuna http http://192.168.0.23:5173\"",
     "build": "tsc --noEmit && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",

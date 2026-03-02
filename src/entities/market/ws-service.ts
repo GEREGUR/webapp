@@ -39,6 +39,7 @@ class MarketWebSocketService {
   private isReconnecting = false;
   private isManualDisconnect = false;
   private minTonFilter = 0;
+  private lastSentFilter = -1;
   private connectionId = 0;
   private allOrders: WsOrder[] = [];
 
@@ -143,7 +144,7 @@ class MarketWebSocketService {
           console.log('[MarketWsService] WebSocket connected!');
           this.reconnectAttempts = 0;
           this.updateState({ isConnected: true });
-          this.sendFilterUpdate(this.minTonFilter);
+          this.sendFilterOnConnect();
         },
       },
       closeObserver: {
@@ -315,6 +316,10 @@ class MarketWebSocketService {
   }
 
   private sendFilterUpdate(minTon: number): void {
+    if (minTon === this.lastSentFilter) {
+      return;
+    }
+    this.lastSentFilter = minTon;
     if (!this.socket$ || !this.state$.value.isConnected) {
       return;
     }
@@ -323,6 +328,12 @@ class MarketWebSocketService {
       type: 'update_filter',
       min_ton: minTon,
     });
+  }
+
+  private sendFilterOnConnect(): void {
+    if (this.minTonFilter > 0) {
+      this.sendFilterUpdate(this.minTonFilter);
+    }
   }
 
   private updateState(partial: Partial<MarketState>): void {

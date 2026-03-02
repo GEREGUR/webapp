@@ -50,7 +50,6 @@ export const useCreateOrder = () => {
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
     },
   });
 };
@@ -64,10 +63,8 @@ export const useBuyOrder = () => {
     },
     onMutate: async (data) => {
       await queryClient.cancelQueries({ queryKey: QUERY_KEYS.orders });
-      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.marketOrders });
 
       const previousOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.orders);
-      const previousMarketOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.marketOrders);
 
       queryClient.setQueryData<Order[]>(QUERY_KEYS.orders, (old) => {
         return old?.map((order) => {
@@ -82,28 +79,19 @@ export const useBuyOrder = () => {
         });
       });
 
-      queryClient.setQueryData<Order[]>(QUERY_KEYS.marketOrders, (old) => {
-        return old?.filter((order) => order.id !== data.order_id) ?? [];
-      });
-
-      return { previousOrders, previousMarketOrders };
+      return { previousOrders };
     },
     onError: (_err, _variables, context) => {
       if (context?.previousOrders) {
         queryClient.setQueryData(QUERY_KEYS.orders, context.previousOrders);
       }
-      if (context?.previousMarketOrders) {
-        queryClient.setQueryData(QUERY_KEYS.marketOrders, context.previousMarketOrders);
-      }
 
       void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
     },
   });
 };
@@ -117,12 +105,10 @@ export const useBumpOrder = () => {
     },
     onMutate: async (orderId) => {
       await queryClient.cancelQueries({ queryKey: QUERY_KEYS.orders });
-      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.marketOrders });
 
       marketWsService.bumpOrder(orderId);
 
       const previousOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.orders);
-      const previousMarketOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.marketOrders);
 
       const updateOrdersList = (orders: Order[] | undefined) => {
         if (!orders) return orders;
@@ -137,26 +123,20 @@ export const useBumpOrder = () => {
       };
 
       queryClient.setQueryData<Order[]>(QUERY_KEYS.orders, updateOrdersList);
-      queryClient.setQueryData<Order[]>(QUERY_KEYS.marketOrders, updateOrdersList);
 
-      return { previousOrders, previousMarketOrders };
+      return { previousOrders };
     },
     onError: (_err, _variables, context) => {
       if (context?.previousOrders) {
         queryClient.setQueryData(QUERY_KEYS.orders, context.previousOrders);
       }
-      if (context?.previousMarketOrders) {
-        queryClient.setQueryData(QUERY_KEYS.marketOrders, context.previousMarketOrders);
-      }
 
       void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
     },
   });
 };
@@ -170,10 +150,8 @@ export const useBumpOrders = () => {
     },
     onMutate: async () => {
       await queryClient.cancelQueries({ queryKey: QUERY_KEYS.orders });
-      await queryClient.cancelQueries({ queryKey: QUERY_KEYS.marketOrders });
 
       const previousOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.orders);
-      const previousMarketOrders = queryClient.getQueryData<Order[]>(QUERY_KEYS.marketOrders);
 
       const updateOrdersList = (orders: Order[] | undefined) => {
         if (!orders || orders.length === 0) return orders;
@@ -182,26 +160,20 @@ export const useBumpOrders = () => {
       };
 
       queryClient.setQueryData<Order[]>(QUERY_KEYS.orders, updateOrdersList);
-      queryClient.setQueryData<Order[]>(QUERY_KEYS.marketOrders, updateOrdersList);
 
-      return { previousOrders, previousMarketOrders };
+      return { previousOrders };
     },
     onError: (_err, _variables, context) => {
       if (context?.previousOrders) {
         queryClient.setQueryData(QUERY_KEYS.orders, context.previousOrders);
       }
-      if (context?.previousMarketOrders) {
-        queryClient.setQueryData(QUERY_KEYS.marketOrders, context.previousMarketOrders);
-      }
 
       void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['user', 'profile'] });
       void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.orders });
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.marketOrders });
     },
   });
 };

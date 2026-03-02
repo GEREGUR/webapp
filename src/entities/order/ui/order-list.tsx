@@ -73,7 +73,9 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
         <div className="flex max-w-full items-center justify-center gap-1.5">
           <TonIcon className="size-4 shrink-0 text-white" />
           <span className="truncate text-center text-xl font-normal text-white">
-            {order.current_ton_amount}
+            {order.status === 'PARTIAL'
+              ? `${order.current_ton_amount}/${order.initial_ton_amount}`
+              : order.current_ton_amount}
           </span>
         </div>
       </div>
@@ -101,6 +103,7 @@ export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
   const rowGap = 10;
   const localRef = useRef<HTMLDivElement>(null);
 
+  //TODO: вынести виртуализацию на страницу, тут нет внутреннего скролла
   const virtualizer = useVirtualizer({
     count: orders.length,
     getScrollElement: () => localRef.current,
@@ -109,7 +112,7 @@ export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
   });
 
   return (
-    <div ref={localRef} className="h-fit w-full overflow-auto">
+    <div ref={localRef} className="h-fit w-full">
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,

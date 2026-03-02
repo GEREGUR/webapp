@@ -31,3 +31,9 @@ export interface OrderSettings {
   bonus_bp: number;
   fee_self_buy: number;
 }
+
+export interface GetSelfOrdersRequest {
+  min_ton_amount: number;
+  limit: number;
+  offset: number;
+}

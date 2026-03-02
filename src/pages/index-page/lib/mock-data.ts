@@ -1,4 +1,4 @@
-import type { Order } from '@/entities/order/api/api.dto';
+import type { Order, OrderStatus } from '@/entities/order/api/api.dto';
 import type { WsOrder, WsStats, DropItem } from '@/entities/market/types';
 import type { OrderSettings } from '@/entities/order/api/api.dto';
 
@@ -45,6 +45,20 @@ export const mockOrders: Order[] = [
     status: 'CLOSED',
     create_date: Date.now() - 259200000,
   },
+  ...Array.from({ length: 10 }, (_, i) => ({
+    id: 100,
+    owner: {
+      id: 279058397,
+      avatar: '',
+      name: 'George',
+      username: 'georgerubailo' + i,
+    },
+    initial_bp_amount: 500,
+    initial_ton_amount: 5,
+    current_ton_amount: 5,
+    status: 'PARTIAL' as OrderStatus,
+    create_date: Date.now() - 172800000,
+  })),
 ];
 
 export const mockMarketOrders: WsOrder[] = [

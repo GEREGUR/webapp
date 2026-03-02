@@ -230,3 +230,12 @@ body::before {
 .bp-claimed-slot {
   animation: bp-claimed-pop 420ms ease-out;
 }
+
+.live-carousel::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+.live-carousel {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

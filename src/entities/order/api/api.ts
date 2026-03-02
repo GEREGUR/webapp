@@ -1,74 +1,42 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
 import { api } from '@/shared/api';
-import type { Order, CreateOrderRequest, BuyOrderRequest, OrderSettings } from './api.dto';
+import type {
+  Order,
+  CreateOrderRequest,
+  BuyOrderRequest,
+  OrderSettings,
+  GetSelfOrdersRequest,
+} from './api.dto';
 import { marketWsService } from '@/entities/market/ws-service';
 
 const QUERY_KEYS = {
-  orders: ['orders', 'left'] as const,
-  marketOrders: ['market', 'orders'] as const,
+  orders: ['orders', 'self'] as const,
   orderInfo: (orderId: number) => ['order', 'info', orderId] as const,
   orderSettings: ['order', 'settings'] as const,
 };
 
-export const useMarketOrders = () => {
-  return useQuery({
-    queryKey: QUERY_KEYS.marketOrders,
-    queryFn: async (): Promise<Order[]> => {
-      try {
-        const response = await api.get<Order[]>('/order/self_orders');
-        return response.data;
-      } catch (error) {
-        console.error('API Error useMarketOrders:', error);
-        throw error;
-      }
-    },
-  });
-};
-
-export const useOrders = () => {
-  return useQuery({
+export const useSelfOrders = (params: Omit<GetSelfOrdersRequest, 'offset'>) => {
+  return useInfiniteQuery({
     queryKey: QUERY_KEYS.orders,
-    queryFn: async (): Promise<Order[]> => {
+    queryFn: async ({ pageParam }): Promise<Order[]> => {
       try {
-        const response = await api.get<Order[]>('/order/self_orders');
+        const response = await api.get<Order[]>('/order/self_orders', {
+          params: { ...params, offset: (pageParam - 1) * params.limit },
+        });
         return response.data;
       } catch (error) {
         console.error('API Error useOrders:', error);
-        if (import.meta.env.DEV) {
-          return [
-            {
-              id: 1,
-              owner: {
-                id: 279058397,
-                avatar: '',
-                name: 'George',
-                username: 'georgerubailo',
-              },
-              initial_bp_amount: 1000,
-              initial_ton_amount: 10,
-              current_ton_amount: 7.5,
-              status: 'PARTIAL' as const,
-              create_date: Date.now() - 86400000,
-            },
-            {
-              id: 2,
-              owner: {
-                id: 279058397,
-                avatar: '',
-                name: 'George',
-                username: 'georgerubailo',
-              },
-              initial_bp_amount: 500,
-              initial_ton_amount: 5,
-              current_ton_amount: 5,
-              status: 'OPEN' as const,
-              create_date: Date.now() - 172800000,
-            },
-          ];
-        }
+
         throw error;
       }
     },
+    getNextPageParam: (lastPage) => {
+      if (lastPage.length < params.limit) {
+        return undefined;
+      }
+      return lastPage.length / params.limit + 1;
+    },
+    initialPageParam: 1,
   });
 };
 

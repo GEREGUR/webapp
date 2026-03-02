@@ -1,4 +1,5 @@
-import { useState, useCallback, useEffect } from 'react';
+//TODO: вот эта я тут насрал...
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Tabs, TabList, Tab, TabPanel } from '@/shared/ui/tabs';
 import { Card } from '@/shared/ui/card';
@@ -7,7 +8,7 @@ import { CreateOrderButton } from '@/features/create-order';
 import { BuyOrderDrawer } from '@/features/buy-order';
 import { LiveCarousel, LiveWinCard } from '@/widgets/live-carousel';
 import { MarketStatsBar } from '@/features/market-stats-bar';
-import { useOrders, OrderList, type Order, useOrderSettings } from '@/entities/order';
+import { useSelfOrders, OrderList, type Order, useOrderSettings } from '@/entities/order';
 import { MaxWidthWrapper } from '@/shared/ui/max-width-wrapper';
 import { BumpOrdersButton } from '@/features/bump-orders-button';
 import { useMarket } from '@/entities/market';
@@ -48,13 +49,29 @@ export const IndexPage = () => {
     typeof window !== 'undefined' ? getInitialOrdersCount(window.innerHeight) : 4
   );
 
-  const { data: orders, isLoading: ordersLoading } = useOrders();
   const { orders: marketOrders, stats, isLoading: marketLoading, setMinTonFilter } = useMarket();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: orderSettings } = useOrderSettings();
+  const {
+    data: ordersPages,
+    isLoading: ordersLoading,
+    fetchNextPage,
+    isFetchingNextPage,
+    hasNextPage,
+  } = useSelfOrders({
+    min_ton_amount: ordersSliderValue,
+    limit: 10,
+  });
 
   const bpBalance = profile?.internal_balance ?? 0;
-
+  const orders = useMemo(
+    () => ordersPages?.pages.flatMap((page) => page) ?? [],
+    [ordersPages?.pages.length]
+  );
+  const handleOrderBuy = (order: Order, type: 'regular' | 'instant') => {
+    setSelectedOrder({ ...order, type });
+  };
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   const handleScroll = useCallback(() => {
     const active = document.activeElement;
     const isInputFocused = active instanceof HTMLInputElement;
@@ -89,14 +106,28 @@ export const IndexPage = () => {
     };
   }, []);
 
-  const displayedOrders =
-    orders?.slice(0, showAllOrders ? orders.length : initialOrdersCount) ?? [];
+  useEffect(() => {
+    if (!loadMoreRef.current) return;
 
-  const handleOrderBuy = (order: Order, type: 'regular' | 'instant') => {
-    setSelectedOrder({ ...order, type });
-  };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage && !ordersLoading) {
+          void fetchNextPage();
+        }
+      },
+      {
+        threshold: 0.2,
+      }
+    );
 
-  // TODO: remove
+    observer.observe(loadMoreRef.current);
+
+    return () => {
+      observer.unobserve(loadMoreRef.current!);
+      observer.disconnect();
+    };
+  }, []);
+
   if (profileLoading) {
     return (
       <div className="px-4 py-8">
@@ -228,11 +259,10 @@ export const IndexPage = () => {
             <Loader size="sm" />
           </Card>
         ) : orders && orders.length > 0 ? (
-          <div className="h-[calc(100vh-280px)] overflow-auto">
-            <OrderList
-              orders={displayedOrders}
-              onBuy={(order) => handleOrderBuy(order, 'instant')}
-            />
+          <div className="flex flex-col justify-center pb-20">
+            <OrderList orders={orders} onBuy={(order) => handleOrderBuy(order, 'instant')} />
+            {isFetchingNextPage ? <Loader size="sm" className="animate-spin text-white" /> : null}
+            <div ref={loadMoreRef} className="h-10" />
           </div>
         ) : (
           <Card className="mx-4">

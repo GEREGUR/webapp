@@ -4,6 +4,7 @@ import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { getWsUrl, parseWsEvent } from './websocket';
 import { FALLBACK_TIMEOUT_MS, RECONNECT_DELAY_MS, MAX_RETRY_COUNT } from './config';
 import type { WsOrder, WsStats, WsEvent, DropItem, WsDeal, WsTransaction } from './types';
+import { mockDropItems, mockMarketStats, mockOrders } from '@/pages/index-page/lib/mock-data';
 
 export interface MarketState {
   orders: WsOrder[];
@@ -296,35 +297,7 @@ class MarketWebSocketService {
 
   private setFallback(): void {
     if (import.meta.env.DEV) {
-      const mockOrders: WsOrder[] = Array.from({ length: 10 }, (_, i) => ({
-        id: 1000 + i,
-        owner: {
-          id: 100 + i,
-          avatar: '',
-          name: `User ${i + 1}`,
-          username: `user${i + 1}`,
-        },
-        initial_bp_amount: 1000 + i * 100,
-        initial_ton_amount: 10 + i,
-        current_ton_amount: 10 + i,
-        status: 'OPEN',
-        create_date: Date.now() - i * 3600000,
-      }));
-
-      const mockStats: WsStats = {
-        total_ton: 1250.5,
-        total_orders: 156,
-        totaR_orders: 156,
-      };
-
-      const mockItems: DropItem[] = Array.from({ length: 5 }, (_, i) => ({
-        id: 500 + i,
-        uid: `mock_item_${i}`,
-        tonAmount: 5 + i * 0.5,
-        status: 'bought',
-      }));
-
-      this.setMockData({ orders: mockOrders, stats: mockStats, items: mockItems });
+      this.setMockData({ orders: mockOrders, stats: mockMarketStats, items: mockDropItems });
       return;
     }
 

@@ -23,7 +23,7 @@ const AmountSlider = ({ value, onChange, className }: AmountSliderProps) => {
   };
 
   return (
-    <div className={cn('relative flex h-full w-full min-w-44 flex-1 select-none', className)}>
+    <div className={cn('relative flex h-full w-full min-w-24 flex-1 select-none', className)}>
       <div className="relative z-0 h-1.5 w-full rounded-full bg-[#4E4E4E]">
         <div
           className="bg-blue absolute z-10 h-full rounded-full"

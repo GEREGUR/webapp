@@ -92,27 +92,24 @@ const OrderItem = ({ order, onBuy, isBuying }: OrderItemProps) => {
 
 interface OrderListProps {
   orders: Order[];
-  listRef?: React.RefObject<HTMLDivElement | null>;
   onBuy?: (order: Order) => void;
   isBuying?: boolean;
 }
 
-export const OrderList = ({ orders, onBuy, isBuying, listRef }: OrderListProps) => {
+export const OrderList = ({ orders, onBuy, isBuying }: OrderListProps) => {
   const rowHeight = 66;
   const rowGap = 10;
   const localRef = useRef<HTMLDivElement>(null);
 
-  console.log(localRef.current, listRef?.current, 'why');
-
   const virtualizer = useVirtualizer({
     count: orders.length,
-    getScrollElement: () => listRef?.current ?? localRef.current,
+    getScrollElement: () => localRef.current,
     estimateSize: () => rowHeight + rowGap,
     overscan: 5,
   });
 
   return (
-    <div ref={listRef ?? localRef} className="h-fit w-full overflow-auto">
+    <div ref={localRef} className="h-fit w-full overflow-auto">
       <div
         style={{
           height: `${virtualizer.getTotalSize()}px`,

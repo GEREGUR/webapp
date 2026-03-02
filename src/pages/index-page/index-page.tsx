@@ -15,6 +15,25 @@ import { useProfile } from '@/entities/user';
 import { Loader } from '@/shared/ui/spinner';
 import { Navigate } from 'react-router-dom';
 
+const ORDER_CARD_ESTIMATED_HEIGHT = 76;
+const MARKET_STATIC_CONTENT_HEIGHT = 360;
+const CREATE_BUTTON_RESERVED_HEIGHT = 50;
+const MOBILE_DOCK_RESERVED_HEIGHT = 76;
+const MIN_INITIAL_ORDERS = 1;
+const MAX_INITIAL_ORDERS = 8;
+
+const getInitialOrdersCount = (viewportHeight: number): number => {
+  const availableOrdersArea =
+    viewportHeight -
+    MARKET_STATIC_CONTENT_HEIGHT -
+    CREATE_BUTTON_RESERVED_HEIGHT -
+    MOBILE_DOCK_RESERVED_HEIGHT;
+
+  const calculatedCount = Math.floor(availableOrdersArea / ORDER_CARD_ESTIMATED_HEIGHT);
+
+  return Math.max(MIN_INITIAL_ORDERS, Math.min(MAX_INITIAL_ORDERS, calculatedCount));
+};
+
 export const IndexPage = () => {
   const [selectedOrder, setSelectedOrder] = useState<
     (Order & { type: 'regular' | 'instant' }) | null
@@ -22,29 +41,52 @@ export const IndexPage = () => {
   const [marketSliderValue, setMarketSliderValue] = useState(1);
   const [ordersSliderValue, setOrdersSliderValue] = useState(1);
   const [showAllOrders, setShowAllOrders] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(() =>
+    typeof window !== 'undefined' ? window.innerHeight : 0
+  );
+  const [initialOrdersCount, setInitialOrdersCount] = useState(() =>
+    typeof window !== 'undefined' ? getInitialOrdersCount(window.innerHeight) : 4
+  );
+
   const { data: orders, isLoading: ordersLoading } = useOrders();
   const { orders: marketOrders, stats, isLoading: marketLoading, setMinTonFilter } = useMarket();
   const { data: profile, isLoading: profileLoading } = useProfile();
   const { data: orderSettings } = useOrderSettings();
 
-  const [initialOrdersCount] = useState(() => {
-    const viewportHeight = window.innerHeight;
-
-    if (viewportHeight < 700) return 2;
-    if (viewportHeight < 900) return 3;
-    return 7;
-  });
-
   const bpBalance = profile?.internal_balance ?? 0;
 
   const handleScroll = useCallback(() => {
     const active = document.activeElement;
-
     const isInputFocused = active instanceof HTMLInputElement;
 
-    if (isInputFocused) return;
+    if (isInputFocused) {
+      return;
+    }
 
     setShowAllOrders(window.scrollY > 10);
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [handleScroll]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const nextViewportHeight = window.innerHeight;
+      setViewportHeight(nextViewportHeight);
+      setInitialOrdersCount(getInitialOrdersCount(nextViewportHeight));
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   const displayedOrders =
@@ -54,13 +96,8 @@ export const IndexPage = () => {
     setSelectedOrder({ ...order, type });
   };
 
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [handleScroll]);
-
-  //TODO: remove
-  if (profileLoading && import.meta.env.DEV) {
+  // TODO: remove
+  if (profileLoading) {
     return (
       <div className="px-4 py-8">
         <Card>
@@ -90,78 +127,87 @@ export const IndexPage = () => {
       </div>
 
       <TabPanel value="market">
-        <MaxWidthWrapper disableRightPadding>
-          <LiveCarousel>{(item) => <LiveWinCard {...item} />}</LiveCarousel>
-        </MaxWidthWrapper>
+        <div
+          className="pb-[calc(env(safe-area-inset-bottom)+84px)]"
+          style={{ minHeight: viewportHeight > 0 ? `${viewportHeight + 1}px` : undefined }}
+        >
+          <MaxWidthWrapper disableRightPadding>
+            <LiveCarousel>{(item) => <LiveWinCard {...item} />}</LiveCarousel>
+          </MaxWidthWrapper>
 
-        <div className="px-4">
-          <div className="my-2">
-            <MarketStatsBar
-              tonAmount={stats?.total_ton ?? 0}
-              orderCount={stats?.total_orders ?? 0}
-            />
+          <div className="px-4">
+            <div className="my-2">
+              <MarketStatsBar
+                tonAmount={stats?.total_ton ?? 0}
+                orderCount={stats?.total_orders ?? 0}
+              />
+            </div>
+            <div className="mb-3 flex items-center justify-between gap-2.5">
+              <TonAmountCard
+                value={marketSliderValue}
+                onChange={setMarketSliderValue}
+                tonAmount={marketSliderValue}
+                onFilterChange={setMinTonFilter}
+                className="flex-1"
+              />
+            </div>
           </div>
-          <div className="mb-3 flex items-center justify-between gap-2.5">
-            <TonAmountCard
-              value={marketSliderValue}
-              onChange={setMarketSliderValue}
-              tonAmount={marketSliderValue}
-              onFilterChange={setMinTonFilter}
-              className="flex-1"
-            />
-          </div>
-        </div>
-        {marketLoading ? (
-          <Card className="mx-4">
-            <Loader size="sm" />
-          </Card>
-        ) : marketOrders && marketOrders.length > 0 ? (
-          <>
-            <OrderList
-              orders={marketOrders.slice(0, initialOrdersCount)}
-              onBuy={(order) => handleOrderBuy(order, 'regular')}
-            />
-            <AnimatePresence>
-              {showAllOrders && marketOrders.length > initialOrdersCount && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="pb-13"
-                >
-                  <OrderList
-                    orders={marketOrders.slice(4)}
-                    onBuy={(order) => handleOrderBuy(order, 'regular')}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-            {marketOrders.length > initialOrdersCount && (
+
+          {marketLoading ? (
+            <Card className="mx-4">
+              <Loader size="sm" />
+            </Card>
+          ) : marketOrders && marketOrders.length > 0 ? (
+            <>
+              <OrderList
+                orders={marketOrders.slice(0, initialOrdersCount)}
+                onBuy={(order) => handleOrderBuy(order, 'regular')}
+              />
+
               <AnimatePresence>
-                {!showAllOrders && (
+                {showAllOrders && marketOrders.length > initialOrdersCount && (
                   <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="px-4 pb-14"
+                    className="pb-13"
                   >
-                    <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
+                    <OrderList
+                      orders={marketOrders.slice(initialOrdersCount)}
+                      onBuy={(order) => handleOrderBuy(order, 'regular')}
+                    />
                   </motion.div>
                 )}
               </AnimatePresence>
-            )}
-            <div className={showAllOrders ? 'h-[50px]' : 'h-[100px]'} />
-          </>
-        ) : (
-          <>
-            <Card className="mx-4">
-              <p className="text-center text-white/60">Нет ордеров</p>
-            </Card>
-            <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
-          </>
-        )}
+
+              {marketOrders.length > initialOrdersCount && (
+                <AnimatePresence>
+                  {!showAllOrders && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 20 }}
+                      transition={{ duration: 0.3, delay: 0.3 }}
+                      className="px-4"
+                    >
+                      <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              )}
+            </>
+          ) : (
+            <>
+              <Card className="mx-4">
+                <p className="text-center text-white/60">Нет ордеров</p>
+              </Card>
+              <div className="px-4">
+                <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
+              </div>
+            </>
+          )}
+        </div>
       </TabPanel>
 
       <TabPanel value="orders">

@@ -197,7 +197,7 @@ class MarketWebSocketService {
         );
         this.applyOrders(event.data.orders ?? []);
         this.updateState({
-          stats: event.data.stats ?? null,
+          stats: event.data.stats,
           items: historyItems.slice(0, 5),
           isLoading: false,
         });
@@ -295,6 +295,39 @@ class MarketWebSocketService {
   }
 
   private setFallback(): void {
+    if (import.meta.env.DEV) {
+      const mockOrders: WsOrder[] = Array.from({ length: 10 }, (_, i) => ({
+        id: 1000 + i,
+        owner: {
+          id: 100 + i,
+          avatar: '',
+          name: `User ${i + 1}`,
+          username: `user${i + 1}`,
+        },
+        initial_bp_amount: 1000 + i * 100,
+        initial_ton_amount: 10 + i,
+        current_ton_amount: 10 + i,
+        status: 'OPEN',
+        create_date: Date.now() - i * 3600000,
+      }));
+
+      const mockStats: WsStats = {
+        total_ton: 1250.5,
+        total_orders: 156,
+        totaR_orders: 156,
+      };
+
+      const mockItems: DropItem[] = Array.from({ length: 5 }, (_, i) => ({
+        id: 500 + i,
+        uid: `mock_item_${i}`,
+        tonAmount: 5 + i * 0.5,
+        status: 'bought',
+      }));
+
+      this.setMockData({ orders: mockOrders, stats: mockStats, items: mockItems });
+      return;
+    }
+
     this.updateState({
       isLoading: false,
       isConnected: false,
@@ -405,6 +438,19 @@ class MarketWebSocketService {
     this.optimisticOrders = [];
     this.allOrders = [];
     this.state$.next(initialState);
+  }
+
+  setMockData(data: { orders?: WsOrder[]; stats?: WsStats; items?: DropItem[] }): void {
+    if (data.orders) {
+      this.allOrders = data.orders.slice(0, MAX_LOCAL_ORDERS);
+    }
+    this.updateState({
+      orders: data.orders ? this.filterOrders(data.orders) : [],
+      stats: data.stats ?? null,
+      items: data.items ?? [],
+      isLoading: false,
+      isConnected: true,
+    });
   }
 
   private mapDealToDropItem(deal: WsDeal): DropItem {

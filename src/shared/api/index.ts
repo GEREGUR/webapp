@@ -17,12 +17,13 @@ export const api = axios.create({
 
 api.interceptors.request.use((config) => {
   const initData = retrieveRawInitData();
+  console.log(initData, 'initData');
 
   if (initData) {
     config.headers['x-telegram-data'] = initData;
   }
 
-  config.headers['ngrok-skip-browser-warning'] = 'true';
+  config.headers['ngrok-skip-browser-warning'] = import.meta.env.DEV;
 
   return config;
 });

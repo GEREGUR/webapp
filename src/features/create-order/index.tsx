@@ -190,6 +190,7 @@ export const CreateOrderButton = ({ bpBalance, settings }: CreateOrderButtonProp
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
   const reducedMotion = useReducedMotion();
+  const animatedRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -219,6 +220,7 @@ export const CreateOrderButton = ({ bpBalance, settings }: CreateOrderButtonProp
         animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.3 }}
         className="flex justify-center pt-2"
+        ref={animatedRef}
       >
         <Button
           onClick={() => setOpen(true)}

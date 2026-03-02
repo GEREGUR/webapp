@@ -34,6 +34,38 @@ export const useOrders = () => {
         return response.data;
       } catch (error) {
         console.error('API Error useOrders:', error);
+        if (import.meta.env.DEV) {
+          return [
+            {
+              id: 1,
+              owner: {
+                id: 279058397,
+                avatar: '',
+                name: 'George',
+                username: 'georgerubailo',
+              },
+              initial_bp_amount: 1000,
+              initial_ton_amount: 10,
+              current_ton_amount: 7.5,
+              status: 'PARTIAL' as const,
+              create_date: Date.now() - 86400000,
+            },
+            {
+              id: 2,
+              owner: {
+                id: 279058397,
+                avatar: '',
+                name: 'George',
+                username: 'georgerubailo',
+              },
+              initial_bp_amount: 500,
+              initial_ton_amount: 5,
+              current_ton_amount: 5,
+              status: 'OPEN' as const,
+              create_date: Date.now() - 172800000,
+            },
+          ];
+        }
         throw error;
       }
     },
@@ -215,6 +247,13 @@ export const useOrderSettings = () => {
         return response.data;
       } catch (error) {
         console.error('API Error useOrderSettings:', error);
+        if (import.meta.env.DEV) {
+          return {
+            rate: 0.1,
+            bonus_bp: 50,
+            fee_self_buy: 1,
+          };
+        }
         throw error;
       }
     },

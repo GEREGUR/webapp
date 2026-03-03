@@ -216,9 +216,7 @@ const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, rewards, onClose }) => {
 
 export const BattlePassPage: FC = () => {
   const { data: battlePassData, isLoading, isError } = useBattlePass();
-  const { data: profile } = useProfile();
   const claimReward = useClaimBattlePassReward();
-  const activateBattlePass = useActivateBattlePass();
   const { showToast } = useToast();
   const [claimedRewardIds, setClaimedRewardIds] = useState<number[]>([]);
   const [isPromoOverlayOpen, setIsPromoOverlayOpen] = useState(false);
@@ -236,17 +234,6 @@ export const BattlePassPage: FC = () => {
   const nextLevel = (battlePassData?.level ?? 0) + 1;
   const progress = battlePassData?.progress ?? 0;
   const currentLevel = battlePassData?.level ?? 0;
-
-  const handleActivate = () => {
-    activateBattlePass.mutate(undefined, {
-      onSuccess: () => {
-        showToast(`${profile?.name ?? 'Игрок'}, Battle Pass активирован!`, 'success');
-      },
-      onError: () => {
-        showToast('Не удалось активировать Battle Pass', 'error');
-      },
-    });
-  };
 
   const handleClaimReward = (rewardToClaim: BattlePassRewardUI) => {
     claimReward.mutate(rewardToClaim.id, {
@@ -287,11 +274,7 @@ export const BattlePassPage: FC = () => {
     <>
       <Page back>
         <div className="flex flex-col gap-[20px] pb-20">
-          <BattlePassPromoCard
-            isActive={isBpActive}
-            onActivate={handleActivate}
-            onOpenOverlay={handleOpenPromoOverlay}
-          />
+          <BattlePassPromoCard isActive={isBpActive} onOpenOverlay={handleOpenPromoOverlay} />
 
           <BattlePassProgress
             currentLevel={currentLevel}

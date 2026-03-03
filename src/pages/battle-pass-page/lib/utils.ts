@@ -10,9 +10,7 @@ interface GroupedReward {
 }
 
 export const mapRewards = (rewards: BattlePassRewardUI[]): GroupedReward[] => {
-  const completedRewards = rewards.filter((r) => r.isCompleted);
-
-  const grouped = completedRewards.reduce(
+  const grouped = rewards.reduce(
     (acc, { rewardType, multiplier, imageUrl }) => {
       if (!acc[rewardType]) {
         acc[rewardType] = {

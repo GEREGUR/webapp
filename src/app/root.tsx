@@ -42,37 +42,32 @@ export const Root: FC<RootProps> = ({ routes }) => {
           <MarketProvider>
             <div className="flex min-h-[100dvh] justify-center bg-black">
               <div className="relative w-full max-w-lg">
-                <AppRoot
-                  appearance={'dark'}
-                  platform={['macos', 'ios'].includes(platform as string) ? 'ios' : 'base'}
-                >
-                  <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-                    <NuqsAdapter>
-                      <Layout>
-                        <Routes>
-                          {routes.map((route) => (
-                            <Route key={route.path} path={route.path} Component={route.Component} />
-                          ))}
-                          <Route path="*" element={<Navigate to="/" />} />
-                        </Routes>
-                      </Layout>
-                      <MobileDock
-                        buttons={[
-                          { to: '/', icon: MarketIcon, label: 'Рынок' },
-                          {
-                            to: '/inventory',
-                            icon: InventoryIcon,
-                            label: 'Инвентарь',
-                            disabled: true,
-                          },
-                          { to: '/battle-pass', icon: BattlePassIcon, label: 'БП' },
-                          { to: '/awards', icon: RewardsIcon, label: 'Награды' },
-                          { to: '/profile', icon: ProfileIcon, label: 'Профиль' },
-                        ]}
-                      />
-                    </NuqsAdapter>
-                  </BrowserRouter>
-                </AppRoot>
+                <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+                  <NuqsAdapter>
+                    <Layout>
+                      <Routes>
+                        {routes.map((route) => (
+                          <Route key={route.path} path={route.path} Component={route.Component} />
+                        ))}
+                        <Route path="*" element={<Navigate to="/" />} />
+                      </Routes>
+                    </Layout>
+                    <MobileDock
+                      buttons={[
+                        { to: '/', icon: MarketIcon, label: 'Рынок' },
+                        {
+                          to: '/inventory',
+                          icon: InventoryIcon,
+                          label: 'Инвентарь',
+                          disabled: true,
+                        },
+                        { to: '/battle-pass', icon: BattlePassIcon, label: 'БП' },
+                        { to: '/awards', icon: RewardsIcon, label: 'Награды' },
+                        { to: '/profile', icon: ProfileIcon, label: 'Профиль' },
+                      ]}
+                    />
+                  </NuqsAdapter>
+                </BrowserRouter>
               </div>
             </div>
           </MarketProvider>

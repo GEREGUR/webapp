@@ -1,14 +1,12 @@
 import { type FC } from 'react';
-import { useLaunchParams } from '@tma.js/sdk-react';
 import { Page } from '@/pages/page';
 import { Loader } from '@/shared/ui/spinner';
 import { useTasksPage } from '@/entities/tasks/model/use-tasks-page';
 import { TaskList } from './ui/task-row';
+import { useToast } from '@/shared/ui/toast';
 
 export const AwardsPage: FC = () => {
-  const lp = useLaunchParams();
-  const platform = (lp.platform as string) || 'unknown';
-  const isMobile = ['ios', 'android', 'macos'].includes(platform);
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const {
     baseTasks,
@@ -19,6 +17,8 @@ export const AwardsPage: FC = () => {
     onCompleteTask,
     onClaimReward,
   } = useTasksPage();
+
+  const { showToast } = useToast();
 
   const filteredBonusTasks = bonusTasks.filter((task) => isMobile || task.type !== 'STORY');
 
@@ -34,6 +34,9 @@ export const AwardsPage: FC = () => {
 
   return (
     <Page back>
+      <button className="text-white" onClick={() => showToast('hello', 'success')}>
+        wassup
+      </button>
       <div className="space-y-10">
         <section>
           <h1 className="mb-4 text-[20px] leading-[20.03px] font-semibold text-white">Задания</h1>

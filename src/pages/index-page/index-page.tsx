@@ -17,7 +17,7 @@ import { Loader } from '@/shared/ui/spinner';
 
 const ORDER_CARD_ESTIMATED_HEIGHT = 76;
 const MARKET_STATIC_CONTENT_HEIGHT = 360;
-const CREATE_BUTTON_RESERVED_HEIGHT = 50;
+const CREATE_BUTTON_RESERVED_HEIGHT = 62;
 const MOBILE_DOCK_RESERVED_HEIGHT = 76;
 const MIN_INITIAL_ORDERS = 1;
 const MAX_INITIAL_ORDERS = 8;
@@ -149,7 +149,7 @@ export const IndexPage = () => {
     <Tabs defaultTab="market" onTabChange={() => setShowAllOrders(false)}>
       <div className="pt-6">
         <MaxWidthWrapper>
-          <TabList className="mb-2 flex gap-4">
+          <TabList className="flex gap-4">
             <Tab value="market" className="transition-colors">
               Рынок
             </Tab>
@@ -162,7 +162,7 @@ export const IndexPage = () => {
 
       <TabPanel value="market">
         <div
-          className="pb-[calc(env(safe-area-inset-bottom)+84px)]"
+          className="pb-[calc(env(safe-area-inset-bottom)+76px)]"
           style={{ minHeight: viewportHeight > 0 ? `${viewportHeight + 1}px` : undefined }}
         >
           <MaxWidthWrapper disableRightPadding className="min-h-[54px] md:pl-4">

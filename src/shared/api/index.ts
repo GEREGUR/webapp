@@ -23,7 +23,7 @@ api.interceptors.request.use((config) => {
     config.headers['x-telegram-data'] = initData;
   }
 
-  config.headers['ngrok-skip-browser-warning'];
+  config.headers['ngrok-skip-browser-warning'] = true;
 
   return config;
 });

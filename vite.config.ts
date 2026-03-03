@@ -5,7 +5,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from '@tailwindcss/vite';
 import svgr from 'vite-plugin-svgr';
 import { resolve } from 'path';
-import { readFileSync } from 'fs';
+// import { readFileSync } from 'fs';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
@@ -47,13 +47,12 @@ export default defineConfig(({ mode }) => {
     },
     publicDir: './public',
 
-    //TODO: remove in production
     server: {
-      host: 'tma.internal',
-      https: {
-        key: readFileSync('./key.pem'),
-        cert: readFileSync('./cert.pem'),
-      },
+      // host: 'tma.internal',
+      // https: {
+      //   key: readFileSync('./key.pem'),
+      //   cert: readFileSync('./cert.pem'),
+      // },
       allowedHosts: true,
       ...(env.VITE_PROXY_TARGET && {
         proxy: {

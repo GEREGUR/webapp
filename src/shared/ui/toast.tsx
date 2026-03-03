@@ -1,9 +1,9 @@
 import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
 import { cn } from '@/shared/lib/utils';
 
-type ToastType = 'success' | 'error' | 'info';
+export type ToastType = 'success' | 'error' | 'info';
 
-interface Toast {
+export interface Toast {
   id: number;
   message: string;
   type: ToastType;

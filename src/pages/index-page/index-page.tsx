@@ -1,4 +1,3 @@
-//TODO: вот эта я тут насрал... зарефакторить
 import { Navigate } from 'react-router-dom';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -63,14 +62,18 @@ export const IndexPage = () => {
     limit: 10,
   });
 
+  console.log(selectedOrder, 'выбранный ордер');
+
   const bpBalance = profile?.internal_balance ?? 0;
   const orders = useMemo(
     () => ordersPages?.pages.flatMap((page) => page) ?? [],
     [ordersPages?.pages.length]
   );
+
   const handleOrderBuy = (order: Order, type: 'regular' | 'instant') => {
     setSelectedOrder({ ...order, type });
   };
+
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const handleScroll = useCallback(() => {
     const active = document.activeElement;
@@ -162,7 +165,7 @@ export const IndexPage = () => {
           className="pb-[calc(env(safe-area-inset-bottom)+84px)]"
           style={{ minHeight: viewportHeight > 0 ? `${viewportHeight + 1}px` : undefined }}
         >
-          <MaxWidthWrapper disableRightPadding>
+          <MaxWidthWrapper disableRightPadding className="min-h-[54px] md:pl-4">
             <LiveCarousel>{(item) => <LiveWinCard {...item} />}</LiveCarousel>
           </MaxWidthWrapper>
 
@@ -192,7 +195,10 @@ export const IndexPage = () => {
             <>
               <OrderList
                 orders={marketOrders.slice(0, initialOrdersCount)}
-                onBuy={(order) => handleOrderBuy(order, 'regular')}
+                onBuy={(order) =>
+                  handleOrderBuy(order, order.owner.id === profile?.id ? 'instant' : 'regular')
+                }
+                ownerId={profile?.id}
               />
 
               <AnimatePresence>
@@ -206,7 +212,13 @@ export const IndexPage = () => {
                   >
                     <OrderList
                       orders={marketOrders.slice(initialOrdersCount)}
-                      onBuy={(order) => handleOrderBuy(order, 'regular')}
+                      onBuy={(order) =>
+                        handleOrderBuy(
+                          order,
+                          order.owner.id === profile?.id ? 'instant' : 'regular'
+                        )
+                      }
+                      ownerId={profile?.id}
                     />
                   </motion.div>
                 )}
@@ -264,6 +276,7 @@ export const IndexPage = () => {
               orders={orders}
               onBuy={(order) => handleOrderBuy(order, 'instant')}
               showRatio
+              selfBuy
             />
             {isFetchingNextPage ? <Loader size="sm" className="animate-spin text-white" /> : null}
             <div ref={loadMoreRef} className="h-10" />

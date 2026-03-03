@@ -1,4 +1,4 @@
-type TaskStatus = 'ACTIVE' | 'COMPLETED' | 'REWARDED';
+export type TaskStatus = 'ACTIVE' | 'COMPLETED' | 'REWARDED';
 export type TaskType = 'STORY' | 'BIO' | 'NICK' | 'DEFAULT';
 
 export type ApiTaskType =
@@ -15,6 +15,10 @@ export type ApiTaskType =
   | 'SPEND_TON'
   | 'SPEND_BP'
   | 'SUM_EARN_REF';
+
+export interface ApiTaskError {
+  detail: string;
+}
 
 export interface TaskProgress {
   current_count: number;

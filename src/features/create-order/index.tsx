@@ -12,7 +12,7 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
 import { OrderSettings, useCreateOrder } from '@/entities/order';
-import { parseNumberInput } from '@/shared/lib/utils';
+import { parseNumberInput, formatFloat } from '@/shared/lib/utils';
 import BpIcon from '@/shared/assets/bp.svg?react';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import Arrow from '@/shared/assets/arrow.svg?react';
@@ -113,10 +113,10 @@ const CreateOrderModal = ({ open, bpBalance, onClose, settings }: CreateOrderMod
                 <Input
                   type="text"
                   inputMode="decimal"
-                  value={bpAmount}
+                  value={formatFloat(bpAmount, 3)}
                   onChange={(e) => handleBpAmountChange(e.target.value)}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] pr-12 pl-10 text-center text-white placeholder:text-white/40 focus:placeholder:text-transparent"
+                  className="rounded-[10px] bg-[#232027] px-4 text-center text-white placeholder:text-white/40 focus:placeholder:text-transparent"
                 />
                 <Button
                   type="button"
@@ -130,7 +130,7 @@ const CreateOrderModal = ({ open, bpBalance, onClose, settings }: CreateOrderMod
               </div>
             </div>
 
-            <Arrow className="absolute top-[calc(50%+20px)] left-[calc(50%-5px)] -translate-x-1/2 -translate-y-1/2 rotate-180" />
+            <Arrow className="absolute top-[calc(50%+20px)] left-1/2 -translate-x-1/2 -translate-y-1/2 rotate-180" />
 
             <div className="mt-4">
               <span className="mb-2 block font-sans text-[16.72px] leading-[18.39px] font-normal text-white">
@@ -142,7 +142,7 @@ const CreateOrderModal = ({ open, bpBalance, onClose, settings }: CreateOrderMod
                 </div>
                 <div className="flex h-[40px] items-center justify-center rounded-[10px] bg-[#232027] pr-10 pl-10">
                   <span className="text-center text-[20px] text-[#A6FF8B]">
-                    {(Number(bpAmount) / settings.rate).toFixed(3)}
+                    {formatFloat(Number(bpAmount) / settings.rate, 3)}
                   </span>
                 </div>
               </div>

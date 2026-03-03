@@ -1,9 +1,16 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api } from '@/shared/api';
-import type { ApiTask, ApiTaskType, TaskType, TasksListResponse } from './api.dto';
+import type { ApiTask, ApiTaskError, TasksListResponse, TaskStatus } from './api.dto';
+import { mapTaskDescription, mapTaskTitle, mapTaskType } from '../lib/task-utils';
+import { mockApiTasks, mockBonusTasks } from './mock-data';
+import { AxiosError } from 'axios';
 
 const QUERY_KEYS = {
   tasks: ['tasks', 'list'] as const,
+};
+
+type TaskMutationContext = {
+  previousTasks?: TasksListResponse;
 };
 
 export const useTasks = () => {
@@ -15,6 +22,9 @@ export const useTasks = () => {
         return { tasks: mapTasks(response.data) };
       } catch (error) {
         console.error('API Error useTasks:', error);
+        //WARN: remove later - return mock data on error
+        const allTasks = [...mockApiTasks, ...mockBonusTasks];
+        return { tasks: mapTasks(allTasks) };
       }
     },
   });
@@ -35,22 +45,43 @@ const mapTasks = (tasks: ApiTask[]) => {
   });
 };
 
-export const useActivateTask = () => {
-  return useMutation({
-    mutationFn: async (taskId: number): Promise<void> => {
-      await api.post(`/tasks/activate/${taskId}`, null);
+export const useActivateTask = () =>
+  createTaskMutation((taskId) => `/tasks/activate/${taskId}`, 'ACTIVE');
+
+export const useCompleteTask = () =>
+  createTaskMutation((taskId) => `/tasks/completed/${taskId}`, 'COMPLETED');
+
+export const useClaimTaskReward = () =>
+  createTaskMutation((taskId) => `/tasks/claim/${taskId}`, 'REWARDED');
+
+export const createTaskMutation = (
+  urlBuilder: (taskId: number) => string,
+  optimisticStatus: TaskStatus
+) => {
+  return useMutation<void, AxiosError<ApiTaskError>, number, TaskMutationContext>({
+    mutationFn: async (taskId) => {
+      await api.post(urlBuilder(taskId), null);
     },
-    onMutate: async (taskId: number, context) => {
+
+    onMutate: async (taskId, context) => {
       await context.client.cancelQueries({ queryKey: QUERY_KEYS.tasks });
+
       const previousTasks = context.client.getQueryData<TasksListResponse>(QUERY_KEYS.tasks);
 
       context.client.setQueryData<TasksListResponse>(QUERY_KEYS.tasks, (old) => {
         if (!old) return old;
+
         return {
           ...old,
           tasks: old.tasks.map((task) =>
             task.id === taskId && task.progress
-              ? { ...task, progress: { ...task.progress, status: 'ACTIVE' as const } }
+              ? {
+                  ...task,
+                  progress: {
+                    ...task.progress,
+                    status: optimisticStatus,
+                  },
+                }
               : task
           ),
         };
@@ -58,154 +89,27 @@ export const useActivateTask = () => {
 
       return { previousTasks };
     },
-    onError: (_err, _variables, onMutateResult, context) => {
+
+    onError: (err, _taskId, onMutateResult, context) => {
+      const msg = err.response?.data.detail;
+
+      if (
+        msg &&
+        ['Reward already claimed', 'Task already activated', 'Task already completed'].includes(msg)
+      ) {
+        void context.client.invalidateQueries({ queryKey: QUERY_KEYS.tasks });
+        return;
+      }
+
       if (onMutateResult?.previousTasks) {
         context.client.setQueryData(QUERY_KEYS.tasks, onMutateResult.previousTasks);
       }
     },
+
     onSuccess: (_data, _variables, _onMutateResult, context) => {
-      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.tasks });
-    },
-  });
-};
-
-export const useClaimTaskReward = () => {
-  return useMutation({
-    mutationFn: async (taskId: number): Promise<void> => {
-      await api.post(`/tasks/claim/${taskId}`, null);
-    },
-    onMutate: async (taskId: number, context) => {
-      await context.client.cancelQueries({ queryKey: QUERY_KEYS.tasks });
-      const previousTasks = context.client.getQueryData<TasksListResponse>(QUERY_KEYS.tasks);
-
-      context.client.setQueryData<TasksListResponse>(QUERY_KEYS.tasks, (old) => {
-        if (!old) return old;
-        return {
-          ...old,
-          tasks: old.tasks.map((task) =>
-            task.id === taskId && task.progress
-              ? { ...task, progress: { ...task.progress, status: 'REWARDED' as const } }
-              : task
-          ),
-        };
+      void context.client.invalidateQueries({
+        queryKey: QUERY_KEYS.tasks,
       });
-
-      return { previousTasks };
-    },
-    onError: (_err, _variables, onMutateResult, context) => {
-      if (onMutateResult?.previousTasks) {
-        context.client.setQueryData(QUERY_KEYS.tasks, onMutateResult.previousTasks);
-      }
-    },
-    onSuccess: (_data, _variables, _onMutateResult, context) => {
-      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.tasks });
     },
   });
-};
-
-export const useCompleteTask = () => {
-  return useMutation({
-    mutationFn: async (taskId: number): Promise<void> => {
-      await api.post(`/tasks/completed/${taskId}`, null);
-    },
-    onMutate: async (taskId: number, context) => {
-      await context.client.cancelQueries({ queryKey: QUERY_KEYS.tasks });
-      const previousTasks = context.client.getQueryData<TasksListResponse>(QUERY_KEYS.tasks);
-
-      context.client.setQueryData<TasksListResponse>(QUERY_KEYS.tasks, (old) => {
-        if (!old) return old;
-        return {
-          ...old,
-          tasks: old.tasks.map((task) =>
-            task.id === taskId && task.progress
-              ? { ...task, progress: { ...task.progress, status: 'COMPLETED' as const } }
-              : task
-          ),
-        };
-      });
-
-      return { previousTasks };
-    },
-    onError: (_err, _variables, onMutateResult, context) => {
-      if (onMutateResult?.previousTasks) {
-        context.client.setQueryData(QUERY_KEYS.tasks, onMutateResult.previousTasks);
-      }
-    },
-    onSuccess: (_data, _variables, _onMutateResult, context) => {
-      void context.client.invalidateQueries({ queryKey: QUERY_KEYS.tasks });
-    },
-  });
-};
-
-const mapTaskType = (type: ApiTaskType): TaskType => {
-  if (type === 'SET_STORY') return 'STORY';
-  if (type === 'SET_BIO') return 'BIO';
-  if (type === 'SET_NICK') return 'NICK';
-  return 'DEFAULT';
-};
-
-const mapTaskTitle = (type: ApiTaskType): string => {
-  switch (type) {
-    case 'SET_STORY':
-      return 'Опубликовать историю';
-    case 'SET_BIO':
-      return 'Обновить описание профиля';
-    case 'SET_NICK':
-      return 'Установить никнейм';
-    case 'INVITE':
-      return 'Пригласить друзей';
-    case 'CREATE_ORDER':
-      return 'Создать ордер';
-    case 'BUY_ORDER':
-      return 'Купить ордер';
-    case 'SELF_BUY_ORDER':
-      return 'Выкупить свой ордер';
-    case 'PAYMENT':
-      return 'Совершить пополнение';
-    case 'SUM_PAYMENT':
-      return 'Пополнить на заданную сумму';
-    case 'CONNECT_WALLET':
-      return 'Подключить кошелёк';
-    case 'SPEND_TON':
-      return 'Потратить TON';
-    case 'SPEND_BP':
-      return 'Потратить BP';
-    case 'SUM_EARN_REF':
-      return 'Заработать на рефералах';
-    default:
-      return 'Задача';
-  }
-};
-
-const mapTaskDescription = (type: ApiTaskType): string => {
-  switch (type) {
-    case 'SET_STORY':
-      return 'Опубликуйте историю в Telegram';
-    case 'SET_BIO':
-      return 'Обновите био в Telegram профиле';
-    case 'SET_NICK':
-      return 'Установите никнейм в Telegram';
-    case 'INVITE':
-      return 'Приглашайте новых пользователей';
-    case 'CREATE_ORDER':
-      return 'Создайте ордер на продажу BP';
-    case 'BUY_ORDER':
-      return 'Совершите покупку ордера';
-    case 'SELF_BUY_ORDER':
-      return 'Закройте собственный ордер';
-    case 'PAYMENT':
-      return 'Сделайте пополнение TON';
-    case 'SUM_PAYMENT':
-      return 'Пополните баланс на целевую сумму';
-    case 'CONNECT_WALLET':
-      return 'Привяжите TON-кошелёк';
-    case 'SPEND_TON':
-      return 'Потратьте TON в приложении';
-    case 'SPEND_BP':
-      return 'Потратьте BP в приложении';
-    case 'SUM_EARN_REF':
-      return 'Накопите доход с рефералов';
-    default:
-      return 'Выполните условие задачи';
-  }
 };

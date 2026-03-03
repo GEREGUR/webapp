@@ -21,8 +21,8 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
   const hideHeaderLeftSide = pathname === '/profile' || pathname === '/awards';
   const { data: profile } = useProfile();
 
-  const tonBalance = profile?.ton_balance.toString() ?? '0';
-  const bpBalance = profile?.internal_balance.toString() ?? '0';
+  const tonBalance = profile?.ton_balance?.toString() ?? '0';
+  const bpBalance = profile?.internal_balance?.toString() ?? '0';
 
   useEffect(() => {
     const shouldLogBehaviorDebug =

@@ -36,33 +36,16 @@ export const useProfile = () => {
   return useQuery({
     queryKey: QUERY_KEYS.profile,
     queryFn: async (): Promise<UserProfile> => {
-      try {
-        const response = await api.get<GetMeResponse>('/user/me');
-        const telegramUser = getTelegramUserData();
+      const response = await api.get<GetMeResponse>('/user/me');
+      const telegramUser = getTelegramUserData();
 
-        return {
-          ...response.data,
-          is_checked_instruction: response.data.is_checked_instruction,
-          name: telegramUser?.first_name || `User #${response.data.id}`,
-          username: telegramUser?.username || `user${response.data.id}`,
-          avatar: telegramUser?.photo_url || '',
-        };
-      } catch (error) {
-        console.error('API Error useProfile:', error);
-        const telegramUser = getTelegramUserData();
-
-        return {
-          id: 777,
-          internal_balance: 2500,
-          ton_balance: 12.5,
-          wallet_address: 'UQBKvZmXMockWalletAddress0123456789',
-          referral_earn: 42,
-          is_checked_instruction: true,
-          name: telegramUser?.first_name || 'Mock Player',
-          username: telegramUser?.username || 'mock_player',
-          avatar: telegramUser?.photo_url || '',
-        };
-      }
+      return {
+        ...response.data,
+        is_checked_instruction: response.data.is_checked_instruction,
+        name: telegramUser?.first_name || `User #${response.data.id}`,
+        username: telegramUser?.username || `user${response.data.id}`,
+        avatar: telegramUser?.photo_url || '',
+      };
     },
     staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,

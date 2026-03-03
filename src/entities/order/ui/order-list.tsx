@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import type { Order } from '../api/api.dto';
 import TonIcon from '@/shared/assets/ton.svg?react';
+import { formatFloat } from '@/shared/lib/utils';
 
 interface OrderTimerProps {
   timestamp: number;
@@ -12,6 +13,7 @@ interface OrderItemProps {
   onBuy?: (order: Order) => void;
   isBuying?: boolean;
   showRatio?: boolean;
+  isSelfBuy?: boolean;
 }
 
 const OrderTimer = ({ timestamp }: OrderTimerProps) => {
@@ -52,7 +54,9 @@ const OrderTimer = ({ timestamp }: OrderTimerProps) => {
   return <>{label}</>;
 };
 
-const OrderItem = ({ order, onBuy, isBuying, showRatio }: OrderItemProps) => {
+const OrderItem = ({ order, onBuy, isBuying, showRatio, isSelfBuy }: OrderItemProps) => {
+  const isClosed = order.status === 'CLOSED' || order.current_ton_amount === 0;
+
   return (
     <div className="relative h-[66px] rounded-lg border border-[#5F81D8]/25 bg-[#131214] px-2">
       <div className="absolute inset-y-0 left-2 flex max-w-[calc(100%-200px)] items-center gap-3">
@@ -63,7 +67,7 @@ const OrderItem = ({ order, onBuy, isBuying, showRatio }: OrderItemProps) => {
         />
 
         <div className="min-w-0">
-          <p className="truncate text-base font-light text-white">{order.owner.username}</p>
+          <p className="truncate text-base font-light text-white">{order.owner.name}</p>
           <p className="truncate text-xs text-white/60">
             <OrderTimer timestamp={order.create_date} />
           </p>
@@ -74,20 +78,20 @@ const OrderItem = ({ order, onBuy, isBuying, showRatio }: OrderItemProps) => {
         <div className="flex max-w-full items-center justify-center gap-1.5">
           <TonIcon className="size-4 shrink-0 text-white" />
           <span className="truncate text-center text-xl font-normal text-white">
-            {showRatio || order.status === 'PARTIAL'
-              ? `${order.current_ton_amount}/${order.initial_ton_amount}`
-              : order.current_ton_amount}
+            {showRatio || order.status === 'PARTIAL' || isSelfBuy
+              ? `${formatFloat(order.current_ton_amount, 3)}/${formatFloat(order.initial_ton_amount, 3)}`
+              : formatFloat(order.current_ton_amount, 3)}
           </span>
         </div>
       </div>
 
       <button
         type="button"
-        className="absolute top-1/2 right-4 w-[83px] -translate-y-1/2 rounded-[6px] bg-[#237BFF] px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="absolute top-1/2 right-4 w-[91px] -translate-y-1/2 rounded-[6px] bg-[#237BFF] px-3 py-1.5 text-center text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
         onClick={() => onBuy?.(order)}
-        disabled={isBuying}
+        disabled={isBuying || isClosed}
       >
-        {isBuying ? '...' : 'Купить'}
+        {isBuying ? '...' : isClosed ? 'Закрыто' : isSelfBuy ? 'Выкупить' : 'Купить'}
       </button>
     </div>
   );
@@ -98,14 +102,22 @@ interface OrderListProps {
   onBuy?: (order: Order) => void;
   isBuying?: boolean;
   showRatio?: boolean;
+  selfBuy?: boolean;
+  ownerId?: number;
 }
 
-export const OrderList = ({ orders, onBuy, isBuying, showRatio }: OrderListProps) => {
+export const OrderList = ({
+  orders,
+  onBuy,
+  isBuying,
+  showRatio,
+  selfBuy,
+  ownerId,
+}: OrderListProps) => {
   const rowHeight = 66;
   const rowGap = 10;
   const localRef = useRef<HTMLDivElement>(null);
 
-  //TODO: вынести виртуализацию на страницу, тут нет внутреннего скролла
   const virtualizer = useVirtualizer({
     count: orders.length,
     getScrollElement: () => localRef.current,
@@ -124,6 +136,7 @@ export const OrderList = ({ orders, onBuy, isBuying, showRatio }: OrderListProps
       >
         {virtualizer.getVirtualItems().map((virtualItem) => {
           const order = orders[virtualItem.index];
+          const isSelfBuyOrder = selfBuy || (ownerId !== undefined && order.owner.id === ownerId);
 
           return (
             <div
@@ -137,7 +150,13 @@ export const OrderList = ({ orders, onBuy, isBuying, showRatio }: OrderListProps
               }}
               className="px-4 pb-2"
             >
-              <OrderItem order={order} onBuy={onBuy} isBuying={isBuying} showRatio={showRatio} />
+              <OrderItem
+                order={order}
+                onBuy={onBuy}
+                isBuying={isBuying}
+                showRatio={showRatio}
+                isSelfBuy={isSelfBuyOrder}
+              />
             </div>
           );
         })}

@@ -18,3 +18,7 @@ export interface BattlePassResponse {
   rewards: BattlePassReward[];
   is_active: boolean;
 }
+
+export interface BattlePassError {
+  detail: string;
+}

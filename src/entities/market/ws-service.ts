@@ -3,8 +3,8 @@ import { map, takeUntil, tap, filter, distinctUntilChanged } from 'rxjs/operator
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { getWsUrl, parseWsEvent } from './websocket';
 import { FALLBACK_TIMEOUT_MS, RECONNECT_DELAY_MS, MAX_RETRY_COUNT } from './config';
+import { mockOrders, mockStats, mockItems } from './mock-data';
 import type { WsOrder, WsStats, WsEvent, DropItem, WsDeal, WsTransaction } from './types';
-import { mockDropItems, mockMarketStats, mockOrders } from '@/pages/index-page/lib/mock-data';
 
 export interface MarketState {
   orders: WsOrder[];
@@ -230,14 +230,7 @@ class MarketWebSocketService {
           return order;
         });
 
-        this.applyOrders(
-          updatedOrders.filter((order) => {
-            if (order.id !== event.data.id) {
-              return true;
-            }
-            return order.status !== 'CLOSED';
-          })
-        );
+        this.applyOrders(updatedOrders);
         break;
       }
 
@@ -297,14 +290,12 @@ class MarketWebSocketService {
   }
 
   private setFallback(): void {
-    if (import.meta.env.DEV) {
-      this.setMockData({ orders: mockOrders, stats: mockMarketStats, items: mockDropItems });
-      return;
-    }
-
+    const isDev = import.meta.env.DEV;
+    this.allOrders = isDev ? mockOrders : [];
     this.updateState({
       isLoading: false,
       isConnected: false,
+      ...(isDev && { orders: mockOrders, stats: mockStats, items: mockItems }),
     });
   }
 
@@ -422,19 +413,6 @@ class MarketWebSocketService {
     this.optimisticOrders = [];
     this.allOrders = [];
     this.state$.next(initialState);
-  }
-
-  setMockData(data: { orders?: WsOrder[]; stats?: WsStats; items?: DropItem[] }): void {
-    if (data.orders) {
-      this.allOrders = data.orders.slice(0, MAX_LOCAL_ORDERS);
-    }
-    this.updateState({
-      orders: data.orders ? this.filterOrders(data.orders) : [],
-      stats: data.stats ?? null,
-      items: data.items ?? [],
-      isLoading: false,
-      isConnected: true,
-    });
   }
 
   private mapDealToDropItem(deal: WsDeal): DropItem {

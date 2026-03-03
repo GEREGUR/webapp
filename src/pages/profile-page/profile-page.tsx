@@ -4,7 +4,7 @@ import { Page } from '@/pages/page';
 import { Avatar } from '@/shared/ui/avatar';
 import { Loader } from '@/shared/ui/spinner';
 import { useToast } from '@/shared/ui/toast';
-import { useProfile } from '@/entities/user';
+import { useClearWallet, useProfile } from '@/entities/user';
 import { usePaymentData } from '@/entities/wallet';
 import { useActivateBattlePass, useBattlePass } from '@/entities/battle-pass';
 import { useTonConnect } from '@/shared/hooks/use-ton-connect';
@@ -25,6 +25,7 @@ export const ProfilePage: FC = () => {
   const { data: profile, isLoading } = useProfile();
   const { data: battlePassData } = useBattlePass();
   const activateBattlePass = useActivateBattlePass();
+  const clearWallet = useClearWallet();
   const { data: paymentData, refetch: refetchPaymentData } = usePaymentData({ enabled: false });
   const { isConnected, connect, disconnect, walletAddress } = useTonConnect();
   const setWalletMutation = useSetWallet();
@@ -69,6 +70,8 @@ export const ProfilePage: FC = () => {
 
   const handleDisconnectWallet = async () => {
     const disconnected = await disconnect();
+    await clearWallet.mutateAsync();
+
     if (!disconnected) {
       return;
     }

@@ -223,7 +223,7 @@ export const BattlePassPage: FC = () => {
   const [claimedRewardIds, setClaimedRewardIds] = useState<number[]>([]);
   const [isPromoOverlayOpen, setIsPromoOverlayOpen] = useState(false);
 
-  const isBpActive = !isError && Boolean(battlePassData?.is_active);
+  const isBpActive = !isError && Boolean(battlePassData?.level);
 
   const rewards = useMemo(() => {
     if (!battlePassData?.rewards) return [];
@@ -256,7 +256,12 @@ export const BattlePassPage: FC = () => {
         );
         showToast('Награда получена!', 'success');
       },
-      onError: () => {
+      onError: (err) => {
+        if (err.response?.data.detail === 'Reward already claimed') {
+          showToast('Награда уже получена', 'info');
+          return;
+        }
+
         showToast('Не удалось получить награду', 'error');
       },
     });

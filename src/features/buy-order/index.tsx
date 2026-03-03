@@ -9,8 +9,9 @@ import {
 } from '@/shared/ui/drawer';
 import { Input } from '@/shared/ui/input';
 import { Button } from '@/shared/ui/button';
-import { cn, parseNumberInput } from '@/shared/lib/utils';
-import { useBuyOrder, useSelfBuyOrder, type OrderSettings } from '@/entities/order';
+import { Loader } from '@/shared/ui/spinner';
+import { cn, formatFloat, parseNumberInput } from '@/shared/lib/utils';
+import { useBuyOrder, useSelfBuyOrder, useOrderInfo, type OrderSettings } from '@/entities/order';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import ArrowIcon from '@/shared/assets/arrow.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points-sm.svg?react';
@@ -36,10 +37,21 @@ export const BuyOrderDrawer = ({
 }: BuyOrderDrawerProps) => {
   const buyOrderMutation = useBuyOrder();
   const selfBuyOrderMutation = useSelfBuyOrder();
+  const { data: orderInfo, isLoading: isOrderInfoLoading } = useOrderInfo(lotId);
   const [regularTonAmount, setRegularTonAmount] = useState('');
+
+  console.log(settings, 'настройки');
+  console.log(orderInfo, 'инфо');
 
   const isInstant = orderType === 'instant';
   const currentMutation = isInstant ? selfBuyOrderMutation : buyOrderMutation;
+
+  const minBuyAmount = orderInfo?.min_buy_amount ?? 0;
+  const selfBuyTonAmount = orderInfo?.self_buy_ton_amount ?? currentTonAmount;
+
+  const payTonAmount = isInstant ? currentTonAmount : Number(regularTonAmount);
+  const receiveTonAmount = isInstant ? selfBuyTonAmount : payTonAmount * (settings?.rate ?? 0);
+  const maxBuyAmount = currentTonAmount - minBuyAmount;
 
   const handleRegularTonChange = (value: string) => {
     const parsedValue = parseNumberInput(value);
@@ -47,7 +59,7 @@ export const BuyOrderDrawer = ({
   };
 
   const handleMaxClick = () => {
-    const maxTon = Math.min(tonBalance, currentTonAmount ?? 0);
+    const maxTon = Math.min(tonBalance, maxBuyAmount > 0 ? maxBuyAmount : currentTonAmount);
     setRegularTonAmount(String(maxTon));
   };
 
@@ -86,10 +98,10 @@ export const BuyOrderDrawer = ({
   };
 
   const isValid = isInstant
-    ? Number(currentTonAmount) <= tonBalance
+    ? payTonAmount <= tonBalance
     : Number(regularTonAmount) > 0 &&
       Number(regularTonAmount) <= tonBalance &&
-      Number(regularTonAmount) <= Number(currentTonAmount);
+      Number(regularTonAmount) <= (maxBuyAmount > 0 ? maxBuyAmount : currentTonAmount);
 
   const isSubmitting = currentMutation.isPending;
 
@@ -173,14 +185,14 @@ export const BuyOrderDrawer = ({
                       value={regularTonAmount}
                       onChange={(e) => handleRegularTonChange(e.target.value)}
                       placeholder={`Не более ${currentTonAmount}`}
-                      className="h-[40px] rounded-[10px] bg-[#232027] pr-10 pl-12 text-center text-[20px] text-white placeholder:text-white/40 focus:placeholder:text-transparent"
+                      className="h-[40px] rounded-[10px] bg-[#232027] pr-10 pl-12 text-center text-[20px] text-white placeholder:text-white/40 focus:placeholder:text-transparent disabled:opacity-50"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       className="absolute inset-y-1 right-1 rounded-[8px] px-2 text-xs font-medium text-white hover:bg-[#3a3a42] disabled:cursor-not-allowed disabled:opacity-50"
                       onClick={handleMaxClick}
-                      disabled={tonBalance <= 0}
+                      disabled={tonBalance <= 0 || isOrderInfoLoading}
                     >
                       MAX
                     </Button>
@@ -192,7 +204,11 @@ export const BuyOrderDrawer = ({
                       orderType === 'instant' && 'pointer-events-none'
                     )}
                   >
-                    <span className="text-center text-[20px] text-white">{currentTonAmount}</span>
+                    {isOrderInfoLoading ? (
+                      <Loader size="sm" className="text-white" />
+                    ) : (
+                      <span className="text-center text-[20px] text-white">{payTonAmount}</span>
+                    )}
                   </div>
                 )}
               </div>
@@ -222,12 +238,15 @@ export const BuyOrderDrawer = ({
                     orderType === 'instant' && 'pointer-events-none'
                   )}
                 >
-                  <span className="text-center text-[20px] text-[#A6FF8B]">
-                    {orderType === 'regular'
-                      ? Number(regularTonAmount) * settings.rate
-                      : Number(currentTonAmount) -
-                        Number(currentTonAmount) * (settings?.fee_self_buy / 100)}
-                  </span>
+                  {isOrderInfoLoading ? (
+                    <Loader size="sm" className="text-[#A6FF8B]" />
+                  ) : (
+                    <span className="text-center text-[20px] text-[#A6FF8B]">
+                      {orderType === 'regular'
+                        ? formatFloat(Number(regularTonAmount) * (settings?.rate ?? 0), 3)
+                        : formatFloat(receiveTonAmount, 3)}
+                    </span>
+                  )}
                 </div>
               </div>
             </div>

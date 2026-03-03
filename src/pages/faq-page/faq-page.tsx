@@ -1,7 +1,7 @@
-import { Button } from '@/shared/ui/button';
 import { type FC } from 'react';
-import { Page } from '../page';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '@/shared/ui/button';
+import { Page } from '../page';
 import { useProfile, useSetInstruction } from '@/entities/user';
 import { useToast } from '@/shared/ui/toast';
 

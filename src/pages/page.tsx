@@ -22,18 +22,12 @@ export const Page: FC<PageProps> = ({ children, back = false }) => {
       });
     }
 
-    if (backButton.hide.isAvailable()) {
-      backButton.hide();
-    }
-  }, [back, navigate]);
-
-  useEffect(() => {
     return () => {
       if (backButton.hide.isAvailable()) {
         backButton.hide();
       }
     };
-  }, []);
+  }, [back, navigate]);
 
   return <div className="min-h-[calc(100dvh-76px)] p-4">{children}</div>;
 };

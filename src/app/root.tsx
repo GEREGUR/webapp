@@ -40,7 +40,7 @@ export const Root: FC<RootProps> = ({ routes }) => {
       <TonConnectUIProvider manifestUrl={manifestUrl}>
         <ToastProvider>
           <MarketProvider>
-            <div className="flex min-h-screen justify-center bg-black">
+            <div className="flex min-h-[100dvh] justify-center bg-black">
               <div className="relative w-full max-w-lg">
                 <AppRoot
                   appearance={'dark'}

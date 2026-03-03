@@ -70,8 +70,9 @@ export async function init(options: {
   }
 
   if (viewport.mount.isAvailable()) {
-    void viewport.mount().then(() => {
+    void viewport.mount().then(async () => {
       viewport.bindCssVars();
+      await viewport.requestFullscreen();
     });
   }
 }

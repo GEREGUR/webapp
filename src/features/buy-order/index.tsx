@@ -26,6 +26,37 @@ interface BuyOrderDrawerProps {
   onClose: () => void;
 }
 
+/* =========================
+   Business helpers
+========================= */
+
+const getMaxPartialBuy = (current: number, min: number) => {
+  if (current <= min) return 0;
+  return current - min;
+};
+
+const isAllowedAmount = (amount: number, current: number, min: number, balance: number) => {
+  if (!amount || amount <= 0) return false;
+  if (amount > current) return false;
+  if (amount > balance) return false;
+
+  const remainder = current - amount;
+
+  return remainder === 0 || remainder >= min;
+};
+
+const getMaxAllowedBuy = (current: number, min: number, balance: number) => {
+  const maxPartial = getMaxPartialBuy(current, min);
+
+  if (maxPartial < min) {
+    return Math.min(current, balance);
+  }
+
+  return Math.min(maxPartial, balance);
+};
+
+/* ========================= */
+
 export const BuyOrderDrawer = ({
   open,
   lotId,
@@ -40,9 +71,6 @@ export const BuyOrderDrawer = ({
   const { data: orderInfo, isLoading: isOrderInfoLoading } = useOrderInfo(lotId);
   const [regularTonAmount, setRegularTonAmount] = useState('');
 
-  console.log(settings, 'настройки');
-  console.log(orderInfo, 'инфо');
-
   const isInstant = orderType === 'instant';
   const currentMutation = isInstant ? selfBuyOrderMutation : buyOrderMutation;
 
@@ -51,7 +79,6 @@ export const BuyOrderDrawer = ({
 
   const payTonAmount = isInstant ? currentTonAmount : Number(regularTonAmount);
   const receiveTonAmount = isInstant ? selfBuyTonAmount : payTonAmount * (settings?.rate ?? 0);
-  const maxBuyAmount = currentTonAmount - minBuyAmount;
 
   const handleRegularTonChange = (value: string) => {
     const parsedValue = parseNumberInput(value);
@@ -59,7 +86,7 @@ export const BuyOrderDrawer = ({
   };
 
   const handleMaxClick = () => {
-    const maxTon = Math.min(tonBalance, maxBuyAmount > 0 ? maxBuyAmount : currentTonAmount);
+    const maxTon = getMaxAllowedBuy(currentTonAmount, minBuyAmount, tonBalance);
     setRegularTonAmount(String(maxTon));
   };
 
@@ -74,7 +101,8 @@ export const BuyOrderDrawer = ({
     }
 
     const ton = Number(regularTonAmount);
-    if (isNaN(ton) || ton <= 0 || ton > tonBalance) {
+
+    if (!isAllowedAmount(ton, currentTonAmount, minBuyAmount, tonBalance)) {
       return;
     }
 
@@ -99,14 +127,13 @@ export const BuyOrderDrawer = ({
 
   const isValid = isInstant
     ? payTonAmount <= tonBalance
-    : Number(regularTonAmount) > 0 &&
-      Number(regularTonAmount) <= tonBalance &&
-      Number(regularTonAmount) <= (maxBuyAmount > 0 ? maxBuyAmount : currentTonAmount);
+    : isAllowedAmount(Number(regularTonAmount), currentTonAmount, minBuyAmount, tonBalance);
 
   const isSubmitting = currentMutation.isPending;
 
   const title = isInstant ? `Мгновенный выкуп #${lotId}` : `Покупка ордера #${lotId}`;
   const feePercentage = settings?.fee_self_buy ?? 15;
+
   const description = isInstant
     ? `После выкупа собственного предложения на ваш баланс будет зачислен TON с удержанием комиссии (${feePercentage}%) за мгновенную ликвидность.`
     : 'После покупки части или всего предложения на ваш баланс будет зачислена валюта BP с ее помощью вы можете создать собственное предложение.';
@@ -118,7 +145,6 @@ export const BuyOrderDrawer = ({
     }
   }, [open]);
 
-  //TODO: refactor
   if (!settings?.rate) {
     return null;
   }
@@ -151,7 +177,6 @@ export const BuyOrderDrawer = ({
             <div>
               <div className="mb-0 flex items-center justify-between">
                 <div className="flex w-full items-center justify-between gap-2">
-                  {/*TODO: refactor */}
                   <span
                     className={cn(
                       'font-sans text-[16.72px] leading-[18.39px] font-light text-white',

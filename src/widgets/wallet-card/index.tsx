@@ -278,23 +278,22 @@ interface WalletHistoryDrawerProps {
   onClose: () => void;
 }
 
-type WalletHistoryDrawer = (props: WalletHistoryDrawerProps) => React.ReactElement;
-
-export const WalletHistoryDrawer: WalletHistoryDrawer = ({ open, onClose }) => {
+export const WalletHistoryDrawer = ({ open, onClose }: WalletHistoryDrawerProps) => {
   const { data: items, isLoading } = useWalletHistory();
 
   return (
-    <Drawer open={open} onOpenChange={(nextOpen) => (nextOpen ? undefined : onClose())}>
+    <Drawer open={open} onOpenChange={(nextOpen) => !nextOpen && onClose()}>
       <DrawerContent className="mx-auto rounded-t-[20px] bg-[#131214] sm:max-w-[400px]">
         <DrawerHeader className="gap-2.5 pb-2">
           <div className="flex items-center justify-between">
-            <DrawerTitle className="font-sans text-2xl leading-[22.32px] font-medium text-white">
+            <DrawerTitle className="font-sans text-2xl font-medium text-white">
               История кошелька
             </DrawerTitle>
+
             <Button
               type="button"
               variant="ghost"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-transparent p-0 text-white"
+              className="flex h-8 w-8 items-center justify-center bg-transparent p-0 text-white"
               onClick={onClose}
               aria-label="Закрыть"
             >
@@ -308,35 +307,37 @@ export const WalletHistoryDrawer: WalletHistoryDrawer = ({ open, onClose }) => {
             <div className="flex justify-center py-8">
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-white border-t-transparent" />
             </div>
-          ) : !items ? (
-            <p className="py-8 text-center text-white/60">История пуста</p>
-          ) : items.length === 0 ? (
+          ) : items?.length === 0 ? (
             <p className="py-8 text-center text-white/60">История пуста</p>
           ) : (
             items?.map((item) => {
               const isPositive = item.amount >= 0;
+
               return (
                 <div
                   key={item.id}
                   className="flex h-[56px] items-center justify-between rounded-[12px] bg-[#232027] px-3"
                 >
-                  <div className="flex min-w-[76px] items-center gap-1">
+                  <div className="flex min-w-[90px] items-center gap-1">
                     {item.currency === 'TON' ? (
                       <TonIcon className="h-4 w-4" />
                     ) : (
                       <BpPointsIcon className="h-4 w-4" />
                     )}
+
                     <span
-                      className={`text-[18px] leading-none font-medium ${isPositive ? 'text-[#A6FF8B]' : 'text-[#FF6363]'}`}
+                      className={`text-[18px] font-medium ${
+                        isPositive ? 'text-[#A6FF8B]' : 'text-[#FF6363]'
+                      }`}
                     >
-                      {isPositive ? '+' : '-'}
-                      {Math.abs(item.amount)}
+                      {isPositive ? '+' : ''}
+                      {formatFloat(item.amount, 2)}
                     </span>
                   </div>
-                  <p className="flex-1 px-2 text-center text-[14px] font-normal text-white">
-                    {item.title}
-                  </p>
-                  <span className="text-[12px] font-medium text-white">{item.date}</span>
+
+                  <p className="flex-1 px-2 text-center text-[14px] text-white">{item.title}</p>
+
+                  <span className="text-center text-[13px] text-white">{item.date}</span>
                 </div>
               );
             })

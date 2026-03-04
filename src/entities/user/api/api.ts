@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, getTelegramUserData } from '@/shared/api';
 import type { UserProfile } from './api.dto';
+import { mapWalletHistoryItem } from '../lib/mappers';
 
 interface GetMeResponse {
   id: number;
@@ -11,16 +12,32 @@ interface GetMeResponse {
   is_checked_instruction: boolean;
 }
 
-interface WalletHistoryItem {
+export type WalletHistoryType =
+  | 'CREATE_ORDER'
+  | 'BUY_ORDER'
+  | 'BUY_ORDER_OTHER_USER'
+  | 'REFERRAL'
+  | 'PAYMENT'
+  | 'WITHDRAWAL'
+  | 'BATTLE_PASS';
+
+export interface WalletHistoryApiItem {
+  id: number;
+  type: WalletHistoryType;
+  currency: 'TON' | 'BP';
+  value: number;
+  obj_id: number | null;
+  create_date: number;
+}
+
+type GetWalletHistoryResponse = WalletHistoryApiItem[];
+
+export interface WalletHistoryItem {
   id: number;
   currency: 'TON' | 'BP';
   amount: number;
   title: string;
   date: string;
-}
-
-interface GetWalletHistoryResponse {
-  history: WalletHistoryItem[];
 }
 
 interface SetWalletRequest {
@@ -56,13 +73,9 @@ export const useWalletHistory = () => {
   return useQuery({
     queryKey: QUERY_KEYS.walletHistory,
     queryFn: async (): Promise<WalletHistoryItem[]> => {
-      try {
-        const response = await api.get<GetWalletHistoryResponse>('/user/wallet/history');
-        return response.data.history;
-      } catch (error) {
-        console.error('API Error useWalletHistory:', error);
-        throw error;
-      }
+      const response = await api.get<GetWalletHistoryResponse>('/user/wallet/history');
+
+      return response.data.map(mapWalletHistoryItem);
     },
   });
 };

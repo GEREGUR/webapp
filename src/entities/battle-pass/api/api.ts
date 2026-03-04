@@ -54,6 +54,7 @@ export interface BattlePassRewardUI {
   multiplier: number;
   isCompleted: boolean;
   rewardType: BattlePassRewardType;
+  title: string;
   imageUrl?: string;
 }
 
@@ -64,6 +65,7 @@ export const mapBattlePassReward = (reward: BattlePassReward): BattlePassRewardU
     multiplier: reward.count,
     isCompleted: reward.is_claimed,
     rewardType: reward.type,
+    title: reward.title,
     imageUrl: reward.type_reward,
   };
 };

@@ -62,7 +62,7 @@ const RewardCard: FC<{
           <span
             className={`text-[14px] leading-[16.71px] font-medium text-white ${reward.rewardType === 'TON' || reward.rewardType === 'BP' ? 'uppercase' : 'capitalize'}`}
           >
-            {reward.rewardType}
+            {reward.title}
           </span>
         </div>
 

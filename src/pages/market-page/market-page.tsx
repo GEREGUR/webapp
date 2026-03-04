@@ -15,6 +15,7 @@ import { useMarket } from '@/entities/market';
 import { useProfile } from '@/entities/user';
 import { Loader } from '@/shared/ui/spinner';
 import { PageLoader } from '../page';
+import { ChevronDown } from 'lucide-react';
 
 const ORDER_CARD_ESTIMATED_HEIGHT = 76;
 const MARKET_STATIC_CONTENT_HEIGHT = 360;
@@ -187,7 +188,9 @@ export const MarketPage = () => {
           ) : marketOrders && marketOrders.length > 0 ? (
             <>
               <OrderList
-                orders={marketOrders.slice(0, initialOrdersCount)}
+                orders={marketOrders
+                  .slice(0, initialOrdersCount)
+                  .filter((o) => o.status !== 'CLOSED')}
                 onBuy={(order) =>
                   handleOrderBuy(order, order.owner.id === profile?.id ? 'instant' : 'regular')
                 }
@@ -204,7 +207,9 @@ export const MarketPage = () => {
                     className="pb-13"
                   >
                     <OrderList
-                      orders={marketOrders.slice(initialOrdersCount)}
+                      orders={marketOrders
+                        .slice(initialOrdersCount)
+                        .filter((o) => o.status !== 'CLOSED')}
                       onBuy={(order) =>
                         handleOrderBuy(
                           order,
@@ -225,9 +230,10 @@ export const MarketPage = () => {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 20 }}
                       transition={{ duration: 0.3, delay: 0.3 }}
-                      className="px-4"
+                      className="flex flex-col items-center justify-center gap-2 px-4"
                     >
                       <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
+                      <ChevronDown className="animate-bounce text-white" />
                     </motion.div>
                   )}
                 </AnimatePresence>

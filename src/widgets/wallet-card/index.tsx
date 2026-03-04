@@ -12,7 +12,7 @@ import { Input } from '@/shared/ui/input';
 import { useToast } from '@/shared/ui/toast';
 import { useWalletHistory } from '@/entities/user';
 import { useCreateTransaction, useWithdraw } from '@/entities/wallet';
-import { parseNumberInput } from '@/shared/lib/utils';
+import { formatFloat, parseNumberInput } from '@/shared/lib/utils';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import BpPointsIcon from '@/shared/assets/bp-points-sm.svg?react';
 import { Copy, X, Check } from 'lucide-react';
@@ -220,7 +220,7 @@ export const WithdrawDrawer = ({ open, maxTon, onClose, wallet }: WithdrawDrawer
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
                   setAmount(parseNumberInput(event.target.value))
                 }
-                placeholder={`Не более ${maxTon}`}
+                placeholder={`Не более ${formatFloat(maxTon, 3)}`}
                 className="h-[50px] rounded-[12px] border-none bg-[#232027] pr-14 pl-10 text-center text-[20px] font-medium text-white placeholder:text-white/40"
               />
               <button
@@ -246,7 +246,7 @@ export const WithdrawDrawer = ({ open, maxTon, onClose, wallet }: WithdrawDrawer
             />
           </div>
 
-          <p className="pt-[45px] pb-[23px] text-center text-[14px] leading-[1.1] font-semibold text-[#FFE88B]">
+          <p className="pt-[35px] pb-[15px] text-center text-[14px] leading-[1.1] font-semibold text-[#FFE88B]">
             Подтвердите вывод средств, данное действие невозможно отменить.
           </p>
 

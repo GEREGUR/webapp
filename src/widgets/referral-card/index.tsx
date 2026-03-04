@@ -11,7 +11,7 @@ interface ReferralCardProps {
   userId: number;
 }
 
-const tmaUrl = (import.meta.env.VITE_TG_BOT_URL as string) + '/webapp';
+const tmaUrl = import.meta.env.VITE_TG_BOT_URL as string;
 
 export const ReferralCard: FC<ReferralCardProps> = ({ referralEarn, referralCount, userId }) => {
   const [isChecked, setIsChecked] = useState(false);

@@ -36,14 +36,9 @@ export const getWsUrl = (): string | null => {
   const socketUrl = new URL(`wss://${wsHost}`);
   socketUrl.pathname = WS_PATH;
 
-  try {
-    const initData = retrieveLaunchParams();
-    console.log(initData, 'initData');
-    if (initData?.tgWebAppData?.user?.id) {
-      socketUrl.searchParams.set('auth', initData.tgWebAppData.user.id.toString());
-    }
-  } catch {
-    // Telegram SDK not ready yet
+  const initData = retrieveLaunchParams();
+  if (initData?.tgWebAppData?.user?.id) {
+    socketUrl.searchParams.set('auth', initData.tgWebAppData.user.id.toString());
   }
 
   return socketUrl.toString();

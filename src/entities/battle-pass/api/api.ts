@@ -26,20 +26,6 @@ export const useBattlePass = () => {
       // return import.meta.env.DEV && mockBattlePass;
       // }
     },
-    retry: false,
-  });
-};
-
-export const useActivateBattlePass = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (): Promise<void> => {
-      await api.get('/battle/me');
-    },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: QUERY_KEYS.battlePass });
-    },
   });
 };
 

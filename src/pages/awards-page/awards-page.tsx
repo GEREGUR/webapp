@@ -1,14 +1,12 @@
 import { type FC } from 'react';
-import { useLaunchParams } from '@tma.js/sdk-react';
 import { Page } from '@/pages/page';
 import { Loader } from '@/shared/ui/spinner';
 import { useTasksPage } from '@/entities/tasks/model/use-tasks-page';
 import { TaskList } from './ui/task-row';
+import { useToast } from '@/shared/ui/toast';
 
 export const AwardsPage: FC = () => {
-  const lp = useLaunchParams();
-  const platform = (lp.platform as string) || 'unknown';
-  const isMobile = ['ios', 'android', 'macos'].includes(platform);
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const {
     baseTasks,

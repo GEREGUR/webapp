@@ -34,7 +34,7 @@ const getInitialOrdersCount = (viewportHeight: number): number => {
   return Math.max(MIN_INITIAL_ORDERS, Math.min(MAX_INITIAL_ORDERS, calculatedCount));
 };
 
-export const IndexPage = () => {
+export const MarketPage = () => {
   const [selectedOrder, setSelectedOrder] = useState<
     (Order & { type: 'regular' | 'instant' }) | null
   >(null);

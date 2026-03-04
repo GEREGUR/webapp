@@ -10,9 +10,9 @@ export const routes: RouteObject[] = [
   {
     path: '/',
     Component: lazy(() =>
-      import('@/pages/index-page/index-page').then((m) => ({ default: m.IndexPage }))
+      import('@/pages/market-page/market-page').then((m) => ({ default: m.MarketPage }))
     ),
-    title: 'Home',
+    title: 'Market',
   },
   {
     path: '/battle-pass',

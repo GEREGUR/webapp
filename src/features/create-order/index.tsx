@@ -116,7 +116,7 @@ const CreateOrderModal = ({ open, bpBalance, onClose, settings }: CreateOrderMod
                   value={formatFloat(bpAmount, 3)}
                   onChange={(e) => handleBpAmountChange(e.target.value)}
                   placeholder="0"
-                  className="rounded-[10px] bg-[#232027] px-4 text-center text-white placeholder:text-white/40 focus:placeholder:text-transparent"
+                  className="rounded-[10px] bg-[#232027] px-4 text-center text-[20px] text-white placeholder:text-white/40 focus:placeholder:text-transparent"
                 />
                 <Button
                   type="button"

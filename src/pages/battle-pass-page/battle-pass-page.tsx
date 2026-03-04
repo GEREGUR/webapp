@@ -20,8 +20,6 @@ export const BattlePassPage: FC = () => {
   const [claimedRewardIds, setClaimedRewardIds] = useState<number[]>([]);
   const [isPromoOverlayOpen, setIsPromoOverlayOpen] = useState(false);
 
-  const isBpActive = !isError && Boolean(battlePassData?.rewards.length);
-
   const rewards = useMemo(() => {
     if (!battlePassData?.rewards) return [];
     return battlePassData.rewards.map(mapBattlePassReward).map((reward) => ({
@@ -53,6 +51,7 @@ export const BattlePassPage: FC = () => {
     });
   };
 
+  const isBpActive = !isError && Boolean(battlePassData?.rewards.length);
   const handleCloseOverlay = () => {
     setIsPromoOverlayOpen(false);
   };
@@ -61,9 +60,9 @@ export const BattlePassPage: FC = () => {
     setIsPromoOverlayOpen(true);
   };
 
-  if (isLoading && !battlePassData) {
+  if (isLoading) {
     return (
-      <Page back>
+      <Page className="flex h-full items-center justify-center py-8" back>
         <Loader />
       </Page>
     );
@@ -73,7 +72,11 @@ export const BattlePassPage: FC = () => {
     <>
       <Page back>
         <div className="flex flex-col gap-[20px] pb-20">
-          <BattlePassPromoCard isActive={isBpActive} onOpenOverlay={handleOpenPromoOverlay} />
+          <BattlePassPromoCard
+            isActive={isBpActive}
+            isLoading={isLoading}
+            onOpenOverlay={handleOpenPromoOverlay}
+          />
 
           <BattlePassProgress
             currentLevel={currentLevel}

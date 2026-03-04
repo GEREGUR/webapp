@@ -6,7 +6,7 @@ import { Loader } from '@/shared/ui/spinner';
 import { useToast } from '@/shared/ui/toast';
 import { useClearWallet, useProfile } from '@/entities/user';
 import { usePaymentData } from '@/entities/wallet';
-import { useActivateBattlePass, useBattlePass } from '@/entities/battle-pass';
+import { useBattlePass } from '@/entities/battle-pass';
 import { useTonConnect } from '@/shared/hooks/use-ton-connect';
 import { useSetWallet } from '@/entities/user';
 import { BattlePassPromoCard } from '@/features/battle-pass-promo';
@@ -24,7 +24,6 @@ export const ProfilePage: FC = () => {
   const { showToast } = useToast();
   const { data: profile, isLoading } = useProfile();
   const { data: battlePassData } = useBattlePass();
-  const activateBattlePass = useActivateBattlePass();
   const clearWallet = useClearWallet();
   const { data: paymentData, refetch: refetchPaymentData } = usePaymentData({ enabled: false });
   const { isConnected, connect, disconnect, walletAddress } = useTonConnect();
@@ -81,29 +80,12 @@ export const ProfilePage: FC = () => {
   };
 
   const handleBattlePassPromoClick = () => {
-    if (isBpActive) {
-      void navigate('/battle-pass');
-      return;
-    }
-
-    activateBattlePass.mutate(undefined, {
-      onSuccess: () => {
-        showToast('Battle Pass активирован!', 'success');
-        void navigate('/battle-pass');
-      },
-      onError: () => {
-        showToast('Не удалось активировать Battle Pass', 'error');
-      },
-    });
-  };
-
-  const handleOpenBattlePassOverlay = () => {
     void navigate('/battle-pass');
   };
 
   if (isLoading) {
     return (
-      <Page back>
+      <Page className="flex h-full items-center justify-center py-8" back>
         <Loader />
       </Page>
     );
@@ -139,11 +121,7 @@ export const ProfilePage: FC = () => {
           walletAddress={profile.wallet_address}
         />
 
-        <BattlePassPromoCard
-          isActive={isBpActive}
-          onActivate={handleBattlePassPromoClick}
-          onOpenOverlay={handleOpenBattlePassOverlay}
-        />
+        <BattlePassPromoCard isActive={isBpActive} onActivate={handleBattlePassPromoClick} />
 
         <ReferralCard referralEarn={profile.referral_earn} referralCount={0} userId={profile.id} />
       </div>

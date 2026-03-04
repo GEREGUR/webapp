@@ -9,8 +9,10 @@ import LightOne from '@/shared/assets/light-1.svg';
 import LightTwo from '@/shared/assets/light-2.svg';
 import LightThree from '@/shared/assets/light-3.svg';
 import LightFour from '@/shared/assets/light-4.svg';
+import { Loader } from 'lucide-react';
 
 interface BattlePassPromoCardProps {
+  isLoading?: boolean;
   isActive?: boolean;
   onActivate?: () => void;
   onOpenOverlay?: () => void;
@@ -18,6 +20,7 @@ interface BattlePassPromoCardProps {
 
 export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({
   isActive = false,
+  isLoading,
   onActivate,
   onOpenOverlay,
 }) => {
@@ -70,7 +73,11 @@ export const BattlePassPromoCard: FC<BattlePassPromoCardProps> = ({
         <p className="font-bebas-cyrillic ml-3 text-[38px] leading-8.5 font-semibold text-white uppercase">
           батлпасc
         </p>
-        {isActive ? (
+        {isLoading ? (
+          <Button className="font-bebas-cyrillic bg-button-bp-dark ml-3 h-[26px] w-full rounded-[6px] px-0 py-0 text-center text-[12.59px] leading-[13.85px] font-normal -tracking-tight text-white">
+            <Loader className="animate-spin" />
+          </Button>
+        ) : isActive ? (
           <Button
             className="font-bebas-cyrillic bg-button-bp-dark ml-3 h-[26px] w-full rounded-[6px] px-0 py-0 text-center text-[12.59px] leading-[13.85px] font-normal -tracking-tight text-white"
             variant="primary"

@@ -239,7 +239,7 @@ export const BuyOrderDrawer = ({
                   )}
                 >
                   {isOrderInfoLoading ? (
-                    <Loader size="sm" />
+                    <Loader size="sm" className="text-[#A6FF8B]" />
                   ) : (
                     <span className="text-center text-[20px] text-[#A6FF8B]">
                       {orderType === 'regular'

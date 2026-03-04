@@ -205,7 +205,7 @@ export const BuyOrderDrawer = ({
                     )}
                   >
                     {isOrderInfoLoading ? (
-                      <Loader size="sm" className="text-white" />
+                      <Loader size="sm" />
                     ) : (
                       <span className="text-center text-[20px] text-white">{payTonAmount}</span>
                     )}
@@ -239,7 +239,7 @@ export const BuyOrderDrawer = ({
                   )}
                 >
                   {isOrderInfoLoading ? (
-                    <Loader size="sm" className="text-[#A6FF8B]" />
+                    <Loader size="sm" />
                   ) : (
                     <span className="text-center text-[20px] text-[#A6FF8B]">
                       {orderType === 'regular'

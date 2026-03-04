@@ -22,7 +22,7 @@ export const Header: FC<HeaderProps> = ({
   return (
     <header
       className={`fixed right-0 left-0 z-50 mt-4 flex h-10 items-center justify-center bg-transparent ${
-        viewport.isMounted() && viewport.isFullscreen() ? 'top-20' : 'top-0'
+        viewport.isFullscreen() ? 'top-20' : 'top-0'
       }`}
     >
       <div

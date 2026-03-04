@@ -18,8 +18,9 @@ const Spinner = ({ size = 'md', className }: SpinnerProps) => {
 
 interface LoaderProps {
   size?: 'sm' | 'md' | 'lg';
+  className?: string;
 }
 
-export const Loader = ({ size = 'md' }: LoaderProps) => {
-  return <Spinner size={size} />;
+export const Loader = ({ size = 'md', className }: LoaderProps) => {
+  return <Spinner size={size} className={className} />;
 };

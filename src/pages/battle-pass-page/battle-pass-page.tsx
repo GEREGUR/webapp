@@ -1,5 +1,5 @@
 import { type FC, useMemo, useState } from 'react';
-import { Page } from '@/pages/page';
+import { Page, PageLoader } from '@/pages/page';
 import { BattlePassProgress } from '@/features/battle-pass-progress';
 import { BattlePassPromoCard } from '@/features/battle-pass-promo';
 import {
@@ -9,7 +9,6 @@ import {
   type BattlePassRewardUI,
 } from '@/entities/battle-pass';
 import { useToast } from '@/shared/ui/toast';
-import { Loader } from '@/shared/ui/spinner';
 import { ClaimOverlay } from './ui/claim-overlay';
 import { RewardList } from './ui/rewards';
 
@@ -61,11 +60,7 @@ export const BattlePassPage: FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <Page className="flex h-full items-center justify-center py-8" back>
-        <Loader />
-      </Page>
-    );
+    return <PageLoader />;
   }
 
   return (

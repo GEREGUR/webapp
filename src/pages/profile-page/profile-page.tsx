@@ -1,8 +1,7 @@
 import { type FC, useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Page } from '@/pages/page';
+import { Page, PageLoader } from '@/pages/page';
 import { Avatar } from '@/shared/ui/avatar';
-import { Loader } from '@/shared/ui/spinner';
 import { useToast } from '@/shared/ui/toast';
 import { useClearWallet, useProfile } from '@/entities/user';
 import { usePaymentData } from '@/entities/wallet';
@@ -84,11 +83,7 @@ export const ProfilePage: FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <Page className="flex h-full items-center justify-center py-8" back>
-        <Loader />
-      </Page>
-    );
+    return <PageLoader />;
   }
 
   if (!profile) {

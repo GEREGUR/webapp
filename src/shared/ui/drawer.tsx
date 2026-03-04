@@ -33,21 +33,16 @@ function DrawerContent({
   ...props
 }: React.ComponentProps<typeof DrawerPrimitive.Content>) {
   const [paddingBottom, setPaddingBottom] = useState(0);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
 
   useEffect(() => {
     const viewport = window.visualViewport;
     if (!viewport) return;
 
     const handleResize = () => {
-      const viewportHeight = viewport.height;
-      const windowHeight = window.innerHeight;
-      const keyboardHeight = windowHeight - viewportHeight;
-
-      if (keyboardHeight > 0) {
-        setPaddingBottom(keyboardHeight);
-      } else {
-        setPaddingBottom(0);
-      }
+      const keyboardHeight = window.innerHeight - viewport.height;
+      setIsKeyboardOpen(keyboardHeight > 0);
+      setPaddingBottom(Math.max(0, keyboardHeight));
     };
 
     viewport.addEventListener('resize', handleResize);
@@ -67,7 +62,11 @@ function DrawerContent({
           'data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:sm:max-w-sm',
           className
         )}
-        style={{ paddingBottom: paddingBottom > 0 ? paddingBottom : undefined }}
+        style={{
+          position: isKeyboardOpen ? 'absolute' : 'fixed',
+          bottom: isKeyboardOpen ? paddingBottom : undefined,
+          paddingBottom: paddingBottom > 0 ? paddingBottom : undefined,
+        }}
         {...props}
       >
         {children}

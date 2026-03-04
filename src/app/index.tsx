@@ -24,7 +24,7 @@ try {
 
   await init({
     debug,
-    eruda: debug && ['ios', 'android'].includes(platform),
+    eruda: debug,
     mockForMacOS: platform === 'macos',
   }).then(() => {
     root.render(

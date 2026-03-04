@@ -6,7 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const parseNumberInput = (value: string): string => {
-  return value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
+  return value
+    .replace(',', '.')
+    .replace(/[^0-9.]/g, '')
+    .replace(/(\..*)\./g, '$1');
 };
 
 export const formatFloat = (value: number | string, decimals: number): string => {

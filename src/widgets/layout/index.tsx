@@ -155,11 +155,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
       <main
         className={cn(
           'lg:w-full',
-          isFaqPage
-            ? 'h-[100dvh] overflow-hidden'
-            : viewport.isMounted() && viewport.isFullscreen()
-              ? 'pt-32'
-              : 'pt-16'
+          isFaqPage ? 'h-[100dvh] overflow-hidden' : viewport.isFullscreen() ? 'pt-32' : 'pt-16'
         )}
       >
         {children}

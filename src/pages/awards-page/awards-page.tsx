@@ -1,9 +1,7 @@
 import { type FC } from 'react';
-import { Page } from '@/pages/page';
-import { Loader } from '@/shared/ui/spinner';
+import { Page, PageLoader } from '@/pages/page';
 import { useTasksPage } from '@/entities/tasks/model/use-tasks-page';
 import { TaskList } from './ui/task-row';
-import { useToast } from '@/shared/ui/toast';
 
 export const AwardsPage: FC = () => {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -23,11 +21,7 @@ export const AwardsPage: FC = () => {
   const taskSection = baseTasks.length > 0 ? baseTasks : filteredBonusTasks;
 
   if (isLoading) {
-    return (
-      <Page back>
-        <Loader />
-      </Page>
-    );
+    return <PageLoader />;
   }
 
   return (

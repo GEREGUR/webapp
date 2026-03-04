@@ -14,6 +14,7 @@ import { BumpOrdersButton } from '@/features/bump-orders-button';
 import { useMarket } from '@/entities/market';
 import { useProfile } from '@/entities/user';
 import { Loader } from '@/shared/ui/spinner';
+import { PageLoader } from '../page';
 
 const ORDER_CARD_ESTIMATED_HEIGHT = 76;
 const MARKET_STATIC_CONTENT_HEIGHT = 360;
@@ -61,8 +62,6 @@ export const MarketPage = () => {
     min_ton_amount: ordersSliderValue,
     limit: 10,
   });
-
-  console.log(selectedOrder, 'выбранный ордер');
 
   const bpBalance = profile?.internal_balance ?? 0;
   const orders = useMemo(
@@ -132,13 +131,7 @@ export const MarketPage = () => {
   }, []);
 
   if (profileLoading) {
-    return (
-      <div className="px-4 py-8">
-        <Card>
-          <Loader size="sm" />
-        </Card>
-      </div>
-    );
+    return <PageLoader />;
   }
 
   if (profile && !profile.is_checked_instruction && !import.meta.env.DEV) {
@@ -165,7 +158,7 @@ export const MarketPage = () => {
           className="pb-[calc(env(safe-area-inset-bottom)+76px)]"
           style={{ minHeight: viewportHeight > 0 ? `${viewportHeight + 1}px` : undefined }}
         >
-          <MaxWidthWrapper disableRightPadding className="min-h-[54px] md:pl-4">
+          <MaxWidthWrapper className="pr-0 md:pr-0 md:pl-4">
             <LiveCarousel>{(item) => <LiveWinCard {...item} />}</LiveCarousel>
           </MaxWidthWrapper>
 
@@ -254,7 +247,7 @@ export const MarketPage = () => {
       </TabPanel>
 
       <TabPanel value="orders">
-        <div className="px-4 md:px-12">
+        <div className="px-4">
           <div className="mt-2 mb-3 flex items-center justify-between gap-4">
             <TonAmountCard
               value={ordersSliderValue}
@@ -278,7 +271,7 @@ export const MarketPage = () => {
               showRatio
               selfBuy
             />
-            {isFetchingNextPage ? <Loader size="sm" className="animate-spin text-white" /> : null}
+            {isFetchingNextPage ? <Loader size="sm" /> : null}
             <div ref={loadMoreRef} className="h-10" />
           </div>
         ) : (

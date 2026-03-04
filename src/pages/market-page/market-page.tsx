@@ -17,8 +17,8 @@ import { Loader } from '@/shared/ui/spinner';
 import { PageLoader } from '../page';
 import { ChevronDown } from 'lucide-react';
 
-const ORDER_CARD_ESTIMATED_HEIGHT = 76;
-const MARKET_STATIC_CONTENT_HEIGHT = 360;
+const ORDER_CARD_ESTIMATED_HEIGHT = 86;
+const MARKET_STATIC_CONTENT_HEIGHT = 370;
 const CREATE_BUTTON_RESERVED_HEIGHT = 62;
 const MOBILE_DOCK_RESERVED_HEIGHT = 76;
 const MIN_INITIAL_ORDERS = 1;
@@ -262,7 +262,7 @@ export const MarketPage = () => {
               className="flex-1"
             />
 
-            <BumpOrdersButton className="bg-ghost h-[50px]" />
+            <BumpOrdersButton className="bg-ghost h-[50px]" disabled={orders.length === 0} />
           </div>
         </div>
         {ordersLoading ? (

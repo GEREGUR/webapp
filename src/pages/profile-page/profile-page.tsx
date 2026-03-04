@@ -67,8 +67,7 @@ export const ProfilePage: FC = () => {
   };
 
   const handleDisconnectWallet = async () => {
-    const disconnected = await disconnect();
-    await clearWallet.mutateAsync();
+    const [disconnected] = await Promise.all([disconnect(), clearWallet.mutateAsync()]);
 
     if (!disconnected) {
       return;

@@ -65,10 +65,14 @@ export async function init(options: {
     themeParams.bindCssVars();
   }
 
+  const lp = retrieveLaunchParams();
+
   if (viewport.mount.isAvailable()) {
     void viewport.mount().then(async () => {
       viewport.bindCssVars();
-      await viewport.requestFullscreen();
+      if (['ios', 'android'].includes(lp.tgWebAppPlatform)) {
+        await viewport.requestFullscreen();
+      }
     });
   }
 }

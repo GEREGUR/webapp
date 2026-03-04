@@ -39,7 +39,7 @@ export const Page: FC<PageProps> = ({ children, back = false, className }) => {
 export const PageLoader = () => {
   return (
     <div className="absolute top-0 z-[200] grid h-[calc(100dvh-76px)] w-full place-items-center py-8">
-      <Card className="grid size-20 place-items-center">
+      <Card className="grid size-15 place-items-center">
         <Loader />
       </Card>
     </div>

@@ -11,7 +11,8 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0 --fix",
     "preview": "vite preview",
-    "predeploy": "pnpm run build"
+    "predeploy": "pnpm build",
+    "deploy:vercel": "tsc --noEmit && vite build && vercel --prod"
   },
   "dependencies": {
     "@fontsource/bebas-neue": "^5.2.7",

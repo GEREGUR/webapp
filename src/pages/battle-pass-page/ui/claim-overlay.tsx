@@ -5,6 +5,7 @@ import { X } from 'lucide-react';
 import PepeGiftIcon from '@/shared/assets/pepe-gift.png';
 import { getRewardIcon, mapRewards } from '../lib/utils';
 import { Button } from '@/shared/ui/button';
+import { viewport } from '@tma.js/sdk-react';
 
 interface ClaimOverlayProps {
   open: boolean;
@@ -35,15 +36,15 @@ export const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, rewards, onClose }) 
   return (
     <div
       className={cn(
-        'fixed inset-0 z-[10000] w-full bg-[#5F81D8] p-4 pb-[150px]',
-        isScrollable ? 'overflow-y-auto' : 'overflow-hidden'
+        'fixed inset-0 z-[10000] w-full bg-[#5F81D8] p-4 pb-[50px]',
+        isScrollable ? 'overflow-y-auto' : 'overflow-hidden',
+        { 'pt-34': viewport.isFullscreen() }
       )}
     >
       <div
         className="pointer-events-none fixed inset-0"
         style={{
-          backgroundImage:
-            'conic-gradient(from -92deg at 49% 13%, rgba(255,255,255,0.26) 0deg 19deg, rgba(255,255,255,0.05) 19deg 42deg, rgba(255,255,255,0.23) 42deg 74deg, rgba(255,255,255,0.06) 74deg 95deg, rgba(255,255,255,0.2) 95deg 131deg, rgba(255,255,255,0.04) 131deg 152deg, rgba(255,255,255,0.22) 152deg 188deg, rgba(255,255,255,0.05) 188deg 214deg, rgba(255,255,255,0.24) 214deg 247deg, rgba(255,255,255,0.06) 247deg 271deg, rgba(255,255,255,0.2) 271deg 309deg, rgba(255,255,255,0.05) 309deg 334deg, rgba(255,255,255,0.24) 334deg 360deg)',
+          backgroundImage: `conic-gradient(from -92deg at 49% ${viewport.isFullscreen() ? '28%' : '13%'}, rgba(255,255,255,0.26) 0deg 19deg, rgba(255,255,255,0.05) 19deg 42deg, rgba(255,255,255,0.23) 42deg 74deg, rgba(255,255,255,0.06) 74deg 95deg, rgba(255,255,255,0.2) 95deg 131deg, rgba(255,255,255,0.04) 131deg 152deg, rgba(255,255,255,0.22) 152deg 188deg, rgba(255,255,255,0.05) 188deg 214deg, rgba(255,255,255,0.24) 214deg 247deg, rgba(255,255,255,0.06) 247deg 271deg, rgba(255,255,255,0.2) 271deg 309deg, rgba(255,255,255,0.05) 309deg 334deg, rgba(255,255,255,0.24) 334deg 360deg)`,
           WebkitMaskImage:
             'radial-gradient(circle at 50% 27%, rgba(0,0,0,1) 0%, rgba(0,0,0,0.92) 44%, rgba(0,0,0,0.48) 72%, rgba(0,0,0,0) 100%)',
           maskImage:
@@ -57,7 +58,7 @@ export const ClaimOverlay: FC<ClaimOverlayProps> = ({ open, rewards, onClose }) 
             <h2 className="text-[38px] leading-none font-medium text-white/95">Батлпасс</h2>
             <button
               type="button"
-              className="absolute right-0 bottom-0 rounded-md text-white/90 transition hover:bg-white/10 hover:text-white"
+              className="absolute right-0 bottom-px rounded-md text-white/90 transition hover:bg-white/10 hover:text-white"
               onClick={onClose}
               aria-label="Закрыть оверлей награды"
             >

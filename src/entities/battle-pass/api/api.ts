@@ -6,7 +6,6 @@ import type {
   BattlePassReward,
   BattlePassRewardType,
 } from './api.dto';
-// import { mockBattlePass } from './mock-data';
 import { AxiosError } from 'axios';
 
 const QUERY_KEYS = {
@@ -17,14 +16,8 @@ export const useBattlePass = () => {
   return useQuery({
     queryKey: QUERY_KEYS.battlePass,
     queryFn: async () => {
-      // try {
       const response = await api.get<BattlePassResponse>('/battle/me');
       return response.data;
-      // } catch (error) {
-      // console.error('API Error useBattlePass:', error);
-      //WARN: remove later - return mock data on error
-      // return import.meta.env.DEV && mockBattlePass;
-      // }
     },
   });
 };

@@ -1,9 +1,11 @@
+import { useEffect, type FC, type ReactNode } from 'react';
+
+import { useNavigate } from 'react-router-dom';
+
 import { cn } from '@/shared/lib/utils';
 import { Card } from '@/shared/ui/card';
 import { backButton } from '@tma.js/sdk-react';
 import { Loader } from '@/shared/ui/spinner';
-import { useEffect, type FC, type ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 interface PageProps {
   children: ReactNode;

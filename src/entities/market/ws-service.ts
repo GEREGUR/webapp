@@ -3,7 +3,6 @@ import { map, takeUntil, tap, filter, distinctUntilChanged } from 'rxjs/operator
 import { webSocket, WebSocketSubject } from 'rxjs/webSocket';
 import { getWsUrl, parseWsEvent } from './websocket';
 import { FALLBACK_TIMEOUT_MS, RECONNECT_DELAY_MS, MAX_RETRY_COUNT } from './config';
-import { mockOrders, mockStats, mockItems } from './mock-data';
 import type { WsOrder, WsStats, WsEvent, DropItem, WsDeal, WsTransaction } from './types';
 
 export interface MarketState {
@@ -219,18 +218,16 @@ class MarketWebSocketService {
       }
 
       case 'order_update': {
-        const updatedOrders = this.allOrders.map((order) => {
-          if (order.id === event.data.id) {
-            return {
-              ...order,
-              current_ton_amount: event.data.current_ton_amount,
-              status: event.data.status,
-            };
-          }
-          return order;
-        });
+        const filteredOrders = this.allOrders.filter((order) => order.id !== event.data.id);
+        const updatedOrder = {
+          ...this.allOrders.find((order) => order.id === event.data.id)!,
+          status: event.data.status,
+          current_ton_amount: event.data.current_ton_amount,
+        };
 
-        this.applyOrders(updatedOrders);
+        if (!updatedOrder?.id) return;
+
+        this.applyOrders([updatedOrder, ...filteredOrders]);
         break;
       }
 
@@ -290,12 +287,10 @@ class MarketWebSocketService {
   }
 
   private setFallback(): void {
-    const isDev = import.meta.env.DEV;
-    this.allOrders = isDev ? mockOrders : [];
+    this.allOrders = [];
     this.updateState({
       isLoading: false,
       isConnected: false,
-      ...(isDev && { orders: mockOrders, stats: mockStats, items: mockItems }),
     });
   }
 

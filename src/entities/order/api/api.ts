@@ -8,10 +8,6 @@ import type {
   GetSelfOrdersRequest,
   OrderInfo,
 } from './api.dto';
-import {} from // mockOrderSettings,
-// mockSelfOrders,
-// mockOrderInfo,
-'./mock-data';
 
 const QUERY_KEYS = {
   orders: ['orders', 'self'] as const,
@@ -23,13 +19,8 @@ export const useOrderInfo = (orderId: number) => {
   return useQuery({
     queryKey: QUERY_KEYS.orderInfo(orderId),
     queryFn: async () => {
-      //WARN: remove later
-      // try {
       const response = await api.get<OrderInfo>(`/order/info/${orderId}`);
       return response.data;
-      // } catch {
-      //   return import.meta.env.DEV && mockOrderInfo;
-      // }
     },
     enabled: orderId > 0,
   });

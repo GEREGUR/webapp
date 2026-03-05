@@ -1,20 +1,3 @@
-# Telegram Mini Apps React Template
-
-This template demonstrates how developers can implement a single-page
-application on the Telegram Mini Apps platform using the following technologies
-and libraries:
-
-- [React](https://react.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [TON Connect](https://docs.ton.org/develop/dapps/ton-connect/overview)
-- [@tma.js SDK](https://docs.telegram-mini-apps.com/packages/tma-js-sdk)
-- [Telegram UI](https://github.com/Telegram-Mini-Apps/TelegramUI)
-- [Vite](https://vitejs.dev/)
-
-> The template was created using [pnpm](https://www.pnpmjs.com/). Therefore, it is
-> required to use it for this project as well. Using other package managers, you
-> will receive a corresponding error.
-
 ## Install Dependencies
 
 If you have just cloned this template, you should install the project
@@ -166,7 +149,7 @@ pnpm run deploy
 After the deployment completed successfully, visit the page with data according
 to your username and repository name. Here is the page link example using the
 data mentioned above:
-https://telegram-mini-apps.github.io/is-awesome
+<https://telegram-mini-apps.github.io/is-awesome>
 
 ### GitHub Workflow
 

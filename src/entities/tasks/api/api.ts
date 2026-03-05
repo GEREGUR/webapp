@@ -1,9 +1,9 @@
+import { AxiosError } from 'axios';
 import { useQuery, useMutation } from '@tanstack/react-query';
+
 import { api } from '@/shared/api';
 import type { ApiTask, ApiTaskError, TasksListResponse, TaskStatus } from './api.dto';
 import { mapTaskDescription, mapTaskTitle, mapTaskType } from '../lib/task-utils';
-import { mockApiTasks, mockBonusTasks } from './mock-data';
-import { AxiosError } from 'axios';
 
 const QUERY_KEYS = {
   tasks: ['tasks', 'list'] as const,
@@ -22,9 +22,6 @@ export const useTasks = () => {
         return { tasks: mapTasks(response.data) };
       } catch (error) {
         console.error('API Error useTasks:', error);
-        //WARN: remove later - return mock data on error
-        const allTasks = [...mockApiTasks, ...mockBonusTasks];
-        return { tasks: mapTasks(allTasks) };
       }
     },
   });

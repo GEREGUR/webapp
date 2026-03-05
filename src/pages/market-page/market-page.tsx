@@ -40,8 +40,8 @@ export const MarketPage = () => {
   const [selectedOrder, setSelectedOrder] = useState<
     (Order & { type: 'regular' | 'instant' }) | null
   >(null);
-  const [marketSliderValue, setMarketSliderValue] = useState(1);
-  const [ordersSliderValue, setOrdersSliderValue] = useState(1);
+  const [marketSliderValue, setMarketSliderValue] = useState(0);
+  const [ordersSliderValue, setOrdersSliderValue] = useState(0);
   const [showAllOrders, setShowAllOrders] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(() =>
     typeof window !== 'undefined' ? window.innerHeight : 0
@@ -50,8 +50,9 @@ export const MarketPage = () => {
     typeof window !== 'undefined' ? getInitialOrdersCount(window.innerHeight) : 4
   );
 
-  const { orders: marketOrders, stats, isLoading: marketLoading, setMinTonFilter } = useMarket();
   const { data: profile, isLoading: profileLoading } = useProfile();
+
+  const { orders: marketOrders, stats, isLoading: marketLoading, setMinTonFilter } = useMarket();
   const { data: orderSettings } = useOrderSettings();
   const {
     data: ordersPages,
@@ -63,12 +64,12 @@ export const MarketPage = () => {
     min_ton_amount: ordersSliderValue,
     limit: 10,
   });
-
-  const bpBalance = profile?.internal_balance ?? 0;
   const orders = useMemo(
     () => ordersPages?.pages.flatMap((page) => page) ?? [],
     [ordersPages?.pages.length]
   );
+
+  const bpBalance = profile?.internal_balance ?? 0;
 
   const handleOrderBuy = (order: Order, type: 'regular' | 'instant') => {
     setSelectedOrder({ ...order, type });
@@ -131,7 +132,7 @@ export const MarketPage = () => {
     };
   }, []);
 
-  if (profileLoading) {
+  if (profileLoading || marketLoading) {
     return <PageLoader />;
   }
 
@@ -229,7 +230,7 @@ export const MarketPage = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 20 }}
-                      transition={{ duration: 0.3, delay: 0.3 }}
+                      transition={{ duration: 0.3 }}
                       className="flex flex-col items-center justify-center gap-2 px-4"
                     >
                       <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />

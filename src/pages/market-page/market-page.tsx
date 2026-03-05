@@ -198,13 +198,13 @@ export const MarketPage = () => {
                 ownerId={profile?.id}
               />
 
-              <AnimatePresence>
+              <AnimatePresence mode="popLayout">
                 {showAllOrders && marketOrders.length > initialOrdersCount && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.3 }}
+                    style={{ overflow: 'hidden' }}
                     className="pb-13"
                   >
                     <OrderList
@@ -223,22 +223,21 @@ export const MarketPage = () => {
                 )}
               </AnimatePresence>
 
-              {marketOrders.length > initialOrdersCount && (
-                <AnimatePresence>
-                  {!showAllOrders && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 20 }}
-                      transition={{ duration: 0.3 }}
-                      className="flex flex-col items-center justify-center gap-2 px-4"
-                    >
-                      <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
-                      <ChevronDown className="animate-bounce text-white" />
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              )}
+              <AnimatePresence mode="wait">
+                {marketOrders.length > initialOrdersCount && !showAllOrders && (
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="flex flex-col items-center justify-center gap-2 px-4"
+                  >
+                    <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
+                    <ChevronDown className="animate-bounce text-white" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </>
           ) : (
             <>

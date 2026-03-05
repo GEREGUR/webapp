@@ -143,7 +143,6 @@ class MarketWebSocketService {
           console.log('[MarketWsService] WebSocket connected!');
           this.reconnectAttempts = 0;
           this.updateState({ isConnected: true });
-          this.sendFilterOnConnect();
         },
       },
       closeObserver: {
@@ -199,7 +198,7 @@ class MarketWebSocketService {
         this.applyOrders(event.data.orders ?? []);
         this.updateState({
           stats: event.data.stats,
-          items: historyItems.slice(0, 5),
+          items: historyItems.slice(0, 15),
           isLoading: false,
         });
         break;
@@ -294,12 +293,13 @@ class MarketWebSocketService {
     });
   }
 
-  setMinTonFilter(minTon: number): void {
+  setMinTonFilter = (minTon: number): void => {
     const normalizedMinTon = Number.isFinite(minTon) ? Math.max(0, minTon) : 0;
     this.minTonFilter = normalizedMinTon;
     this.updateState({ orders: this.filterOrders(this.allOrders) });
+    console.log('[MarketWsService] setMinTonFilter called with:', normalizedMinTon);
     this.sendFilterUpdate(normalizedMinTon);
-  }
+  };
 
   private sendFilterUpdate(minTon: number): void {
     if (minTon === this.lastSentFilter) {
@@ -314,12 +314,6 @@ class MarketWebSocketService {
       type: 'update_filter',
       min_ton: minTon,
     });
-  }
-
-  private sendFilterOnConnect(): void {
-    if (this.minTonFilter > 0) {
-      this.sendFilterUpdate(this.minTonFilter);
-    }
   }
 
   private updateState(partial: Partial<MarketState>): void {

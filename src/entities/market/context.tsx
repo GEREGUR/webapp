@@ -33,7 +33,7 @@ export const MarketProvider: FC<MarketProviderProps> = ({ children }) => {
     orders: [],
     stats: null,
     isLoading: true,
-    setMinTonFilter: marketWsService.setMinTonFilter.bind(marketWsService),
+    setMinTonFilter: marketWsService.setMinTonFilter,
   });
 
   useEffect(() => {
@@ -75,9 +75,5 @@ export const MarketProvider: FC<MarketProviderProps> = ({ children }) => {
     };
   }, [showToast]);
 
-  return (
-    <MarketContext.Provider value={contextValue}>
-      {children}
-    </MarketContext.Provider>
-  );
+  return <MarketContext.Provider value={contextValue}>{children}</MarketContext.Provider>;
 };

@@ -86,21 +86,18 @@ export const TonAmountCard = ({
   onFilterChange,
   filterDebounceMs = 300,
 }: TonAmountCardProps) => {
-  const sliderValue = Math.max(1, Math.min(1000, value));
-  const isFirstRender = useRef(true);
+  const sliderValue = Math.max(0, Math.min(1000, value));
+  const isInitialSliderState = useRef(true);
 
   useEffect(() => {
     if (!onFilterChange) {
       return;
     }
 
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-
     const timeoutId = window.setTimeout(() => {
+      if (isInitialSliderState.current && sliderValue === 0) return;
       onFilterChange(sliderValue);
+      isInitialSliderState.current = false;
     }, filterDebounceMs);
 
     return () => {

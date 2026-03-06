@@ -53,6 +53,7 @@ export const MarketPage = () => {
   const { data: profile, isLoading: profileLoading } = useProfile();
 
   const { orders: marketOrders, stats, isLoading: marketLoading, setMinTonFilter } = useMarket();
+
   const { data: orderSettings } = useOrderSettings();
   const {
     data: ordersPages,
@@ -77,13 +78,6 @@ export const MarketPage = () => {
 
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const handleScroll = useCallback(() => {
-    const active = document.activeElement;
-    const isInputFocused = active instanceof HTMLInputElement;
-
-    if (isInputFocused) {
-      return;
-    }
-
     setShowAllOrders(window.scrollY > 10);
   }, []);
 
@@ -172,6 +166,7 @@ export const MarketPage = () => {
               />
             </div>
             <div className="mb-3 flex items-center justify-between gap-2.5">
+              {/*TODO: сделать по нормальному разделение маркет и селф ордеров */}
               <TonAmountCard
                 value={marketSliderValue}
                 onChange={setMarketSliderValue}
@@ -199,7 +194,7 @@ export const MarketPage = () => {
               />
 
               <AnimatePresence mode="popLayout">
-                {showAllOrders && marketOrders.length > initialOrdersCount && (
+                {showAllOrders && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
@@ -224,7 +219,7 @@ export const MarketPage = () => {
               </AnimatePresence>
 
               <AnimatePresence mode="wait">
-                {marketOrders.length > initialOrdersCount && !showAllOrders && (
+                {!showAllOrders && (
                   <motion.div
                     layout
                     initial={{ opacity: 0 }}
@@ -233,8 +228,14 @@ export const MarketPage = () => {
                     transition={{ duration: 0.3 }}
                     className="flex flex-col items-center justify-center gap-2 px-4"
                   >
-                    <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
-                    <ChevronDown className="animate-bounce text-white" />
+                    <CreateOrderButton
+                      settings={orderSettings}
+                      bpBalance={bpBalance}
+                      showAllOrders={showAllOrders}
+                    />
+                    {marketOrders.length > initialOrdersCount && (
+                      <ChevronDown className="animate-bounce text-white" />
+                    )}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -266,7 +267,7 @@ export const MarketPage = () => {
           </div>
         </div>
         {ordersLoading ? (
-          <Card className="mx-4">
+          <Card className="mx-4 grid place-items-center">
             <Loader size="sm" />
           </Card>
         ) : orders && orders.length > 0 ? (

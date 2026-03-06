@@ -8,6 +8,7 @@ import type {
   GetSelfOrdersRequest,
   OrderInfo,
 } from './api.dto';
+import { useDebounce } from '@/shared/hooks/use-debounce';
 
 const QUERY_KEYS = {
   orders: ['orders', 'self'] as const,
@@ -27,8 +28,10 @@ export const useOrderInfo = (orderId: number) => {
 };
 
 export const useSelfOrders = (params: Omit<GetSelfOrdersRequest, 'offset'>) => {
+  const debouncedParams = useDebounce(params.min_ton_amount);
+
   return useInfiniteQuery({
-    queryKey: QUERY_KEYS.orders,
+    queryKey: [...QUERY_KEYS.orders, { ...params, min_ton_amount: debouncedParams }],
     queryFn: async ({ pageParam }) => {
       const response = await api.get<Order[]>('/order/self_orders', {
         params: { ...params, offset: (pageParam - 1) * params.limit },
@@ -112,14 +115,8 @@ export const useOrderSettings = () => {
   return useQuery({
     queryKey: QUERY_KEYS.orderSettings,
     queryFn: async () => {
-      // try {
       const response = await api.get<OrderSettings>('/order/setting');
       return response.data;
-      // } catch (error) {
-      // console.error('API Error useOrderSettings:', error);
-      //WARN: remove later - return mock data on error
-      // return import.meta.env.DEV && mockOrderSettings;
-      // }
     },
   });
 };

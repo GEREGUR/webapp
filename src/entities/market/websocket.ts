@@ -3,37 +3,7 @@ import { WS_PATH } from './config';
 import type { WsDeal, WsOrder, WsOrderUpdate, WsStats, WsTransaction, WsEvent } from './types';
 
 export const getWsUrl = (): string | null => {
-  const apiBaseUrl = import.meta.env.VITE_API_URL as string | undefined;
-  const proxyTarget = import.meta.env.VITE_PROXY_TARGET as string | undefined;
-  const wsUrl = import.meta.env.VITE_WS_URL as string | undefined;
-  const fallbackUrl = window.location.origin;
-  const sourceUrl =
-    apiBaseUrl && /^https?:\/\//.test(apiBaseUrl)
-      ? apiBaseUrl
-      : proxyTarget && /^https?:\/\//.test(proxyTarget)
-        ? proxyTarget
-        : apiBaseUrl || fallbackUrl;
-
-  let parsedApiUrl: URL;
-  try {
-    parsedApiUrl = new URL(sourceUrl, fallbackUrl);
-  } catch {
-    return null;
-  }
-
-  let wsHost: string;
-  if (wsUrl) {
-    try {
-      const parsedWsUrl = new URL(wsUrl);
-      wsHost = parsedWsUrl.host;
-    } catch {
-      wsHost = parsedApiUrl.host;
-    }
-  } else {
-    wsHost = parsedApiUrl.host;
-  }
-
-  const socketUrl = new URL(`wss://${wsHost}`);
+  const socketUrl = new URL(`wss://${import.meta.env.VITE_API_HOST}`);
   socketUrl.pathname = WS_PATH;
 
   const initData = retrieveLaunchParams();

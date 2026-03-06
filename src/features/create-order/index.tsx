@@ -16,11 +16,12 @@ import { parseNumberInput, formatFloat } from '@/shared/lib/utils';
 import BpIcon from '@/shared/assets/bp.svg?react';
 import TonIcon from '@/shared/assets/ton.svg?react';
 import Arrow from '@/shared/assets/arrow.svg?react';
+import { Loader } from '@/shared/ui/spinner';
 
 interface CreateOrderModalProps {
   open: boolean;
   bpBalance: number;
-  settings: OrderSettings;
+  settings: OrderSettings | undefined | null;
   onClose: () => void;
 }
 
@@ -103,7 +104,9 @@ const CreateOrderModal = ({ open, bpBalance, onClose, settings }: CreateOrderMod
                   <span className="text-[17px] font-[500] text-white">1</span>
                   <span className="mx-3 text-[17px] text-white">=</span>
                   <BpIcon className="size-4 text-[#C37CE2]" />
-                  <span className="text-[17px] font-[500] text-white">{settings.rate}</span>
+                  <span className="text-[17px] font-[500] text-white">
+                    {settings?.rate ?? <Loader size="sm" />}
+                  </span>
                 </div>
               </div>
               <div className="relative">
@@ -142,7 +145,7 @@ const CreateOrderModal = ({ open, bpBalance, onClose, settings }: CreateOrderMod
                 </div>
                 <div className="flex h-[40px] items-center justify-center rounded-[10px] bg-[#232027] pr-10 pl-10">
                   <span className="text-center text-[20px] text-[#A6FF8B]">
-                    {formatFloat(Number(bpAmount) / settings.rate, 3)}
+                    {formatFloat(Number(bpAmount) / (settings?.rate ?? 1), 3)}
                   </span>
                 </div>
               </div>
@@ -160,7 +163,7 @@ const CreateOrderModal = ({ open, bpBalance, onClose, settings }: CreateOrderMod
                 variant="secondary"
                 className="flex-1"
                 onClick={handleClose}
-                disabled={isSubmitting}
+                disabled={isSubmitting || !settings}
               >
                 Закрыть
               </Button>
@@ -183,9 +186,15 @@ const CreateOrderModal = ({ open, bpBalance, onClose, settings }: CreateOrderMod
 interface CreateOrderButtonProps {
   bpBalance: number;
   settings: OrderSettings | undefined;
+  //TODO: плохо!
+  showAllOrders: boolean;
 }
 
-export const CreateOrderButton = ({ bpBalance, settings }: CreateOrderButtonProps) => {
+export const CreateOrderButton = ({
+  bpBalance,
+  settings,
+  showAllOrders,
+}: CreateOrderButtonProps) => {
   const [open, setOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -196,7 +205,7 @@ export const CreateOrderButton = ({ bpBalance, settings }: CreateOrderButtonProp
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      if (currentScrollY > lastScrollY.current && currentScrollY > 50) {
+      if (currentScrollY > lastScrollY.current && currentScrollY > 10 && showAllOrders) {
         setIsVisible(false);
       } else {
         setIsVisible(true);
@@ -208,10 +217,6 @@ export const CreateOrderButton = ({ bpBalance, settings }: CreateOrderButtonProp
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  if (!settings) {
-    return null;
-  }
 
   return (
     <LazyMotion features={domAnimation}>

@@ -26,10 +26,6 @@ interface BuyOrderDrawerProps {
   onClose: () => void;
 }
 
-/* =========================
-   Business helpers
-========================= */
-
 const getMaxPartialBuy = (current: number, min: number) => {
   if (current <= min) return 0;
   return current - min;
@@ -54,8 +50,6 @@ const getMaxAllowedBuy = (current: number, min: number, balance: number) => {
 
   return Math.min(maxPartial, balance);
 };
-
-/* ========================= */
 
 export const BuyOrderDrawer = ({
   open,
@@ -193,7 +187,9 @@ export const BuyOrderDrawer = ({
                       <span className="text-[17px] font-[500] text-white">1</span>
                       <span className="mx-3 text-[17px] text-white">=</span>
                       <BpPointsIcon className="size-4" />
-                      <span className="text-[17px] font-[500] text-white">{settings.rate}</span>
+                      <span className="text-[17px] font-[500] text-white">
+                        {settings?.rate ?? <Loader size="sm" />}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -304,7 +300,7 @@ export const BuyOrderDrawer = ({
                 type="button"
                 className="flex-1 bg-[#5F81D8] hover:bg-[#7a9be8] active:bg-[#4a6fc0] disabled:bg-[#5F81D8]"
                 onClick={handleSubmit}
-                disabled={!isValid || isSubmitting}
+                disabled={!isValid || isSubmitting || isOrderInfoLoading}
               >
                 {isSubmitting ? 'Выкуп...' : 'Подтвердить'}
               </Button>

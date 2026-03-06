@@ -65,10 +65,8 @@ export const MarketPage = () => {
     min_ton_amount: ordersSliderValue,
     limit: 10,
   });
-  const orders = useMemo(
-    () => ordersPages?.pages.flatMap((page) => page) ?? [],
-    [ordersPages?.pages.length]
-  );
+
+  const orders = ordersPages?.pages.flatMap((page) => page) ?? [];
 
   const bpBalance = profile?.internal_balance ?? 0;
 

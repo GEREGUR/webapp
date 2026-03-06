@@ -1,6 +1,7 @@
 import { useReducedMotion } from 'motion/react';
 import { useMarket, type DropItem } from '@/entities/market';
 import { LazyMotion, AnimatePresence, m, domAnimation } from 'motion/react';
+import { cn } from '@/shared/lib/utils';
 
 const LiveCarouselItem = ({
   item,
@@ -15,6 +16,7 @@ const LiveCarouselItem = ({
     <m.div
       key={item.uid}
       layout
+      className={cn('hello')}
       {...(reducedMotion
         ? {}
         : {

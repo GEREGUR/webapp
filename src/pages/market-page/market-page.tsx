@@ -1,5 +1,5 @@
 import { Navigate } from 'react-router-dom';
-import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Tabs, TabList, Tab, TabPanel } from '@/shared/ui/tabs';
 import { Card } from '@/shared/ui/card';
@@ -244,7 +244,7 @@ export const MarketPage = () => {
                 <p className="text-center text-white/60">Нет ордеров</p>
               </Card>
               <div className="px-4">
-                <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} />
+                <CreateOrderButton settings={orderSettings} bpBalance={bpBalance} showAllOrders={showAllOrders} />
               </div>
             </>
           )}
